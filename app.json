@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "Phase Rev",
+    "slug": "phaserev",
+    "scheme": "phaserev",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/brand/icon.png",
+    "userInterfaceStyle": "automatic",
+    "backgroundColor": "#050505",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.phaserev.app"
+    },
+    "android": {
+      "package": "com.phaserev.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#050505",
+        "foregroundImage": "./assets/brand/android-icon-foreground.png",
+        "backgroundImage": "./assets/brand/android-icon-background.png",
+        "monochromeImage": "./assets/brand/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/brand/favicon.png",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/brand/splash-icon.png",
+          "imageWidth": 180,
+          "resizeMode": "contain",
+          "backgroundColor": "#050505"
+        }
+      ],
+      "expo-image",
+      "expo-video"
+    ]
+  }
+}
