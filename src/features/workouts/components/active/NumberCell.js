@@ -10,7 +10,6 @@ import { useEffect, useRef, useState } from "react";
 import { StyleSheet, TextInput } from "react-native";
 import { useTheme } from "@/providers/ThemeProvider";
 import { fonts, radius, spacing } from "@/theme";
-import { IS_IOS } from "@/lib/platform";
 
 const COMPLETE_NUMBER = /^\d+(\.\d+)?$/;
 
@@ -91,8 +90,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: spacing.sm,
     textAlign: "center",
-    fontFamily: IS_IOS ? fonts.rounded : fonts.semibold,
-    fontWeight: IS_IOS ? "600" : undefined,
+    fontFamily: fonts.semibold,
     fontSize: 17,
     fontVariant: ["tabular-nums"],
     outlineStyle: "none",

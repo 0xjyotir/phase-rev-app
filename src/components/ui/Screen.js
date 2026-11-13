@@ -32,6 +32,7 @@ import { useTheme } from "@/providers/ThemeProvider";
 import { fonts, GUTTER, spacing } from "@/theme";
 import { AmbientBackground } from "./AmbientBackground";
 import { AppText } from "./AppText";
+import { GlassGroup } from "./GlassGroup";
 import { HeaderActions } from "./HeaderActions";
 
 const FOOTER_SPACE = 112;
@@ -147,7 +148,7 @@ export function Screen({
         locations={[0, 0.45]}
         style={StyleSheet.absoluteFill}
       />
-      {footer}
+      <GlassGroup>{footer}</GlassGroup>
     </View>
   ) : null;
 
@@ -212,6 +213,11 @@ function buildOptions({
 
   if (IS_IOS) {
     const legacyBlur = !LIQUID_GLASS && !headerTransparent;
+    // iOS 26: leave the bar's background alone so UIKit draws the Liquid Glass
+    // navigation bar (transparent, scroll-edge effect, glass capsules around
+    // bar buttons). Bar buttons are monochrome like Apple's apps; only
+    // "prominent" actions are tinted. Earlier iOS: blurred bar, cyan tint.
+    const tint = headerTint ?? (LIQUID_GLASS ? colors.text : colors.accent);
     return {
       headerShown: true,
       title: title ?? "",
@@ -219,7 +225,13 @@ function buildOptions({
       headerBackButtonDisplayMode: "minimal",
       headerShadowVisible: false,
       headerLargeTitleShadowVisible: false,
-      headerTintColor: headerTint ?? colors.accent,
+      headerTintColor: tint,
+      headerTitleStyle: {
+        fontFamily: fonts.semibold,
+        fontSize: 17,
+        color: headerTint ?? colors.text,
+      },
+      headerLargeTitleStyle: { fontFamily: fonts.bold, color: headerTint ?? colors.text },
       ...(legacyBlur
         ? {
             headerTransparent: true,
@@ -231,10 +243,10 @@ function buildOptions({
         ? { headerTransparent: true, headerBlurEffect: undefined, headerStyle: undefined }
         : null),
       unstable_headerRightItems: headerActions?.length
-        ? () => toIosHeaderItems(headerActions, colors.accent)
+        ? () => toIosHeaderItems(headerActions, colors.accent, colors.onAccent)
         : undefined,
       unstable_headerLeftItems: leftActions?.length
-        ? () => toIosHeaderItems(leftActions, colors.accent)
+        ? () => toIosHeaderItems(leftActions, colors.accent, colors.onAccent)
         : undefined,
       ...options,
     };

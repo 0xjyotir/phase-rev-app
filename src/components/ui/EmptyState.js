@@ -13,7 +13,7 @@ import { Surface } from "./Surface";
 export function EmptyState({ icon = "info", title, message, action, style }) {
   const { colors } = useTheme();
   return (
-    <Surface style={[styles.box, style]}>
+    <Surface solid style={[styles.box, style]}>
       <View style={[styles.iconWell, { backgroundColor: colors.accentSoft }]}>
         <Icon name={icon} size={24} color="accent" />
       </View>

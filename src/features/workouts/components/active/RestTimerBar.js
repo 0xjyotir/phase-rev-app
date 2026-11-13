@@ -43,7 +43,7 @@ export function RestTimerBar() {
   const percent = rest.totalSeconds ? (remaining / rest.totalSeconds) * 100 : 0;
 
   return (
-    <Card active style={styles.card}>
+    <Card glass active style={styles.card}>
       <View style={styles.topRow}>
         <View>
           <AppText variant="smallMedium" color="textMuted">
@@ -53,7 +53,7 @@ export function RestTimerBar() {
             {formatClock(remaining)}
           </AppText>
         </View>
-        <Button label="Skip" size="sm" onPress={skipRest} />
+        <Button label="Skip" size="sm" solid onPress={skipRest} />
       </View>
       <ProgressBar percent={percent} height={6} />
       <View style={styles.controls}>
@@ -61,6 +61,7 @@ export function RestTimerBar() {
           label={`−${step}s`}
           variant="secondary"
           size="sm"
+          solid
           style={styles.flex}
           onPress={() => adjustRest(-step)}
         />
@@ -68,6 +69,7 @@ export function RestTimerBar() {
           label={`+${step}s`}
           variant="secondary"
           size="sm"
+          solid
           style={styles.flex}
           onPress={() => adjustRest(step)}
         />
@@ -76,6 +78,7 @@ export function RestTimerBar() {
           icon={isPaused ? "play" : "pause"}
           variant="soft"
           size="sm"
+          solid
           style={styles.flex}
           onPress={toggleRestPause}
         />

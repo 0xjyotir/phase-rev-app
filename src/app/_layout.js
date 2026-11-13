@@ -33,7 +33,7 @@ import { IS_IOS } from "@/lib/platform";
 import { AppProviders } from "@/providers/AppProviders";
 import { useTheme } from "@/providers/ThemeProvider";
 import { selectIsSignedIn, useSessionStore } from "@/stores/session-store";
-import { fontAssets } from "@/theme";
+import { fontAssets, fonts } from "@/theme";
 
 preventAutoHideAsync().catch(() => {});
 
@@ -78,6 +78,8 @@ function RootNavigator() {
           headerShown: true, // native navigation bar; full-bleed screens opt out below
           contentStyle: { backgroundColor: colors.background },
           headerBackButtonDisplayMode: "minimal",
+          headerTitleStyle: { fontFamily: fonts.semibold, color: colors.text },
+          headerLargeTitleStyle: { fontFamily: fonts.bold, color: colors.text },
           animation: IS_IOS ? undefined : "slide_from_right",
         }}
       >

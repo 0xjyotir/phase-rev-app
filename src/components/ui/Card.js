@@ -1,14 +1,19 @@
 /**
  * Card — the main content surface.
  *
- *   <Card>…</Card>                    // glass on iOS 26+, solid elsewhere
+ *   <Card>…</Card>                    // solid content surface (all platforms)
+ *   <Card glass>…</Card>              // Liquid Glass on iOS 26+ — only for cards that
+ *                                     // float over content (e.g. the rest-timer dock)
  *   <Card active>…</Card>             // cyan ring — live workout / today / recommended
  *   <Card tone="soft" padding="md">   // inner tile (translucent fill, never glass)
  *   <Card tone="accent">              // cyan-tinted tile
  *   <Card onPress={open}>…</Card>     // pressable, with a subtle press-in
  *
- * Rule of thumb (Apple HIG): glass is for the outer card only — never nest a
- * glass surface inside another. Use tone="soft" for anything inside a card.
+ * Apple's iOS 26 guidance: Liquid Glass belongs to the controls and navigation
+ * layer that floats above content (nav bar, tab bar, buttons, chips, floating
+ * docks) — not to the content itself. So cards are solid by default, like the
+ * grouped cards in Fitness and Health, and every control on them is glass.
+ * Use tone="soft" for tiles inside a card.
  */
 import { Pressable, StyleSheet, View } from "react-native";
 import { haptics } from "@/lib/haptics";
@@ -24,6 +29,7 @@ export function Card({
   tone = "surface",
   padding = "lg",
   active = false,
+  glass = false,
   onPress,
   style,
   accessibilityLabel,
@@ -48,7 +54,7 @@ export function Card({
   let body;
   if (tone === "surface") {
     body = (
-      <Surface radius={cornerRadius} style={[styles.surface, pad, inner]}>
+      <Surface solid={!glass} radius={cornerRadius} style={[styles.surface, pad, inner]}>
         {children}
         {ring}
       </Surface>

@@ -8,11 +8,15 @@
  * Variants:
  *   primary    — prominent: cyan tinted Liquid Glass on iOS 26+, solid cyan elsewhere
  *   secondary  — neutral glass capsule (solid surface + hairline elsewhere)
- *   soft       — tinted fill (accentSoft), for secondary actions inside cards
- *   ghost      — text only (accent)
- *   danger     — red text on soft red
+ *   soft       — cyan-tinted glass on iOS 26+ (accentSoft fill elsewhere), for
+ *                secondary actions inside cards
+ *   ghost      — text only (accent), like a borderless system button
+ *   danger     — red-tinted glass on iOS 26+ (soft red elsewhere)
  *   brand      — marketing cyan on dark media (Welcome screen)
  *   outlineLight — clear glass over photos/video
+ *
+ * `solid` skips the glass (use it for buttons that sit *inside* a glass panel —
+ * Apple's guidance is never to stack glass on glass).
  */
 import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 import { haptics } from "@/lib/haptics";
@@ -34,6 +38,7 @@ export function Button({
   iconPosition = "left",
   fullWidth = false,
   disabled = false,
+  solid = false,
   loading = false,
   style,
   accessibilityLabel,
@@ -82,7 +87,7 @@ export function Button({
     inner,
   ];
 
-  const useGlass = theme.glass && tone.glass;
+  const useGlass = theme.glass && tone.glass && !solid;
   const surface = useGlass ? (
     <Surface
       radius={radius.pill}
@@ -139,9 +144,19 @@ function getTone(variant, colors) {
     case "ghost":
       return { bg: "transparent", fg: colors.accentStrong };
     case "soft":
-      return { bg: colors.accentSoft, fg: colors.accentStrong };
+      return {
+        bg: colors.accentSoft,
+        fg: colors.accentStrong,
+        glass: "regular",
+        glassTint: colors.accentSoft,
+      };
     case "danger":
-      return { bg: colors.dangerSoft, fg: colors.danger };
+      return {
+        bg: colors.dangerSoft,
+        fg: colors.danger,
+        glass: "regular",
+        glassTint: colors.dangerSoft,
+      };
     case "brand":
       return { bg: palette.cyan, fg: palette.cyanInk, glass: "regular", glassTint: palette.cyan };
     case "outlineLight":

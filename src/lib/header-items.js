@@ -19,6 +19,7 @@
  */
 import { Alert, Platform } from "react-native";
 import ICON_MAP from "@/components/ui/icon-map.json";
+import { fonts } from "@/theme/typography";
 import { LIQUID_GLASS } from "./platform";
 
 const sfIcon = (name) => {
@@ -48,8 +49,12 @@ function toMenuItem(item) {
   };
 }
 
-/** Converts our action descriptors into react-native-screens header items (iOS). */
-export function toIosHeaderItems(actions = [], tintColor) {
+/**
+ * Converts our action descriptors into react-native-screens header items (iOS).
+ * `tintColor` tints prominent items; `onTintColor` is their label colour
+ * (dark ink on cyan reads better than UIKit's default white).
+ */
+export function toIosHeaderItems(actions = [], tintColor, onTintColor) {
   return actions.filter(Boolean).map((action) => {
     if (action.element) {
       return {
@@ -64,6 +69,10 @@ export function toIosHeaderItems(actions = [], tintColor) {
       disabled: action.disabled,
       tintColor: action.tintColor ?? (action.prominent ? tintColor : undefined),
       variant: action.prominent ? (LIQUID_GLASS ? "prominent" : "done") : "plain",
+      labelStyle: {
+        fontFamily: fonts.semibold,
+        ...(action.prominent && LIQUID_GLASS && onTintColor ? { color: onTintColor } : null),
+      },
       accessibilityLabel: action.accessibilityLabel ?? action.label,
     };
     if (action.menu) {

@@ -17,9 +17,12 @@ feel like one product.
 - **Plain JavaScript only** — no `.ts` / `.tsx`. Data shapes are JSDoc in
   [`src/types/models.js`](src/types/models.js).
 - **Zustand + AsyncStorage** — everything survives restarts, even a workout in progress.
-- **iOS 26 Liquid Glass** with a native tab bar, native large-title headers, SF Symbols, native
-  segmented controls, sheets, alerts and action sheets. Android gets a clean Material-leaning
-  version of the same design.
+- **iOS 26 Liquid Glass** on the native navigation bar, native tab bar and every control
+  (buttons, chips, icon buttons, steppers, search fields, floating docks), plus SF Symbols,
+  native segmented controls, sheets, alerts and action sheets. Android gets a clean
+  Material-leaning version of the same design.
+- **Instrument Sans** for all UI text (a calm editorial grotesk, free to ship), **Oswald** for
+  brand headlines and **JetBrains Mono** for eyebrows — the same on every platform.
 - Runs in **Expo Go** — every native module used ships with Expo Go.
 
 ---
@@ -87,13 +90,14 @@ Screens reachable from the tabs:
 | Piece                | iOS 26+                                                          | iOS 18 and earlier / Android / web           |
 | -------------------- | ---------------------------------------------------------------- | -------------------------------------------- |
 | Tab bar              | System tab bar (`NativeTabs`), minimises on scroll, live workout shown as the **tab bar accessory** (like Music's mini player) | JS tab bar + floating "Resume workout" pill |
-| Headers              | Native large titles, transparent glass bar, SF Symbol buttons, prominent "Save"/"Sign in" items | Blurred material (iOS < 26) · Material header (Android) |
-| Cards, buttons, chips| `GlassView` (regular / clear / tinted) — off when *Reduce Transparency* is on | Solid surfaces with hairline borders         |
+| Navigation bar       | The system `UINavigationBar` with Liquid Glass (no custom background, so UIKit draws the glass and scroll-edge effect), large titles, monochrome SF Symbol buttons in glass capsules, tinted prominent "Save"/"Sign in" | Blurred material bar with cyan buttons (iOS < 26) · Material header (Android) |
+| Buttons, chips, icon buttons, steppers, search fields | `GlassView` (regular / clear / tinted, interactive), grouped with `GlassContainer` so neighbours blend — off when *Reduce Transparency* is on | Solid fills with hairline borders            |
+| Content cards        | Solid grouped cards, as in Fitness and Health — Apple keeps Liquid Glass for the controls layer; floating docks (rest timer) are glass | Same solid cards                             |
 | Icons                | SF Symbols (`expo-symbols`), mapped in `components/ui/icon-map.json` | Feather                                      |
 | Segmented controls   | `UISegmentedControl`                                             | Capsule control                              |
 | Confirmations        | `UIAlertController` alerts + action sheets                       | Native alert (Android) · drawn dialog (web)  |
 | Modals               | Page sheets, form sheets with detents and grabber                | Modal stack                                  |
-| Type                 | SF Pro (body), SF Rounded (numbers & timers), SF Mono (eyebrows), Oswald (brand headlines) | Outfit, JetBrains Mono, Oswald               |
+| Type                 | Instrument Sans everywhere, including nav bar titles, large titles, bar buttons, tab bar labels and segmented controls (alerts stay SF, as Apple intends) | Instrument Sans, JetBrains Mono, Oswald      |
 
 All of this is decided in one place: `src/lib/platform.js` (`LIQUID_GLASS`) +
 `ThemeProvider` (`theme.glass`). Components never check the OS version themselves.
@@ -148,7 +152,7 @@ phaserev-app/
 | Champagne        | `#C4A265`                      | `globals.css` `--accent-champagne`      |
 | Rev cyan (dark)  | `#00BCD4`                      | `rev-app.css` dark `--rev-accent`, "REV" in the wordmark |
 | Rev cyan (light) | `#0097B2`                      | `rev-app.css` `--rev-accent` (darkened for contrast) |
-| Fonts            | **Oswald** (wordmark, headlines) everywhere; **Outfit** + **JetBrains Mono** on Android/web; SF Pro / Rounded / Mono on iOS | `layout.tsx` |
+| Fonts            | **Instrument Sans** (UI, numbers, timers), **Oswald** (wordmark, headlines), **JetBrains Mono** (eyebrows) | Oswald + JetBrains Mono from `layout.tsx`; Instrument Sans replaces the website's Outfit in the app |
 | Radius           | 26 cards · 16 tiles · pill buttons (continuous corners on iOS) | `rev-app.css` |
 
 See [`src/theme/palette.js`](src/theme/palette.js) and [`src/theme/themes.js`](src/theme/themes.js).

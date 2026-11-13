@@ -128,9 +128,12 @@ today starts at zero with the planned meals unlogged (`features/nutrition/lib/nu
 - `palette.js` — raw hex values copied from the website CSS.
 - `themes.js` — semantic tokens (`background`, `surface`, `surfaceSoft`, `text`, `textMuted`,
   `separator`, `accent`, `champagne`…) for light & dark, modelled on iOS system colours.
-- `typography.js` — per-platform faces (SF Pro / Rounded / Mono on iOS; Outfit / JetBrains Mono
-  elsewhere; Oswald everywhere for brand headlines) + variants (`largeTitle`, `h1`, `body`,
-  `eyebrow`, `metric`, `timer`…). iOS body text is 17 pt like UIKit.
+- `typography.js` — Instrument Sans (UI, numbers, timers — tabular figures), Oswald (brand
+  headlines), JetBrains Mono (eyebrows) + variants (`largeTitle`, `h1`, `body`, `eyebrow`,
+  `metric`, `timer`…). iOS body text is 17 pt like UIKit. Native chrome reads `fonts.*` too:
+  nav-bar titles, large titles, bar-button labels, tab bar labels; the iOS segmented control
+  needs `postScriptFonts.*` because it looks fonts up with `UIFont(name:)`. Swap the family in
+  one place (`FAMILY`) — `typography.test.js` checks every name is actually loaded.
 - `layout.js` — spacing scale, radii, `GUTTER` (20 on iOS, 16 on Android), `CARD_PADDING`.
 
 ```js
@@ -139,7 +142,9 @@ const styles = useThemedStyles(createStyles);  // StyleSheet that updates with t
 <AppText variant="h2" color="textMuted" />     // never set fontFamily by hand
 ```
 
-`theme.glass` is `LIQUID_GLASS && !reduceTransparency`. `AppearanceSync` pushes the in-app
+`theme.glass` is `LIQUID_GLASS && !reduceTransparency`. On iOS 26 `Screen` leaves the navigation
+bar's background unset so UIKit draws the system Liquid Glass bar, uses monochrome bar
+buttons (`headerTintColor` = text) and tints only `prominent` actions. `AppearanceSync` pushes the in-app
 appearance to `Appearance.setColorScheme`, so native headers, tab bar, alerts and keyboards
 follow it. The (auth) screens use `<ThemeProvider forceScheme="dark">`.
 
@@ -148,7 +153,8 @@ follow it. The (auth) screens use `<ThemeProvider forceScheme="dark">`.
 | Component        | Why it exists                                                                     |
 | ---------------- | --------------------------------------------------------------------------------- |
 | `Screen`         | Every screen. `variant="tab" | "detail" | "modal" | "bare"` sets the native header (large title, glass/blur, back button, `headerActions` → SF Symbol bar items or menus), safe areas, keyboard insets, top glow and a floating `footer`. |
-| `Surface`        | `GlassView` when `theme.glass`, otherwise a solid card with a hairline border. `Card`, `Button`, `Chip`, `IconButton`, `ListSection` all draw through it. |
+| `Surface`        | `GlassView` when `theme.glass` (unless `solid`), otherwise a solid surface with a hairline border. Controls (`Button`, `Chip`, `IconButton`, `Stepper`, search `TextField`) are glass; content (`Card`, `ListSection`, `EmptyState`) is solid, per Apple's iOS 26 guidance. `<Card glass>` is for docks that float over content. |
+| `GlassGroup`     | `GlassContainer` on iOS 26 so neighbouring glass controls blend (screen footers, hero button pairs); a plain View elsewhere. |
 | `ListSection` / `ListRow` | iOS Settings-style inset grouped lists with coloured icon tiles.          |
 | `SegmentedControl` | `UISegmentedControl` on iOS, a capsule control elsewhere.                       |
 | `Dialog`         | Native `Alert` on iOS/Android (spaced so two never collide), drawn dialog on web. |

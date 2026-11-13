@@ -52,7 +52,7 @@ export function TodayFocusCard({ lastSession, weekWorkouts }) {
           <AppText variant="smallStrong" numberOfLines={1}>
             {lastSession?.name ?? "—"}
           </AppText>
-          <AppText variant="caption" color="textMuted" numberOfLines={1}>
+          <AppText variant="caption" color="textMuted" numberOfLines={2}>
             {lastSession
               ? `${formatRelativeDay(lastSession.performedAt)} · ${formatVolume(lastSession.volumeKg)}`
               : "No sessions yet"}

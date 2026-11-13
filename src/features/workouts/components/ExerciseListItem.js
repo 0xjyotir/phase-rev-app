@@ -25,7 +25,7 @@ export function ExerciseListItem({ exercise }) {
       accessibilityRole="button"
       accessibilityLabel={exercise.name}
     >
-      <Surface radius={radius.lg} style={styles.row}>
+      <Surface solid radius={radius.lg} style={styles.row}>
         <View style={[styles.thumb, { backgroundColor: colors.surfaceSoft }]}>
           <AppText variant="eyebrow" color="accent">
             {exercise.muscleGroup.slice(0, 3)}

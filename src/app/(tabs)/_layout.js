@@ -69,7 +69,11 @@ function GlassTabs() {
   const { activeSession } = useActiveSession();
 
   return (
-    <NativeTabs tintColor={colors.accent} minimizeBehavior="onScrollDown">
+    <NativeTabs
+      tintColor={colors.accent}
+      minimizeBehavior="onScrollDown"
+      labelStyle={{ fontFamily: fonts.semibold }}
+    >
       {activeSession ? (
         <NativeTabs.BottomAccessory>
           <WorkoutAccessory />
@@ -117,7 +121,7 @@ function ClassicTabs() {
           paddingTop: 6,
           paddingBottom: bottomPad,
         },
-        tabBarLabelStyle: { fontFamily: fonts.semibold, fontSize: 11, fontWeight: "600" },
+        tabBarLabelStyle: { fontFamily: fonts.semibold, fontSize: 11 },
         sceneStyle: { backgroundColor: colors.background },
       }}
     >

@@ -25,7 +25,7 @@ export function ListSection({ header, footer, children, inset = 58, style }) {
           {header.toUpperCase()}
         </AppText>
       ) : null}
-      <Surface style={styles.group}>
+      <Surface solid style={styles.group}>
         {rows.map((row, index) => (
           <Fragment key={row.key ?? index}>
             {index > 0 ? <Divider inset={inset} /> : null}

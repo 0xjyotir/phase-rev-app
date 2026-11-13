@@ -7,9 +7,9 @@
  *
  * Variants:
  *   surface — glass circle on iOS 26+, soft fill elsewhere (default)
- *   soft    — translucent fill, for use inside cards
+ *   soft    — glass on iOS 26+, translucent fill elsewhere (inside cards)
  *   ghost   — icon only
- *   accent  — filled cyan
+ *   accent  — cyan-tinted glass on iOS 26+, filled cyan elsewhere
  *   glass   — clear glass over media (dark fallback)
  */
 import { Pressable, StyleSheet, View } from "react-native";
@@ -36,9 +36,9 @@ export function IconButton({
 
   const palette = {
     surface: { bg: colors.surfaceSoft, fg: colors.text, glass: "regular" },
-    soft: { bg: colors.surfaceSoft, fg: colors.text },
+    soft: { bg: colors.surfaceSoft, fg: colors.text, glass: "regular" },
     ghost: { bg: "transparent", fg: colors.textMuted },
-    accent: { bg: colors.accent, fg: colors.onAccent },
+    accent: { bg: colors.accent, fg: colors.onAccent, glass: "regular", tint: colors.accent },
     glass: { bg: "rgba(5,5,5,0.45)", fg: "#FFFFFF", glass: "clear" },
   }[variant];
 
@@ -58,6 +58,7 @@ export function IconButton({
       <Surface
         radius={size / 2}
         variant={palette.glass}
+        tint={palette.tint ?? (active && variant !== "glass" ? colors.accentSoft : undefined)}
         interactive={!disabled}
         style={[shape, styles.center]}
       >

@@ -10,9 +10,10 @@ import { useTheme } from "@/providers/ThemeProvider";
 import { radius, spacing } from "@/theme";
 import { AppText } from "./AppText";
 import { Icon } from "./Icon";
+import { Surface } from "./Surface";
 
 export function Stepper({ value, onChange, min = 0, max = 99, step = 1, format = String, label }) {
-  const { colors } = useTheme();
+  const { colors, glass } = useTheme();
   const clamp = (next) => Math.max(min, Math.min(max, next));
 
   const button = (icon, disabled, next, a11y) => (
@@ -41,7 +42,12 @@ export function Stepper({ value, onChange, min = 0, max = 99, step = 1, format =
           {label}
         </AppText>
       ) : null}
-      <View style={[styles.control, { backgroundColor: colors.surfaceSoft }]}>
+      <Surface
+        variant={glass ? "regular" : "clear"}
+        radius={radius.pill}
+        interactive
+        style={styles.control}
+      >
         {button("minus", value <= min, value - step, `Decrease ${label ?? "value"}`)}
         <View style={[styles.divider, { backgroundColor: colors.separator }]} />
         <AppText
@@ -54,7 +60,7 @@ export function Stepper({ value, onChange, min = 0, max = 99, step = 1, format =
         </AppText>
         <View style={[styles.divider, { backgroundColor: colors.separator }]} />
         {button("plus", value >= max, value + step, `Increase ${label ?? "value"}`)}
-      </View>
+      </Surface>
     </View>
   );
 }
@@ -65,8 +71,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     alignSelf: "flex-start",
-    borderRadius: radius.sm,
-    borderCurve: "continuous",
     height: 36,
   },
   button: { width: 44, height: 36, alignItems: "center", justifyContent: "center" },

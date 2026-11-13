@@ -16,6 +16,7 @@ export { Chip } from "./Chip";
 export { Dialog } from "./Dialog";
 export { Divider } from "./Divider";
 export { EmptyState } from "./EmptyState";
+export { GlassGroup } from "./GlassGroup";
 export { HeaderActions } from "./HeaderActions";
 export { Icon } from "./Icon";
 export { IconButton } from "./IconButton";

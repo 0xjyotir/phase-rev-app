@@ -15,7 +15,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { haptics } from "@/lib/haptics";
 import { IS_IOS } from "@/lib/platform";
 import { useTheme, useThemedStyles } from "@/providers/ThemeProvider";
-import { radius, spacing } from "@/theme";
+import { postScriptFonts, radius, spacing } from "@/theme";
 import { AppText } from "./AppText";
 
 export function SegmentedControl({ options, value, onChange, size = "md", style }) {
@@ -32,6 +32,11 @@ export function SegmentedControl({ options, value, onChange, size = "md", style 
         values={options.map((option) => option.label)}
         selectedIndex={selectedIndex}
         appearance={theme.isDark ? "dark" : "light"}
+        fontStyle={{ fontFamily: postScriptFonts.medium, fontSize: size === "sm" ? 13 : 14 }}
+        activeFontStyle={{
+          fontFamily: postScriptFonts.semibold,
+          fontSize: size === "sm" ? 13 : 14,
+        }}
         onChange={(event) => {
           const next = options[event.nativeEvent.selectedSegmentIndex];
           if (!next || next.disabled || next.id === value) return;

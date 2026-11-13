@@ -28,6 +28,7 @@ export function OptionList({ options, value, onChange }) {
             style={({ pressed }) => pressed && styles.pressed}
           >
             <Surface
+              solid
               radius={radius.lg}
               tint={selected ? colors.accentSoft : undefined}
               style={styles.option}

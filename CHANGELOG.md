@@ -27,7 +27,12 @@
   bar accessory, glass cards/buttons/chips (`expo-glass-effect`), transparent glass headers.
 - Native large titles and header buttons (SF Symbols, menus, prominent Save), page sheets and
   form sheets with detents, `UISegmentedControl`, native alerts and action sheets.
-- SF Pro / SF Rounded / SF Mono type on iOS with UIKit sizes; Oswald kept for brand headlines.
+- System Liquid Glass navigation bar (no custom background), monochrome glass bar buttons with
+  tinted prominent actions, glass on every control (buttons, chips, icon buttons, steppers,
+  search fields) grouped with `GlassContainer`; content cards stay solid as Apple recommends.
+- New type: **Instrument Sans** for all UI text, numbers and timers on every platform — also in
+  the native nav bar, large titles, bar buttons, tab bar and segmented controls — with Oswald
+  for brand headlines and JetBrains Mono for eyebrows. UIKit text sizes on iOS.
 - Honours **Reduce Transparency**; in-app appearance drives native chrome.
 - iOS 18 and earlier: blurred system headers and a solid tab bar; Android keeps a clean
   Material-leaning version of the same design.
@@ -47,6 +52,7 @@
   their screen isn't visible.
 - `profile-store` v2 with a migration; new store fields for mind, journal, reaction, coaching.
 - New dependencies: `expo-glass-effect`, `expo-symbols`, `expo-image-picker`,
-  `expo-file-system`, `expo-asset`, `@react-native-segmented-control/segmented-control`.
+  `expo-file-system`, `expo-asset`, `@react-native-segmented-control/segmented-control`,
+  `@expo-google-fonts/instrument-sans` (replaces Outfit).
 - Tests: unit tests for nutrition rollover, recovery, mind and reaction logic, plus smoke tests
   that render every route as a member, as a guest and with Liquid Glass on.

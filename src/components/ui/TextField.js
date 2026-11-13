@@ -20,6 +20,7 @@ import { useTheme, useThemedStyles } from "@/providers/ThemeProvider";
 import { fonts, radius, spacing } from "@/theme";
 import { AppText } from "./AppText";
 import { Icon } from "./Icon";
+import { Surface } from "./Surface";
 
 export const TextField = forwardRef(function TextField(
   {
@@ -42,10 +43,13 @@ export const TextField = forwardRef(function TextField(
   },
   ref,
 ) {
-  const { colors, isDark } = useTheme();
+  const { colors, isDark, glass } = useTheme();
   const styles = useThemedStyles(createStyles);
   const [focused, setFocused] = useState(false);
   const isSearch = variant === "search";
+  // iOS 26 search fields are Liquid Glass capsules, like the system search bar.
+  const glassSearch = isSearch && glass;
+  const Field = glassSearch ? Surface : View;
 
   return (
     <View style={[styles.wrapper, style]}>
@@ -55,10 +59,12 @@ export const TextField = forwardRef(function TextField(
         </AppText>
       ) : null}
 
-      <View
+      <Field
+        {...(glassSearch ? { radius: radius.pill } : null)}
         style={[
           styles.field,
           isSearch && styles.search,
+          glassSearch && styles.searchGlass,
           compact && styles.compact,
           multiline && styles.multiline,
           focused && !isSearch && { borderColor: colors.accent },
@@ -102,7 +108,7 @@ export const TextField = forwardRef(function TextField(
             {suffix}
           </AppText>
         ) : null}
-      </View>
+      </Field>
 
       {error ? (
         <AppText variant="caption" color="danger" style={styles.hint}>
@@ -134,6 +140,7 @@ const createStyles = (theme) =>
       backgroundColor: theme.colors.surfaceSoft,
     },
     search: { minHeight: 40, borderRadius: radius.sm, paddingHorizontal: spacing.md },
+    searchGlass: { minHeight: 44, borderRadius: radius.pill, backgroundColor: "transparent" },
     compact: { minHeight: 42, paddingHorizontal: spacing.md },
     multiline: { alignItems: "flex-start", paddingVertical: spacing.md },
     input: {
@@ -146,7 +153,7 @@ const createStyles = (theme) =>
       // RN Web: remove the default focus outline (we draw our own border)
       outlineStyle: "none",
     },
-    inputCompact: { fontFamily: fonts.semibold, fontWeight: "600", fontVariant: ["tabular-nums"] },
+    inputCompact: { fontFamily: fonts.semibold, fontVariant: ["tabular-nums"] },
     inputMultiline: { minHeight: 84, textAlignVertical: "top", paddingVertical: 0 },
     hint: { marginLeft: spacing.xs },
   });

@@ -8,18 +8,21 @@ export function formatNumber(value, maximumFractionDigits = 0) {
   return Number(value).toLocaleString("en-US", { maximumFractionDigits });
 }
 
+/** Non-breaking space: keeps a number and its unit on one line ("12,290 kg"). */
+const NBSP = "\u00A0";
+
 /** 82.5 → "82.5 kg", 0 → "BW" (bodyweight) */
 export function formatWeight(kg, { bodyweightLabel = "BW" } = {}) {
   if (kg == null) return "—";
   if (kg === 0) return bodyweightLabel;
-  return `${formatNumber(kg, 1)} kg`;
+  return `${formatNumber(kg, 1)}${NBSP}kg`;
 }
 
 /** 24850 → "24.9t" for compact stat tiles, otherwise "8,420 kg" */
 export function formatVolume(kg, { compact = false } = {}) {
   if (kg == null) return "—";
   if (compact && kg >= 10000) return `${formatNumber(kg / 1000, 1)}t`;
-  return `${formatNumber(kg)} kg`;
+  return `${formatNumber(kg)}${NBSP}kg`;
 }
 
 /** 150 → "02:30" (rest timer) */

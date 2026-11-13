@@ -4,7 +4,7 @@
  * Every tab owns a native stack so it gets a real navigation bar: a large title
  * that collapses on scroll, Liquid Glass on iOS 26, and SF Symbol bar buttons.
  * The stack's page is transparent and sits on the ambient light field, so the
- * glass cards, nav bar and tab bar all refract the same Phase Rev glow.
+ * glass nav bar, tab bar and controls all refract the same Phase Rev glow.
  *
  *   // src/app/(tabs)/(train)/_layout.js
  *   export default function TrainStack() { return <TabStack />; }
@@ -14,6 +14,7 @@ import { StyleSheet, View } from "react-native";
 import { AmbientBackground } from "@/components/ui/AmbientBackground";
 import { IS_IOS } from "@/lib/platform";
 import { useTheme } from "@/providers/ThemeProvider";
+import { fonts } from "@/theme";
 
 /**
  * @param {{ title: string }} props  the tab's title, so the very first frame of
@@ -35,6 +36,9 @@ export function TabStack({ title }) {
           headerLargeTitleEnabled: IS_IOS,
           headerShadowVisible: false,
           headerLargeTitleShadowVisible: false,
+          // Brand type in the native bar from the very first frame
+          headerTitleStyle: { fontFamily: fonts.semibold, color: colors.text },
+          headerLargeTitleStyle: { fontFamily: fonts.bold, color: colors.text },
         }}
       />
     </View>

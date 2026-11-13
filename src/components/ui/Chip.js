@@ -5,7 +5,8 @@
  *   Filter toggle:  <Chip label="Chest" selected={filter === "chest"} onPress={…} />
  *
  * tone: "accent" | "neutral" | "champagne" | "success" | "danger"
- * Filter chips use glass on iOS 26 when unselected (like the system's filter bars).
+ * Toggle chips are Liquid Glass on iOS 26 (like the system's filter bars): clear
+ * glass when off, cyan-tinted glass when on. Status chips stay flat fills.
  */
 import { Pressable, StyleSheet, View } from "react-native";
 import { haptics } from "@/lib/haptics";
@@ -55,7 +56,7 @@ export function Chip({ label, icon, tone = "neutral", selected, onPress, size = 
     return <View style={[box, { backgroundColor: scheme.bg }, style]}>{content}</View>;
   }
 
-  const useGlass = theme.glass && !active;
+  const useGlass = theme.glass;
   return (
     <Pressable
       onPress={() => {
@@ -67,7 +68,12 @@ export function Chip({ label, icon, tone = "neutral", selected, onPress, size = 
       style={({ pressed }) => [styles.pressable, pressed && { opacity: 0.75 }, style]}
     >
       {useGlass ? (
-        <Surface radius={radius.pill} interactive style={box}>
+        <Surface
+          radius={radius.pill}
+          interactive
+          tint={active ? colors.accent : undefined}
+          style={box}
+        >
           {content}
         </Surface>
       ) : (

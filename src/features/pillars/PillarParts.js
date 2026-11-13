@@ -4,7 +4,7 @@
 import { StyleSheet, View } from "react-native";
 import { BrandHeadline } from "@/components/brand/BrandHeadline";
 import { MediaCard } from "@/components/brand/MediaCard";
-import { AppText, Button, Card, Chip, Icon } from "@/components/ui";
+import { AppText, Button, Card, Chip, GlassGroup, Icon } from "@/components/ui";
 import { useTheme } from "@/providers/ThemeProvider";
 import { palette, radius, spacing } from "@/theme";
 
@@ -31,7 +31,7 @@ export function PillarHero({ hero, image, onPrimary, onSecondary }) {
           </View>
         ))}
       </View>
-      <View style={styles.actions}>
+      <GlassGroup style={styles.actions}>
         <Button label={hero.primaryCta} variant="brand" fullWidth onPress={onPrimary} />
         {hero.secondaryCta ? (
           <Button
@@ -41,7 +41,7 @@ export function PillarHero({ hero, image, onPrimary, onSecondary }) {
             onPress={onSecondary}
           />
         ) : null}
-      </View>
+      </GlassGroup>
     </MediaCard>
   );
 }
