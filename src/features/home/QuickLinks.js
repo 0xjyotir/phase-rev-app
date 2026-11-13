@@ -15,7 +15,7 @@ const LINKS = [
     subtitle: "Your baseline",
     href: "/assessment",
   },
-  { id: "coaches", icon: "users", title: "Coaches", subtitle: "Meet the team", href: "/coaches" },
+  { id: "coaches", icon: "users", title: "Coaches", subtitle: "Book a session", href: "/coaches" },
   {
     id: "membership",
     icon: "award",
@@ -31,7 +31,7 @@ export function QuickLinks() {
     <View style={styles.row}>
       {LINKS.map((link) => (
         <Card key={link.id} padding="md" style={styles.tile} onPress={() => router.push(link.href)}>
-          <Icon name={link.icon} size={20} color="accent" />
+          <Icon name={link.icon} size={22} color="accent" />
           <AppText variant="smallStrong" numberOfLines={1}>
             {link.title}
           </AppText>

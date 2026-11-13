@@ -6,7 +6,7 @@ import { StyleSheet, View } from "react-native";
 import { AppText, Button, Card, Chip, Icon } from "@/components/ui";
 import { spacing } from "@/theme";
 
-export function TierCard({ tier, isCurrent, onSelect }) {
+export function TierCard({ tier, isCurrent, onSelect, highlightLabel = "Most selected" }) {
   return (
     <Card active={tier.highlighted} style={styles.card}>
       <View style={styles.header}>
@@ -16,11 +16,11 @@ export function TierCard({ tier, isCurrent, onSelect }) {
         {isCurrent ? (
           <Chip label="Your plan" tone="success" />
         ) : tier.highlighted ? (
-          <Chip label="Recommended" tone="accent" />
+          <Chip label={highlightLabel} tone="accent" />
         ) : null}
       </View>
       <View style={styles.priceRow}>
-        <AppText variant="metric" tabular>
+        <AppText variant="metricLarge" tabular>
           ${tier.price}
         </AppText>
         <AppText variant="small" color="textMuted">
@@ -33,7 +33,7 @@ export function TierCard({ tier, isCurrent, onSelect }) {
       <View style={styles.features}>
         {tier.features.map((feature) => (
           <View key={feature} style={styles.feature}>
-            <Icon name="check" size={16} color="accent" />
+            <Icon name="check-circle" size={16} color="accent" />
             <AppText variant="small" style={styles.flex}>
               {feature}
             </AppText>

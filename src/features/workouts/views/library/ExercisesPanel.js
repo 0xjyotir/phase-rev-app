@@ -14,7 +14,7 @@ import { SkillProgressList } from "@/features/workouts/components/SkillProgressL
 import { SportProgramsCard } from "@/features/workouts/components/SportProgramsCard";
 import { capitalize } from "@/lib/format";
 import { useTrainingStore } from "@/stores/training-store";
-import { spacing } from "@/theme";
+import { GUTTER, spacing } from "@/theme";
 
 const MODES = [
   { id: "gym", label: "Gym" },
@@ -52,6 +52,7 @@ export function ExercisesPanel() {
 
       <TextField
         icon="search"
+        variant="search"
         placeholder="Search by name or equipment"
         value={query}
         onChangeText={setQuery}
@@ -62,10 +63,11 @@ export function ExercisesPanel() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={styles.bleed}
         contentContainerStyle={styles.chips}
       >
         <Chip
-          icon="heart"
+          icon="heart-fill"
           label="Favorites"
           selected={favoritesOnly}
           onPress={() => setFavoritesOnly((value) => !value)}
@@ -103,6 +105,7 @@ export function ExercisesPanel() {
 
 const styles = StyleSheet.create({
   gap: { gap: spacing.lg },
-  chips: { gap: spacing.sm, paddingRight: spacing.lg },
+  bleed: { marginHorizontal: -GUTTER },
+  chips: { gap: spacing.sm, paddingHorizontal: GUTTER },
   list: { gap: spacing.sm },
 });

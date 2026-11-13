@@ -38,8 +38,8 @@ export function SetRow({ sessionExercise, set, setIndex, trackingMode, showRir }
       style={[
         styles.row,
         {
-          borderColor: colors.border,
-          backgroundColor: set.completed ? colors.accentSoft : colors.surface,
+          borderColor: set.completed ? "transparent" : colors.border,
+          backgroundColor: set.completed ? colors.accentSoft : colors.surfaceSoft,
         },
       ]}
     >
@@ -158,15 +158,22 @@ function Field({ label, flex, children }) {
 }
 
 const styles = StyleSheet.create({
-  row: { borderRadius: radius.md, borderWidth: 1, padding: spacing.md, gap: spacing.sm },
+  row: {
+    borderRadius: radius.md,
+    borderCurve: "continuous",
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: spacing.md,
+    gap: spacing.sm,
+  },
   header: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
   typePill: { borderRadius: radius.pill, paddingHorizontal: spacing.sm, paddingVertical: 2 },
   prev: { marginLeft: "auto" },
   inputs: { flexDirection: "row", alignItems: "flex-end", gap: spacing.sm },
   check: {
-    width: 48,
+    width: 50,
     height: 44,
     borderRadius: radius.sm,
+    borderCurve: "continuous",
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",

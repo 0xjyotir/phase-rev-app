@@ -10,6 +10,9 @@
  *   color    — key of theme colors ("text", "textMuted", "accent"…) or a raw color.
  *   align    — "left" | "center" | "right"
  *   tabular  — monospaced digits so counters don't jitter
+ *
+ * Text scales with the system text size (Dynamic Type / Android font scale),
+ * capped at 1.6× so dense layouts (set rows, timers) stay intact.
  */
 import { Text } from "react-native";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -21,6 +24,7 @@ export function AppText({
   tabular = false,
   style,
   children,
+  maxFontSizeMultiplier = 1.6,
   ...rest
 }) {
   const theme = useTheme();
@@ -28,8 +32,9 @@ export function AppText({
 
   return (
     <Text
+      maxFontSizeMultiplier={maxFontSizeMultiplier}
       style={[
-        theme.text[variant],
+        theme.text[variant] ?? theme.text.body,
         { color: resolvedColor },
         align && { textAlign: align },
         tabular && { fontVariant: ["tabular-nums"] },

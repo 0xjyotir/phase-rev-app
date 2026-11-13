@@ -1,6 +1,6 @@
 /**
- * ActiveSessionHeader — sticky top of the live workout:
- * minimise · name · live stopwatch · sets / volume / now · Finish.
+ * ActiveSessionHeader — pinned top of the live workout:
+ * minimise · name · options, live stopwatch + Finish, and a sets / volume / now strip.
  * Web: ActiveWorkoutBar.
  */
 import { StyleSheet, View } from "react-native";
@@ -30,9 +30,12 @@ export function ActiveSessionHeader({ activeSession, progress, onMinimize, onFin
           accessibilityLabel="Minimise workout"
         />
         <View style={styles.titles}>
-          <AppText variant="caption" color="accent">
-            In progress
-          </AppText>
+          <View style={styles.liveRow}>
+            <View style={styles.liveDot} />
+            <AppText variant="captionStrong" color="accentStrong">
+              In progress
+            </AppText>
+          </View>
           <AppText variant="title" numberOfLines={1}>
             {activeSession.session.name}
           </AppText>
@@ -41,10 +44,16 @@ export function ActiveSessionHeader({ activeSession, progress, onMinimize, onFin
       </View>
 
       <View style={styles.statsRow}>
-        <AppText variant="timer" color="accentStrong" tabular>
+        <AppText
+          variant="timer"
+          color="accentStrong"
+          tabular
+          maxFontSizeMultiplier={1.2}
+          accessibilityLabel={`Elapsed ${formatStopwatch(elapsed)}`}
+        >
           {formatStopwatch(elapsed)}
         </AppText>
-        <Button label="Finish" size="sm" onPress={onFinish} />
+        <Button label="Finish" icon="flag" size="sm" onPress={onFinish} />
       </View>
 
       <View style={styles.strip}>
@@ -58,7 +67,7 @@ export function ActiveSessionHeader({ activeSession, progress, onMinimize, onFin
 
 function Stat({ label, value, flex = 1 }) {
   return (
-    <View style={{ flex, minWidth: 0 }}>
+    <View style={{ flex, minWidth: 0, gap: 2 }}>
       <AppText variant="caption" color="textMuted">
         {label}
       </AppText>
@@ -76,17 +85,19 @@ const createStyles = (theme) =>
       paddingBottom: spacing.md,
       gap: spacing.sm,
       borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: theme.colors.border,
-      backgroundColor: theme.colors.background,
+      borderBottomColor: theme.colors.separator,
     },
     topRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, paddingTop: spacing.sm },
-    titles: { flex: 1, alignItems: "center" },
+    titles: { flex: 1, alignItems: "center", gap: 1 },
+    liveRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+    liveDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: theme.colors.accent },
     statsRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
     strip: {
       flexDirection: "row",
       gap: spacing.md,
       padding: spacing.md,
       borderRadius: radius.md,
+      borderCurve: "continuous",
       backgroundColor: theme.colors.surfaceSoft,
     },
   });

@@ -1,49 +1,57 @@
 /**
- * ThemeProvider — decides light vs dark and exposes the theme via `useTheme()`.
+ * ThemeProvider — decides light vs dark (and glass vs solid) and exposes the
+ * theme via `useTheme()`.
  *
- * Resolution order:
- *   1. User preference from Profile → Appearance (preferences-store)
- *   2. Otherwise the OS color scheme ("system")
+ * Resolution order for the color scheme:
+ *   1. `forceScheme` prop (the brand welcome/login screens are always dark)
+ *   2. User preference from Profile → Appearance (preferences-store)
+ *   3. Otherwise the OS color scheme ("system")
+ *
+ * `glass` is true on iOS 26+ (Liquid Glass) unless the user turned on
+ * Reduce Transparency — components use it to pick glass vs solid surfaces.
  *
  * Usage inside any component:
- *   const { colors, isDark } = useTheme();
+ *   const { colors, isDark, glass } = useTheme();
  *   const styles = useThemedStyles(createStyles); // see below
  */
 import { createContext, useContext, useMemo } from "react";
 import { useColorScheme } from "react-native";
+import { useReduceTransparency } from "@/hooks/useReduceTransparency";
+import { LIQUID_GLASS } from "@/lib/platform";
 import { usePreferencesStore } from "@/stores/preferences-store";
 import { darkTheme, fonts, lightTheme, makeShadow, radius, spacing, textVariants } from "@/theme";
 
 const ThemeContext = createContext(null);
 
 /**
- * @param {{ forceScheme?: "light" | "dark" }} props
- *   forceScheme — pin a subtree to one scheme. The (auth) screens use
- *   `forceScheme="dark"` so the brand welcome/login always look like the website.
+ * @param {{ forceScheme?: "light" | "dark", children: React.ReactNode }} props
  */
 export function ThemeProvider({ children, forceScheme }) {
   const systemScheme = useColorScheme();
   const appearance = usePreferencesStore((state) => state.appearance);
+  const reduceTransparency = useReduceTransparency();
 
   const preferred = appearance === "system" ? (systemScheme ?? "dark") : appearance;
   const resolvedScheme = forceScheme ?? preferred;
+  const glass = LIQUID_GLASS && !reduceTransparency;
 
   const value = useMemo(() => {
     const base = resolvedScheme === "light" ? lightTheme : darkTheme;
     return {
       ...base,
+      glass,
       fonts,
       spacing,
       radius,
       text: textVariants,
       shadow: makeShadow(base.isDark),
     };
-  }, [resolvedScheme]);
+  }, [resolvedScheme, glass]);
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
-/** Returns the active theme: { name, isDark, colors, fonts, spacing, radius, text, shadow }. */
+/** Returns the active theme: { name, isDark, glass, colors, fonts, spacing, radius, text, shadow }. */
 export function useTheme() {
   const theme = useContext(ThemeContext);
   if (!theme) {

@@ -1,8 +1,9 @@
 /**
  * Preferences store — device-level settings that are not tied to a user.
  *
- * Read by:  ThemeProvider (appearance), lib/haptics (haptics on/off)
- * Written:  Profile → Settings
+ * Read by:  ThemeProvider + AppearanceSync (appearance), lib/haptics (haptics),
+ *           RestTimerBar (rest step)
+ * Written:  Profile → Appearance / Workout
  */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -21,6 +22,7 @@ export const usePreferencesStore = create(
 
       setAppearance: (appearance) => set({ appearance }),
       setHapticsEnabled: (hapticsEnabled) => set({ hapticsEnabled }),
+      setRestStepSeconds: (restStepSeconds) => set({ restStepSeconds }),
     }),
     {
       name: STORAGE_KEYS.preferences,

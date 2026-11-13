@@ -66,7 +66,7 @@ export function AssessmentResults({ values, bmi }) {
               <View
                 style={[
                   styles.stepBadge,
-                  { backgroundColor: index === 0 ? colors.accent : colors.surface },
+                  { backgroundColor: index === 0 ? colors.accent : colors.surfaceStrong },
                 ]}
               >
                 <AppText variant="captionStrong" color={index === 0 ? "onAccent" : "textMuted"}>

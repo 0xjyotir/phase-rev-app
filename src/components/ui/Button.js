@@ -1,23 +1,29 @@
 /**
- * Button — pill-shaped, like the web `.phys-btn`.
+ * Button — capsule buttons in the iOS 26 style.
  *
  *   <Button label="Start workout" icon="play" onPress={start} />
  *   <Button label="Change plan" variant="ghost" />
- *   <Button label="Finish" variant="primary" size="lg" fullWidth loading={saving} />
+ *   <Button label="Finish" size="lg" fullWidth loading={saving} />
  *
- * Variants (rev-app.css):
- *   primary   — cyan fill            (.phys-btn-primary)
- *   secondary — surface + border     (.phys-btn-secondary)
- *   ghost     — text only            (.phys-btn-ghost)
- *   danger    — red text on soft red
- *   brand     — marketing teal/cyan on dark (Welcome screen)
+ * Variants:
+ *   primary    — prominent: cyan tinted Liquid Glass on iOS 26+, solid cyan elsewhere
+ *   secondary  — neutral glass capsule (solid surface + hairline elsewhere)
+ *   soft       — tinted fill (accentSoft), for secondary actions inside cards
+ *   ghost      — text only (accent)
+ *   danger     — red text on soft red
+ *   brand      — marketing cyan on dark media (Welcome screen)
+ *   outlineLight — clear glass over photos/video
  */
 import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 import { haptics } from "@/lib/haptics";
-import { useTheme, useThemedStyles } from "@/providers/ThemeProvider";
+import { splitLayoutStyle } from "@/lib/style";
+import { useTheme } from "@/providers/ThemeProvider";
 import { HIT_SIZE, palette, radius, spacing } from "@/theme";
 import { AppText } from "./AppText";
 import { Icon } from "./Icon";
+import { Surface } from "./Surface";
+
+const HEIGHT = { sm: 36, md: 48, lg: 54 };
 
 export function Button({
   label,
@@ -31,11 +37,13 @@ export function Button({
   loading = false,
   style,
   accessibilityLabel,
+  accessibilityHint,
 }) {
-  const { colors } = useTheme();
-  const styles = useThemedStyles(createStyles);
-  const tone = getTone(variant, colors);
+  const theme = useTheme();
+  const tone = getTone(variant, theme.colors);
   const isDisabled = disabled || loading;
+  const { outer, inner } = splitLayoutStyle(style);
+  const height = HEIGHT[size] ?? HEIGHT.md;
 
   const handlePress = () => {
     haptics.tap();
@@ -43,8 +51,57 @@ export function Button({
   };
 
   const iconNode = icon ? (
-    <Icon name={icon} size={size === "lg" ? 20 : 18} color={tone.fg} />
+    <Icon name={icon} size={size === "sm" ? 15 : 18} color={tone.fg} weight="semibold" />
   ) : null;
+
+  const content = loading ? (
+    <ActivityIndicator color={tone.fg} />
+  ) : (
+    <View style={styles.row}>
+      {iconPosition === "left" && iconNode}
+      {label ? (
+        <AppText
+          variant={size === "sm" ? "smallStrong" : "bodyStrong"}
+          color={tone.fg}
+          numberOfLines={1}
+        >
+          {label}
+        </AppText>
+      ) : null}
+      {iconPosition === "right" && iconNode}
+    </View>
+  );
+
+  const boxStyle = [
+    styles.box,
+    { minHeight: Math.max(height, size === "sm" ? 36 : HIT_SIZE) },
+    size === "lg" && styles.large,
+    size === "sm" && styles.small,
+    inner,
+  ];
+
+  const useGlass = theme.glass && tone.glass;
+  const surface = useGlass ? (
+    <Surface
+      radius={radius.pill}
+      variant={tone.glass === "clear" ? "clear" : "regular"}
+      tint={tone.glassTint}
+      interactive={!isDisabled}
+      style={boxStyle}
+    >
+      {content}
+    </Surface>
+  ) : (
+    <View
+      style={[
+        boxStyle,
+        styles.solid,
+        { backgroundColor: tone.bg, borderColor: tone.border ?? "transparent" },
+      ]}
+    >
+      {content}
+    </View>
+  );
 
   return (
     <Pressable
@@ -52,74 +109,62 @@ export function Button({
       disabled={isDisabled}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? label}
+      accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled: isDisabled, busy: loading }}
+      hitSlop={size === "sm" ? 6 : 0}
       style={({ pressed }) => [
-        styles.base,
-        size === "lg" && styles.large,
-        size === "sm" && styles.small,
-        { backgroundColor: tone.bg, borderColor: tone.border },
+        styles.pressable,
         fullWidth && styles.fullWidth,
+        outer,
         pressed && !isDisabled && styles.pressed,
         isDisabled && styles.disabled,
-        style,
       ]}
     >
-      {loading ? (
-        <ActivityIndicator color={tone.fg} />
-      ) : (
-        <View style={styles.row}>
-          {iconPosition === "left" && iconNode}
-          {label ? (
-            <AppText variant={size === "sm" ? "smallStrong" : "bodyStrong"} color={tone.fg}>
-              {label}
-            </AppText>
-          ) : null}
-          {iconPosition === "right" && iconNode}
-        </View>
-      )}
+      {surface}
     </Pressable>
   );
 }
 
+/** Colors (and glass treatment) per variant. */
 function getTone(variant, colors) {
   switch (variant) {
     case "secondary":
-      return { bg: colors.surface, fg: colors.text, border: colors.border };
+      return { bg: colors.surfaceSoft, fg: colors.text, border: colors.border, glass: "regular" };
     case "ghost":
-      return { bg: "transparent", fg: colors.textMuted, border: "transparent" };
+      return { bg: "transparent", fg: colors.accentStrong };
     case "soft":
-      return { bg: colors.accentSoft, fg: colors.accentStrong, border: "transparent" };
+      return { bg: colors.accentSoft, fg: colors.accentStrong };
     case "danger":
-      return { bg: colors.dangerSoft, fg: colors.danger, border: "transparent" };
+      return { bg: colors.dangerSoft, fg: colors.danger };
     case "brand":
-      return { bg: palette.cyanLight, fg: palette.cyanInk, border: "transparent" };
+      return { bg: palette.cyan, fg: palette.cyanInk, glass: "regular", glassTint: palette.cyan };
     case "outlineLight":
       return {
-        bg: "rgba(255,255,255,0.06)",
+        bg: "rgba(255,255,255,0.10)",
         fg: palette.navText,
-        border: "rgba(255,255,255,0.18)",
+        border: "rgba(255,255,255,0.22)",
+        glass: "clear",
       };
     case "primary":
     default:
-      return { bg: colors.accent, fg: colors.onAccent, border: "transparent" };
+      return { bg: colors.accent, fg: colors.onAccent, glass: "regular", glassTint: colors.accent };
   }
 }
 
-const createStyles = () =>
-  StyleSheet.create({
-    base: {
-      minHeight: HIT_SIZE,
-      paddingHorizontal: spacing.xl,
-      borderRadius: radius.pill,
-      borderWidth: 1,
-      alignItems: "center",
-      justifyContent: "center",
-      alignSelf: "flex-start",
-    },
-    large: { minHeight: 54, paddingHorizontal: spacing.xxl },
-    small: { minHeight: 36, paddingHorizontal: spacing.lg },
-    fullWidth: { alignSelf: "stretch" },
-    row: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
-    pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] },
-    disabled: { opacity: 0.45 },
-  });
+const styles = StyleSheet.create({
+  pressable: { alignSelf: "flex-start", borderRadius: radius.pill },
+  box: {
+    paddingHorizontal: spacing.xl,
+    borderRadius: radius.pill,
+    borderCurve: "continuous",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  solid: { borderWidth: StyleSheet.hairlineWidth },
+  large: { paddingHorizontal: spacing.xxl },
+  small: { paddingHorizontal: spacing.lg },
+  fullWidth: { alignSelf: "stretch" },
+  row: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+  pressed: { opacity: 0.88, transform: [{ scale: 0.97 }] },
+  disabled: { opacity: 0.4 },
+});

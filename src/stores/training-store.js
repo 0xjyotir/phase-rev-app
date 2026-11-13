@@ -349,6 +349,18 @@ export const useTrainingStore = create(
           return { bodyWeights: [...others, { date: new Date().toISOString(), weightKg }] };
         }),
 
+      /** Saves a progress photo (local file URI from the photo library or camera). */
+      addProgressPhoto: ({ uri, angle = "Front" }) =>
+        set((state) => ({
+          photos: [
+            { id: createId("photo"), date: new Date().toISOString(), angle, uri },
+            ...state.photos,
+          ].slice(0, 60),
+        })),
+
+      removeProgressPhoto: (photoId) =>
+        set((state) => ({ photos: state.photos.filter((photo) => photo.id !== photoId) })),
+
       // ── Maintenance ───────────────────────────────────────────────────────
 
       /** Regenerates the demo history (Profile → Reset demo data). */

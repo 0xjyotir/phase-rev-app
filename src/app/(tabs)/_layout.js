@@ -1,43 +1,97 @@
 /**
- * Bottom tabs — the five member areas.
+ * The five member tabs.
  *
- *   Home    → (tabs)/index.js    dashboard ("Rev overview" on the web)
- *   Train   → (tabs)/train.js    workouts: Today · Library · Progress
- *   Fuel    → (tabs)/fuel.js     Rev Nutrition
- *   Mind    → (tabs)/mind.js     Mental wellness
- *   Profile → (tabs)/profile.js  account, assessment, coaches, membership, settings
+ *   Today    → (home)/index      daily hub ("Rev overview" on the web)
+ *   Train    → (train)/train     workouts: Today · Library · Progress
+ *   Fuel     → (fuel)/fuel       Rev Nutrition
+ *   Mind     → (mind)/mind       Mental wellness
+ *   Explore  → (explore)/explore the whole Phase Rev ecosystem (the website's story,
+ *                                pillars, coaches, membership, community)
  *
- * The custom tab bar adds a "workout in progress" pill above the tabs so a
- * live session is always one tap away, whatever tab you're on.
+ * iOS 26+  → the system tab bar (NativeTabs): Liquid Glass, SF Symbols, it
+ *            minimises while you scroll, and a live workout appears as the tab
+ *            bar accessory — exactly like Music's mini player.
+ * elsewhere → JavaScript tabs with a solid bar and a floating "Resume" pill
+ *            (Android, iOS 18 and earlier, web).
+ *
+ * Each tab hosts its own native stack (see (group)/_layout.js) for large titles.
  */
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { Tabs, BottomTabBar } from "expo-router/js-tabs";
+import { BottomTabBar, Tabs } from "expo-router/js-tabs";
+import { NativeTabs } from "expo-router/native-tabs";
 import { View } from "react-native";
+import { Icon } from "@/components/ui";
 import { ActiveWorkoutPill } from "@/features/workouts/components/ActiveWorkoutPill";
+import { useActiveSession } from "@/features/workouts/hooks/useTraining";
+import { LIQUID_GLASS } from "@/lib/platform";
 import { useTheme } from "@/providers/ThemeProvider";
 import { fonts } from "@/theme";
 
 const TABS = [
-  { name: "index", title: "Home", icon: "home-variant-outline", iconActive: "home-variant" },
-  { name: "train", title: "Train", icon: "dumbbell", iconActive: "dumbbell" },
-  { name: "fuel", title: "Fuel", icon: "food-apple-outline", iconActive: "food-apple" },
-  { name: "mind", title: "Mind", icon: "meditation", iconActive: "meditation" },
+  { name: "(home)", title: "Today", sf: ["house", "house.fill"], md: "home", icon: "home" },
   {
-    name: "profile",
-    title: "Profile",
-    icon: "account-circle-outline",
-    iconActive: "account-circle",
+    name: "(train)",
+    title: "Train",
+    sf: ["dumbbell", "dumbbell.fill"],
+    md: "fitness_center",
+    icon: "dumbbell",
+  },
+  { name: "(fuel)", title: "Fuel", sf: ["fork.knife", "fork.knife"], md: "restaurant", icon: "fork" },
+  {
+    name: "(mind)",
+    title: "Mind",
+    sf: ["brain.head.profile", "brain.head.profile.fill"],
+    md: "self_improvement",
+    icon: "brain",
+  },
+  {
+    name: "(explore)",
+    title: "Explore",
+    sf: ["safari", "safari.fill"],
+    md: "explore",
+    icon: "compass",
   },
 ];
 
 export default function TabsLayout() {
+  return LIQUID_GLASS ? <GlassTabs /> : <ClassicTabs />;
+}
+
+/** iOS 26+: the native UITabBar with Liquid Glass. */
+function GlassTabs() {
+  const { colors } = useTheme();
+  const { activeSession } = useActiveSession();
+
+  return (
+    <NativeTabs tintColor={colors.accent} minimizeBehavior="onScrollDown">
+      {activeSession ? (
+        <NativeTabs.BottomAccessory>
+          <WorkoutAccessory />
+        </NativeTabs.BottomAccessory>
+      ) : null}
+      {TABS.map((tab) => (
+        <NativeTabs.Trigger key={tab.name} name={tab.name}>
+          <NativeTabs.Trigger.Icon sf={{ default: tab.sf[0], selected: tab.sf[1] }} md={tab.md} />
+          <NativeTabs.Trigger.Label>{tab.title}</NativeTabs.Trigger.Label>
+        </NativeTabs.Trigger>
+      ))}
+    </NativeTabs>
+  );
+}
+
+function WorkoutAccessory() {
+  const placement = NativeTabs.BottomAccessory.usePlacement();
+  return <ActiveWorkoutPill variant="accessory" placement={placement} />;
+}
+
+/** Android, iOS 18 and earlier, web: JavaScript tabs + floating resume pill. */
+function ClassicTabs() {
   const { colors } = useTheme();
 
   return (
     <Tabs
       tabBar={(props) => (
         <View>
-          <ActiveWorkoutPill />
+          <ActiveWorkoutPill variant="floating" />
           <BottomTabBar {...props} />
         </View>
       )}
@@ -47,9 +101,9 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: {
           backgroundColor: colors.tabBar,
-          borderTopColor: colors.border,
+          borderTopColor: colors.separator,
         },
-        tabBarLabelStyle: { fontFamily: fonts.semibold, fontSize: 11 },
+        tabBarLabelStyle: { fontFamily: fonts.semibold, fontSize: 11, fontWeight: "600" },
         sceneStyle: { backgroundColor: colors.background },
       }}
     >
@@ -59,13 +113,7 @@ export default function TabsLayout() {
           name={tab.name}
           options={{
             title: tab.title,
-            tabBarIcon: ({ color, size, focused }) => (
-              <MaterialCommunityIcons
-                name={focused ? tab.iconActive : tab.icon}
-                size={size}
-                color={color}
-              />
-            ),
+            tabBarIcon: ({ color, size }) => <Icon name={tab.icon} size={size - 2} color={color} />,
           }}
         />
       ))}

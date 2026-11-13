@@ -11,32 +11,50 @@
  * lands only this file (and profile-store) change — every screen stays as-is.
  */
 import { useMemo } from "react";
-import { createDefaultProfile, useProfileStore } from "@/stores/profile-store";
+import {
+  createDefaultProfile,
+  useProfileStore,
+  withProfileDefaults,
+} from "@/stores/profile-store";
 import { useSessionStore } from "@/stores/session-store";
 
 const FALLBACK_PROFILE = createDefaultProfile();
 
+const ACTIONS = [
+  "saveAssessment",
+  "toggleMealLogged",
+  "addMealToLog",
+  "removeMeal",
+  "addWater",
+  "setSelectedRegion",
+  "setMood",
+  "logMindfulSession",
+  "addJournalEntry",
+  "deleteJournalEntry",
+  "saveReframe",
+  "saveWellbeingCheck",
+  "saveReactionResult",
+  "requestCoach",
+  "rolloverDay",
+  "resetProfile",
+];
+
 export function useProfile() {
   const userId = useSessionStore((state) => state.user?.id ?? null);
-  const profile = useProfileStore((state) => (userId ? state.profiles[userId] : null));
+  const stored = useProfileStore((state) => (userId ? state.profiles[userId] : null));
+  const profile = useMemo(() => withProfileDefaults(stored) ?? FALLBACK_PROFILE, [stored]);
 
   // Each action reads the store at call time, so the memo only depends on userId.
   const actions = useMemo(() => {
-    const run = (action, ...args) => {
-      if (!userId) return;
-      useProfileStore.getState()[action](userId, ...args);
-    };
-    return {
-      saveAssessment: (assessment) => run("saveAssessment", assessment),
-      toggleMealLogged: (mealId) => run("toggleMealLogged", mealId),
-      addMealToLog: (meal) => run("addMealToLog", meal),
-      addWater: (liters) => run("addWater", liters),
-      setSelectedRegion: (regionId) => run("setSelectedRegion", regionId),
-      setMood: (moodId, note) => run("setMood", moodId, note),
-      logMindfulSession: (minutes) => run("logMindfulSession", minutes),
-      resetProfile: () => run("resetProfile"),
-    };
+    const bound = {};
+    for (const name of ACTIONS) {
+      bound[name] = (...args) => {
+        if (!userId) return;
+        useProfileStore.getState()[name](userId, ...args);
+      };
+    }
+    return bound;
   }, [userId]);
 
-  return { profile: profile ?? FALLBACK_PROFILE, actions };
+  return { profile, actions, isMember: Boolean(userId) };
 }

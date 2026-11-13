@@ -76,7 +76,17 @@ export const membershipCopy = {
   eyebrow: "Memberships",
   headline: "Invest in your evolution",
   subheadline:
-    "Every membership includes all four pillars. Upgrade for deeper coaching and one-to-one support.",
+    "Clear membership tiers for every stage of your journey — from your first assessment to long-term performance.",
+  tiersTitle: "Choose your membership",
+  tiersSubtitle: "All tiers include every pillar. Upgrade for deeper coaching and personal guidance.",
+  compareTitle: "Compare features",
+  highlightLabel: "Most selected",
+  trial: {
+    headline: "Start your 7-day trial",
+    body: "Try every pillar risk-free for seven days. Cancel anytime.",
+    primaryCta: "Get started",
+    secondaryCta: "Talk to a coach",
+  },
 };
 
 export function getTierById(tierId) {

@@ -4,9 +4,9 @@
  */
 import { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { Chip, SectionHeader } from "@/components/ui";
+import { Chip } from "@/components/ui";
 import { mealPeriods, mealPlans } from "@/constants/nutrition";
-import { spacing } from "@/theme";
+import { GUTTER, spacing } from "@/theme";
 import { MealCard } from "./MealCard";
 
 export function MealPlansCard({ onAddMeal }) {
@@ -15,10 +15,10 @@ export function MealPlansCard({ onAddMeal }) {
 
   return (
     <View style={styles.gap}>
-      <SectionHeader title="Meal plans" subtitle="Macro-aware ideas for every part of the day" />
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={styles.bleed}
         contentContainerStyle={styles.chips}
       >
         {mealPeriods.map((item) => (
@@ -45,5 +45,6 @@ export function MealPlansCard({ onAddMeal }) {
 
 const styles = StyleSheet.create({
   gap: { gap: spacing.md },
-  chips: { gap: spacing.sm, paddingRight: spacing.lg },
+  bleed: { marginHorizontal: -GUTTER },
+  chips: { gap: spacing.sm, paddingHorizontal: GUTTER },
 });

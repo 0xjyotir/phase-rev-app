@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { StyleSheet, TextInput } from "react-native";
 import { useTheme } from "@/providers/ThemeProvider";
 import { fonts, radius, spacing } from "@/theme";
+import { IS_IOS } from "@/lib/platform";
 
 const COMPLETE_NUMBER = /^\d+(\.\d+)?$/;
 
@@ -73,8 +74,8 @@ export function NumberCell({
         styles.input,
         {
           color: colors.text,
-          backgroundColor: completed ? colors.surface : colors.surfaceSoft,
-          borderColor: focused ? colors.accent : colors.border,
+          backgroundColor: completed ? colors.surfaceSoft : colors.surfaceStrong,
+          borderColor: focused ? colors.accent : "transparent",
         },
         style,
       ]}
@@ -86,11 +87,13 @@ const styles = StyleSheet.create({
   input: {
     minHeight: 44,
     borderRadius: radius.sm,
+    borderCurve: "continuous",
     borderWidth: 1,
     paddingHorizontal: spacing.sm,
     textAlign: "center",
-    fontFamily: fonts.semibold,
-    fontSize: 16,
+    fontFamily: IS_IOS ? fonts.rounded : fonts.semibold,
+    fontWeight: IS_IOS ? "600" : undefined,
+    fontSize: 17,
     fontVariant: ["tabular-nums"],
     outlineStyle: "none",
   },

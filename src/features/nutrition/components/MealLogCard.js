@@ -1,36 +1,51 @@
 /**
- * MealLogCard — today's meals; tick to mark eaten (macros update instantly).
- * Web: meal log in NutritionDashboardSection (store method existed, UI wasn't wired — it is here).
+ * MealLogCard — today's meals. Tap to tick a planned meal as eaten (macros
+ * update instantly), long-press to remove, "Log a meal" for anything else.
+ * Web: meal log in NutritionDashboardSection.
  */
-import { Pressable, StyleSheet, View } from "react-native";
-import { AppText, Card, Divider, Icon, SectionHeader } from "@/components/ui";
+import { Alert, Pressable, StyleSheet, View } from "react-native";
+import { AppText, Button, Card, Divider, Icon, SectionHeader } from "@/components/ui";
 import { haptics } from "@/lib/haptics";
 import { useTheme } from "@/providers/ThemeProvider";
-import { radius, spacing } from "@/theme";
+import { spacing } from "@/theme";
 
-export function MealLogCard({ mealLog, onToggle }) {
+export function MealLogCard({ mealLog, onToggle, onRemove, onAdd }) {
   const { colors } = useTheme();
   const eaten = mealLog.filter((meal) => meal.logged).length;
+
+  const confirmRemove = (meal) => {
+    if (!onRemove) return;
+    haptics.warning();
+    Alert.alert(`Remove ${meal.meal}?`, "It will be taken off today's log.", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Remove", style: "destructive", onPress: () => onRemove(meal.id) },
+    ]);
+  };
 
   return (
     <Card style={styles.card}>
       <SectionHeader
         title="Meal log"
         subtitle={`${eaten} of ${mealLog.length} meals logged today`}
+        actionLabel={onAdd ? "Log a meal" : undefined}
+        onActionPress={onAdd}
       />
       <View>
         {mealLog.map((meal, index) => (
           <View key={meal.id}>
-            {index > 0 ? <Divider /> : null}
+            {index > 0 ? <Divider inset={40} /> : null}
             <Pressable
               onPress={() => {
                 haptics.select();
                 onToggle(meal.id);
               }}
-              style={({ pressed }) => [styles.row, pressed && { opacity: 0.7 }]}
+              onLongPress={() => confirmRemove(meal)}
+              delayLongPress={350}
+              style={({ pressed }) => [styles.row, pressed && { opacity: 0.6 }]}
               accessibilityRole="checkbox"
               accessibilityState={{ checked: meal.logged }}
               accessibilityLabel={`${meal.meal}, ${meal.calories} calories`}
+              accessibilityHint="Double-tap to mark as eaten. Long-press to remove."
             >
               <View
                 style={[
@@ -40,7 +55,7 @@ export function MealLogCard({ mealLog, onToggle }) {
                     : { borderColor: colors.borderStrong },
                 ]}
               >
-                {meal.logged ? <Icon name="check" size={14} color="onAccent" /> : null}
+                {meal.logged ? <Icon name="check" size={13} color="onAccent" weight="bold" /> : null}
               </View>
               <View style={styles.text}>
                 <AppText variant="smallStrong" color={meal.logged ? "text" : "textMuted"}>
@@ -51,13 +66,16 @@ export function MealLogCard({ mealLog, onToggle }) {
                   {meal.fat}g
                 </AppText>
               </View>
-              <AppText variant="smallStrong" tabular>
+              <AppText variant="smallStrong" tabular color={meal.logged ? "text" : "textMuted"}>
                 {meal.calories}
               </AppText>
             </Pressable>
           </View>
         ))}
       </View>
+      {mealLog.length === 0 && onAdd ? (
+        <Button label="Log your first meal" icon="plus" variant="soft" fullWidth onPress={onAdd} />
+      ) : null}
     </Card>
   );
 }
@@ -66,9 +84,9 @@ const styles = StyleSheet.create({
   card: { gap: spacing.sm },
   row: { flexDirection: "row", alignItems: "center", gap: spacing.md, paddingVertical: spacing.md },
   check: {
-    width: 24,
-    height: 24,
-    borderRadius: radius.xs,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     borderWidth: 1.5,
     alignItems: "center",
     justifyContent: "center",

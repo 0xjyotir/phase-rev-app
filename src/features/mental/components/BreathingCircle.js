@@ -17,17 +17,19 @@ const MIN_SCALE = 0.6;
 /** The native animation driver doesn't exist on web; fall back to JS there. */
 const USE_NATIVE_DRIVER = Platform.OS !== "web";
 
-export function BreathingCircle({ pattern, running, size = 220, onCycle }) {
+export function BreathingCircle({ pattern, running, size = 220, onCycle, onPhase }) {
   const { colors } = useTheme();
   // useState initializer creates the Animated.Value exactly once per mount.
   const [scale] = useState(() => new Animated.Value(MIN_SCALE));
   const [phaseIndex, setPhaseIndex] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(pattern.phases[0].seconds);
   const onCycleRef = useRef(onCycle);
+  const onPhaseRef = useRef(onPhase);
 
   useEffect(() => {
     onCycleRef.current = onCycle;
-  }, [onCycle]);
+    onPhaseRef.current = onPhase;
+  }, [onCycle, onPhase]);
 
   // Idle preview: slow 4s in / 4s out loop.
   useEffect(() => {
@@ -64,6 +66,7 @@ export function BreathingCircle({ pattern, running, size = 220, onCycle }) {
       const phase = pattern.phases[index];
       setPhaseIndex(index);
       setSecondsLeft(phase.seconds);
+      onPhaseRef.current?.(phase);
 
       Animated.timing(scale, {
         toValue: phase.scale,
@@ -109,6 +112,10 @@ export function BreathingCircle({ pattern, running, size = 220, onCycle }) {
             borderRadius: size / 2,
             backgroundColor: colors.accentSoft,
             borderColor: colors.accent,
+            shadowColor: colors.accent,
+            shadowOpacity: 0.5,
+            shadowRadius: size / 8,
+            shadowOffset: { width: 0, height: 0 },
             transform: [{ scale }],
           },
         ]}

@@ -15,7 +15,7 @@ export function ProgressRing({
   size = 88,
   strokeWidth = 8,
   color = "accent",
-  track = "surfaceSoft",
+  track = "surfaceStrong",
   value,
   label,
   children,

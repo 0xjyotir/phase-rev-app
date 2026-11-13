@@ -12,7 +12,6 @@ import {
   EmptyState,
   ProgressBar,
   Screen,
-  ScreenHeader,
   SectionHeader,
   StatRow,
   StatTile,
@@ -39,7 +38,7 @@ export default function HistoryDetailScreen() {
 
   if (!entry) {
     return (
-      <Screen header={<ScreenHeader title="Workout" />}>
+      <Screen title="Workout">
         <EmptyState
           icon="alert-circle"
           title="Workout not found"
@@ -50,7 +49,7 @@ export default function HistoryDetailScreen() {
   }
 
   return (
-    <Screen header={<ScreenHeader title="Workout summary" />}>
+    <Screen title="Workout summary">
       <View style={styles.titleBlock}>
         <AppText variant="h1">{entry.name}</AppText>
         <AppText variant="small" color="textMuted">

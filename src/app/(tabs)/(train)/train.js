@@ -17,7 +17,7 @@ import { AppText, Screen, SegmentedControl } from "@/components/ui";
 import { LibraryView } from "@/features/workouts/views/LibraryView";
 import { ProgressView } from "@/features/workouts/views/ProgressView";
 import { TodayView } from "@/features/workouts/views/TodayView";
-import { GUTTER, spacing } from "@/theme";
+import { spacing } from "@/theme";
 
 const VIEWS = [
   { id: "today", label: "Today" },
@@ -52,26 +52,28 @@ export default function TrainScreen() {
 
   const go = (nextView, nextSub) => {
     router.setParams({ view: nextView, sub: nextSub ?? "" });
-    scrollRef.current?.scrollTo({ y: 0, animated: false });
   };
 
-  const header = (
-    <View style={styles.header}>
-      <AppText variant="h1">Workouts</AppText>
-      <AppText variant="small" color="textMuted">
-        {SUBTITLES[view]}
-      </AppText>
-      <SegmentedControl
-        options={VIEWS}
-        value={view}
-        onChange={(nextView) => go(nextView)}
-        style={styles.segment}
-      />
-    </View>
-  );
-
   return (
-    <Screen edges={["top"]} header={header} scrollRef={scrollRef}>
+    <Screen
+      variant="tab"
+      title="Train"
+      scrollRef={scrollRef}
+      headerActions={[
+        {
+          label: "New routine",
+          icon: "plus",
+          onPress: () => router.push("/routine/new"),
+        },
+      ]}
+    >
+      <View style={styles.header}>
+        <SegmentedControl options={VIEWS} value={view} onChange={(nextView) => go(nextView)} />
+        <AppText variant="caption" color="textMuted" align="center">
+          {SUBTITLES[view]}
+        </AppText>
+      </View>
+
       {view === "today" ? <TodayView onOpenRoutines={() => go("library", "routines")} /> : null}
       {view === "library" ? (
         <LibraryView
@@ -88,11 +90,5 @@ export default function TrainScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingHorizontal: GUTTER,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.md,
-    gap: spacing.xs,
-  },
-  segment: { marginTop: spacing.sm },
+  header: { gap: spacing.sm },
 });

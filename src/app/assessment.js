@@ -1,14 +1,18 @@
 /**
- * Assessment (modal) — 4-step baseline profile wizard.
- * Web: homepage #assessment (AssessmentPreviewSection) — here it saves to the
- * member profile (FRONTEND_BACKEND_INTEGRATION.md → PUT /users/me/assessment).
+ * Assessment (sheet) — 4-step baseline profile wizard.
+ * Web: homepage #assessment (AssessmentPreviewSection). Members save it to
+ * their profile (FRONTEND_BACKEND_INTEGRATION.md → PUT /users/me/assessment).
  *
  *   1 Body metrics  →  2 Your target  →  3 Training load  →  4 Your profile
+ *
+ * Like the website, steps 1–3 are open to everyone; the results step is for
+ * members (visitors are invited to sign in).
  */
 import { useRouter } from "expo-router";
+import { useHeaderHeight } from "expo-router/react-navigation";
 import { useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { AppText, Button, Card, Screen, ScreenHeader } from "@/components/ui";
+import { AppText, Button, Card, Icon, Screen } from "@/components/ui";
 import {
   assessmentActivityLevels,
   assessmentCopy,
@@ -24,12 +28,16 @@ import { StepIndicator } from "@/features/assessment/components/StepIndicator";
 import { calculateBmi } from "@/features/assessment/lib/bmi";
 import { useProfile } from "@/hooks/useProfile";
 import { haptics } from "@/lib/haptics";
+import { IS_IOS } from "@/lib/platform";
+import { useTheme } from "@/providers/ThemeProvider";
 import { spacing } from "@/theme";
 
 export default function AssessmentScreen() {
   const router = useRouter();
   const scrollRef = useRef(null);
-  const { profile, actions } = useProfile();
+  const headerHeight = useHeaderHeight();
+  const { colors } = useTheme();
+  const { profile, actions, isMember } = useProfile();
   const [stepIndex, setStepIndex] = useState(0);
   const [values, setValues] = useState(() => ({
     ...assessmentDefaults,
@@ -43,8 +51,10 @@ export default function AssessmentScreen() {
     stepIndex !== 0 || (values.heightCm > 100 && values.weightKg > 30 && values.age > 12);
 
   const goTo = (index) => {
+    haptics.select();
     setStepIndex(index);
-    scrollRef.current?.scrollTo({ y: 0, animated: true });
+    // iOS content starts under the translucent bar (inset = header height).
+    scrollRef.current?.scrollTo({ y: IS_IOS ? -headerHeight : 0, animated: true });
   };
 
   const save = () => {
@@ -58,35 +68,34 @@ export default function AssessmentScreen() {
   };
 
   const delta = Math.round((values.targetWeightKg - values.weightKg) * 10) / 10;
+  const primaryLabel = isLast ? (isMember ? "Save to profile" : "Sign in to save") : "Continue";
+  const primaryAction = isLast ? (isMember ? save : () => router.push("/login")) : () => goTo(stepIndex + 1);
 
   return (
     <Screen
+      variant="modal"
+      title={assessmentCopy.eyebrow}
       scrollRef={scrollRef}
       keyboardAware
-      header={
-        <ScreenHeader
-          title={assessmentCopy.eyebrow}
-          subtitle={`${assessmentCopy.duration} · saved to your profile`}
-          leftIcon="x"
-        />
-      }
       footer={
         <View style={styles.footer}>
           {stepIndex > 0 ? (
             <Button
               label="Back"
               variant="secondary"
+              size="lg"
               style={styles.flex}
               onPress={() => goTo(stepIndex - 1)}
             />
           ) : null}
           <Button
-            label={isLast ? "Save to profile" : "Continue"}
-            icon={isLast ? "check" : "arrow-right"}
+            label={primaryLabel}
+            icon={isLast ? (isMember ? "check" : "lock") : "arrow-right"}
             iconPosition="right"
+            size="lg"
             style={styles.flexWide}
             disabled={!stepValid}
-            onPress={isLast ? save : () => goTo(stepIndex + 1)}
+            onPress={primaryAction}
           />
         </View>
       }
@@ -130,10 +139,25 @@ export default function AssessmentScreen() {
         />
       ) : null}
 
-      {stepIndex === 3 ? <AssessmentResults values={values} bmi={bmi} /> : null}
+      {stepIndex === 3 && isMember ? <AssessmentResults values={values} bmi={bmi} /> : null}
+
+      {stepIndex === 3 && !isMember ? (
+        <Card style={styles.gate}>
+          <View style={[styles.lock, { backgroundColor: colors.accentSoft }]}>
+            <Icon name="lock" size={22} color="accent" />
+          </View>
+          <AppText variant="h3" align="center">
+            Your profile is ready
+          </AppText>
+          <AppText variant="small" color="textMuted" align="center">
+            Sign in to see your BMI summary, starting fuel targets and recommended pillar path —
+            saved to your account.
+          </AppText>
+        </Card>
+      ) : null}
 
       <AppText variant="caption" color="textMuted" align="center">
-        {assessmentCopy.footnote}
+        {assessmentCopy.footnote} · {assessmentCopy.duration}
       </AppText>
     </Screen>
   );
@@ -144,4 +168,12 @@ const styles = StyleSheet.create({
   footer: { flexDirection: "row", gap: spacing.sm },
   flex: { flex: 1, alignSelf: "stretch" },
   flexWide: { flex: 2, alignSelf: "stretch" },
+  gate: { alignItems: "center", gap: spacing.md, paddingVertical: spacing.xxxl },
+  lock: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });

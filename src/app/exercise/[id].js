@@ -14,9 +14,7 @@ import {
   Chip,
   EmptyState,
   Icon,
-  IconButton,
   Screen,
-  ScreenHeader,
   SectionHeader,
   StatRow,
   StatTile,
@@ -30,11 +28,14 @@ import { getPersonalRecords } from "@/features/workouts/lib/training-analytics";
 import { formatSet, getBestSet } from "@/features/workouts/lib/workout-math";
 import { formatRelativeDay } from "@/lib/dates";
 import { capitalize } from "@/lib/format";
+import { haptics } from "@/lib/haptics";
+import { useTheme } from "@/providers/ThemeProvider";
 import { useTrainingStore } from "@/stores/training-store";
 import { spacing } from "@/theme";
 
 export default function ExerciseDetailScreen() {
   const { id } = useLocalSearchParams();
+  const { colors } = useTheme();
   const exercise = getExerciseById(id);
   const history = useTrainingStore((state) => state.history);
   const routines = useTrainingStore((state) => state.routines);
@@ -74,7 +75,7 @@ export default function ExerciseDetailScreen() {
 
   if (!exercise) {
     return (
-      <Screen header={<ScreenHeader title="Exercise" />}>
+      <Screen title="Exercise">
         <EmptyState icon="alert-circle" title="Exercise not found" />
       </Screen>
     );
@@ -82,19 +83,18 @@ export default function ExerciseDetailScreen() {
 
   return (
     <Screen
-      header={
-        <ScreenHeader
-          title="Exercise"
-          right={
-            <IconButton
-              icon="heart"
-              active={isFavorite}
-              onPress={() => toggleFavorite(exercise.id)}
-              accessibilityLabel={isFavorite ? "Remove from favorites" : "Add to favorites"}
-            />
-          }
-        />
-      }
+      title={exercise.name}
+      headerActions={[
+        {
+          label: isFavorite ? "Remove from favorites" : "Add to favorites",
+          icon: isFavorite ? "heart-fill" : "heart",
+          tintColor: isFavorite ? colors.danger : undefined,
+          onPress: () => {
+            haptics.select();
+            toggleFavorite(exercise.id);
+          },
+        },
+      ]}
     >
       <View style={styles.titleBlock}>
         <AppText variant="eyebrow" color="accent">

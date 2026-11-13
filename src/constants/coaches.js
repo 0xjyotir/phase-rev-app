@@ -93,10 +93,78 @@ export const coaches = [
   },
 ];
 
+/** Same five filters as the website roster. Nutrition & mental show an empty state for now. */
 export const coachFilters = [
   { id: "all", label: "All" },
   { id: "strength", label: "Strength" },
   { id: "athletic", label: "Athletic" },
+  { id: "nutrition", label: "Nutrition" },
+  { id: "mental", label: "Mental" },
+];
+
+export function getCoachesByCategory(category) {
+  return category === "all" ? coaches : coaches.filter((coach) => coach.category === category);
+}
+
+export function getCoachesByPillar(pillar) {
+  return coaches.filter((coach) => coach.pillar.toLowerCase() === pillar);
+}
+
+/** /coaches page copy (web: phaserev/src/constants/coaches-page.ts). */
+export const coachPageCopy = {
+  hero: {
+    eyebrow: "Elite coaching",
+    headline: ["COACHES", "WHO MOVE", "YOU FORWARD."],
+    subheadline:
+      "Specialists across strength, athletic performance, nutrition and mental performance — built around where you are and where you're going.",
+    meta: [
+      { label: "Phase", value: "01" },
+      { label: "Focus", value: "Coaching" },
+      { label: "Specialties", value: "04" },
+      { label: "Format", value: "Live + remote" },
+    ],
+  },
+  philosophy: {
+    label: "Why Phase Rev",
+    statement:
+      "Your coach shouldn't just give you a workout. They should understand what you're trying to become.",
+    body: "Phase Rev coaches work inside a full performance ecosystem — training, sport, nutrition and mental wellness connected to your actual goals, not generic templates.",
+  },
+  specialties: [
+    { number: "01", title: "Strength", description: "Build force, structure and resilience.", filter: "strength" },
+    { number: "02", title: "Athletic performance", description: "Train for sport with intent.", filter: "athletic" },
+    { number: "03", title: "Nutrition", description: "Fuel that supports the work.", filter: "nutrition" },
+    { number: "04", title: "Mental performance", description: "Clarity under pressure.", filter: "mental" },
+  ],
+  roster: {
+    eyebrow: "The roster",
+    title: "Meet the people behind the performance.",
+    empty: "No coaches in this specialty yet — explore another filter or view all.",
+  },
+  statement: {
+    lines: ["THE RIGHT COACH", "CHANGES HOW", "YOU TRAIN."],
+    subline: "The relationship is the program. Choose with intention.",
+  },
+  cta: {
+    eyebrow: "Next phase",
+    headline: ["READY FOR", "YOUR NEXT", "PHASE?"],
+    body: "Find the specialist who fits where you're going — then book through Performance or Elite memberships.",
+    primary: "View memberships",
+    secondary: "Start assessment",
+  },
+};
+
+/** Ways to train with a coach (used by the session request sheet). */
+export const coachingFormats = [
+  { id: "live-1to1", label: "1:1 live", description: "In-person, one to one" },
+  { id: "remote-1to1", label: "1:1 remote", description: "Video call + programming" },
+  { id: "group", label: "Group", description: "Small-group sessions" },
+];
+
+export const coachingTimes = [
+  { id: "morning", label: "Morning" },
+  { id: "afternoon", label: "Afternoon" },
+  { id: "evening", label: "Evening" },
 ];
 
 export function getCoachById(coachId) {

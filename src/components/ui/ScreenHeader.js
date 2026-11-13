@@ -1,11 +1,10 @@
 /**
- * ScreenHeader — custom header for stack screens (back · title · action).
+ * ScreenHeader — an in-content header for "bare" screens that draw their own
+ * chrome (brand screens over video, focus modes). Everything else uses the
+ * native navigation bar through <Screen title=…>.
  *
- * We draw our own header instead of the native one so every screen keeps the
- * Phase Rev typography and doesn't inherit platform glass/blur defaults.
- *
- *   <ScreenHeader title="Coach profile" />                    // back button on the left
- *   <ScreenHeader title="New routine" leftIcon="x" right={<Button label="Save" size="sm" />} />
+ *   <ScreenHeader leftIcon="x" title="Box breathing" subtitle="4 · 4 · 4 · 4" />
+ *   <ScreenHeader transparent />            // glass back button over media
  */
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
@@ -16,10 +15,11 @@ import { IconButton } from "./IconButton";
 export function ScreenHeader({
   title,
   subtitle,
-  leftIcon = "arrow-left",
+  leftIcon = "chevron-left",
   onLeftPress,
   right,
   transparent = false,
+  padded = true,
 }) {
   const router = useRouter();
 
@@ -30,7 +30,7 @@ export function ScreenHeader({
   };
 
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, !padded && styles.flush]}>
       <IconButton
         icon={leftIcon}
         onPress={handleBack}
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: GUTTER,
     paddingVertical: spacing.sm,
   },
+  flush: { paddingHorizontal: 0 },
   titles: { flex: 1, alignItems: "center" },
   right: { minWidth: 44, alignItems: "flex-end" },
 });

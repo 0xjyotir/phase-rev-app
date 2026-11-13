@@ -1,16 +1,23 @@
 /**
- * Card — the main surface ("phys-panel" / "rounded-3xl" cards on the web).
+ * Card — the main content surface.
  *
- *   <Card>…</Card>
- *   <Card active>…</Card>            // cyan ring — live workout / today
- *   <Card tone="soft" padding="md">  // inner tiles (bg surfaceSoft, no border)
- *   <Card onPress={open}>…</Card>    // becomes pressable
+ *   <Card>…</Card>                    // glass on iOS 26+, solid elsewhere
+ *   <Card active>…</Card>             // cyan ring — live workout / today / recommended
+ *   <Card tone="soft" padding="md">   // inner tile (translucent fill, never glass)
+ *   <Card tone="accent">              // cyan-tinted tile
+ *   <Card onPress={open}>…</Card>     // pressable, with a subtle press-in
+ *
+ * Rule of thumb (Apple HIG): glass is for the outer card only — never nest a
+ * glass surface inside another. Use tone="soft" for anything inside a card.
  */
 import { Pressable, StyleSheet, View } from "react-native";
+import { haptics } from "@/lib/haptics";
+import { splitLayoutStyle } from "@/lib/style";
 import { useTheme } from "@/providers/ThemeProvider";
-import { radius, spacing } from "@/theme";
+import { CARD_PADDING, radius } from "@/theme";
+import { Surface } from "./Surface";
 
-const PADDING = { none: 0, sm: spacing.md, md: spacing.lg, lg: spacing.xl };
+const PADDING = { none: 0, sm: 12, md: 16, lg: CARD_PADDING };
 
 export function Card({
   children,
@@ -20,39 +27,75 @@ export function Card({
   onPress,
   style,
   accessibilityLabel,
+  accessibilityHint,
 }) {
-  const theme = useTheme();
-  const { colors } = theme;
+  const { colors } = useTheme();
+  const { outer, inner } = onPress ? splitLayoutStyle(style) : { outer: null, inner: style };
+  const pad = { padding: PADDING[padding] };
+  const cornerRadius = tone === "surface" ? radius.xl : tone === "accent" ? radius.lg : radius.md;
 
-  const surfaceStyle = [
-    styles.base,
-    { padding: PADDING[padding] },
-    tone === "surface" && [
-      { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1 },
-      theme.shadow,
-    ],
-    tone === "soft" && { backgroundColor: colors.surfaceSoft, borderRadius: radius.md },
-    tone === "accent" && { backgroundColor: colors.accentSoft },
-    tone === "inverse" && { backgroundColor: colors.surfaceInverse },
-    active && { borderColor: colors.accent, borderWidth: 1.5 },
-    style,
-  ];
+  const ring = active ? (
+    <View
+      pointerEvents="none"
+      style={[
+        StyleSheet.absoluteFill,
+        styles.ring,
+        { borderColor: colors.accent, borderRadius: cornerRadius },
+      ]}
+    />
+  ) : null;
 
-  if (!onPress) return <View style={surfaceStyle}>{children}</View>;
+  let body;
+  if (tone === "surface") {
+    body = (
+      <Surface radius={cornerRadius} style={[styles.surface, pad, inner]}>
+        {children}
+        {ring}
+      </Surface>
+    );
+  } else {
+    const fill = {
+      soft: colors.surfaceSoft,
+      accent: colors.accentSoft,
+      champagne: colors.champagneSoft,
+      inverse: colors.surfaceInverse,
+    }[tone];
+    body = (
+      <View
+        style={[
+          styles.tile,
+          pad,
+          { borderRadius: cornerRadius, backgroundColor: fill ?? colors.surfaceSoft },
+          inner,
+        ]}
+      >
+        {children}
+        {ring}
+      </View>
+    );
+  }
+
+  if (!onPress) return body;
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={() => {
+        haptics.tap();
+        onPress();
+      }}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
-      style={({ pressed }) => [surfaceStyle, pressed && styles.pressed]}
+      accessibilityHint={accessibilityHint}
+      style={({ pressed }) => [outer, pressed && styles.pressed]}
     >
-      {children}
+      {body}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  base: { borderRadius: radius.xl, overflow: "hidden" },
-  pressed: { opacity: 0.9, transform: [{ scale: 0.99 }] },
+  surface: { overflow: "hidden" },
+  tile: { borderCurve: "continuous", overflow: "hidden" },
+  ring: { borderWidth: 1.5, borderCurve: "continuous" },
+  pressed: { opacity: 0.9, transform: [{ scale: 0.985 }] },
 });

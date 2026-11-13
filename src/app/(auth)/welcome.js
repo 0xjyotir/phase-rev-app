@@ -1,6 +1,9 @@
 /**
- * Welcome — first screen for visitors. Mirrors the website homepage hero:
+ * Welcome — the first screen for visitors. Mirrors the website homepage hero:
  * looping hero video, "REWORK YOUR BODY. REBUILD YOUR PERFORMANCE. RECHARGE YOUR LIFE."
+ *
+ * Two ways in, like the website: sign in to Rev, or explore the public
+ * ecosystem (pillars, coaches, memberships, the assessment) as a guest.
  */
 import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
@@ -25,20 +28,21 @@ export default function WelcomeScreen() {
             {welcomeHero.badge}
           </AppText>
 
-          <View>
+          <View accessibilityRole="header" accessible>
             {welcomeHero.headline.map((line) => (
               <AppText
                 key={line.text}
                 variant="hero"
                 color={line.accent ? palette.cyan : palette.navText}
                 style={styles.headlineLine}
+                maxFontSizeMultiplier={1.1}
               >
                 {line.text}
               </AppText>
             ))}
           </View>
 
-          <AppText variant="body" color={palette.navMuted}>
+          <AppText variant="small" color={palette.navMuted}>
             {welcomeHero.subheadline}
           </AppText>
 
@@ -55,15 +59,24 @@ export default function WelcomeScreen() {
             ))}
           </View>
 
-          <Button
-            label={welcomeHero.primaryCta}
-            variant="brand"
-            size="lg"
-            icon="arrow-right"
-            iconPosition="right"
-            fullWidth
-            onPress={() => router.push("/login")}
-          />
+          <View style={styles.actions}>
+            <Button
+              label={welcomeHero.primaryCta}
+              variant="brand"
+              size="lg"
+              icon="arrow-right"
+              iconPosition="right"
+              fullWidth
+              onPress={() => router.push("/login")}
+            />
+            <Button
+              label={welcomeHero.secondaryCta}
+              variant="outlineLight"
+              size="lg"
+              fullWidth
+              onPress={() => router.push("/discover")}
+            />
+          </View>
 
           <View style={styles.metaRow}>
             {welcomeHero.meta.map((item) => (
@@ -90,7 +103,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.lg,
     justifyContent: "space-between",
   },
-  bottom: { gap: spacing.lg, paddingBottom: spacing.lg },
+  bottom: { gap: spacing.lg, paddingBottom: spacing.md },
   headlineLine: { fontSize: 38, lineHeight: 42 },
   pillarRow: {
     flexDirection: "row",
@@ -100,6 +113,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
   },
   pillar: { flex: 1, gap: spacing.xxs },
+  actions: { gap: spacing.sm },
   metaRow: { flexDirection: "row", justifyContent: "space-between" },
   meta: { alignItems: "center", gap: spacing.xxs, flex: 1 },
 });

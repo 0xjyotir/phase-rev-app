@@ -14,7 +14,6 @@ import {
   Card,
   EmptyState,
   Screen,
-  ScreenHeader,
   SectionHeader,
   SegmentedControl,
   Stepper,
@@ -92,20 +91,19 @@ export default function RoutineBuilderScreen() {
 
   return (
     <Screen
-      header={<ScreenHeader title="New routine" leftIcon="x" />}
+      variant="modal"
+      title="New routine"
       keyboardAware
+      headerActions={[
+        { label: "Save", prominent: true, disabled: !canSave, onPress: () => save({ runToday: false }) },
+      ]}
       footer={
         <View style={styles.footer}>
           <Button
-            label="Save"
-            variant="secondary"
-            style={styles.flex}
-            disabled={!canSave}
-            onPress={() => save({ runToday: false })}
-          />
-          <Button
             label="Save & set as today"
-            style={styles.flexWide}
+            icon="play"
+            size="lg"
+            fullWidth
             disabled={!canSave}
             onPress={() => save({ runToday: true })}
           />
@@ -127,7 +125,7 @@ export default function RoutineBuilderScreen() {
           onChangeText={setDescription}
         />
         <View style={styles.gapXs}>
-          <AppText variant="caption" color="textMuted">
+          <AppText variant="captionStrong" color="textMuted">
             Training type
           </AppText>
           <SegmentedControl options={MODES} value={mode} onChange={changeMode} size="sm" />
@@ -187,7 +185,5 @@ export default function RoutineBuilderScreen() {
 const styles = StyleSheet.create({
   gap: { gap: spacing.lg },
   gapXs: { gap: spacing.xs },
-  footer: { flexDirection: "row", gap: spacing.sm },
-  flex: { flex: 1, alignSelf: "stretch" },
-  flexWide: { flex: 1.6, alignSelf: "stretch" },
+  footer: { gap: spacing.sm },
 });

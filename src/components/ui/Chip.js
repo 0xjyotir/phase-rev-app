@@ -1,10 +1,11 @@
 /**
- * Chip — small pill label. Two uses:
+ * Chip — small capsule label. Two uses:
  *
  *   Static tag:     <Chip label="High protein" />
  *   Filter toggle:  <Chip label="Chest" selected={filter === "chest"} onPress={…} />
  *
- * tone: "accent" (cyan soft, like .phys-chip) | "neutral" | "champagne" | "success" | "danger"
+ * tone: "accent" | "neutral" | "champagne" | "success" | "danger"
+ * Filter chips use glass on iOS 26 when unselected (like the system's filter bars).
  */
 import { Pressable, StyleSheet, View } from "react-native";
 import { haptics } from "@/lib/haptics";
@@ -12,9 +13,11 @@ import { useTheme } from "@/providers/ThemeProvider";
 import { radius, spacing } from "@/theme";
 import { AppText } from "./AppText";
 import { Icon } from "./Icon";
+import { Surface } from "./Surface";
 
 export function Chip({ label, icon, tone = "neutral", selected, onPress, size = "sm", style }) {
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const { colors } = theme;
   const isToggle = typeof onPress === "function";
 
   const tones = {
@@ -25,31 +28,34 @@ export function Chip({ label, icon, tone = "neutral", selected, onPress, size = 
     danger: { bg: colors.dangerSoft, fg: colors.danger },
   };
   const active = isToggle && selected;
-  const palette = active
+  const scheme = active
     ? { bg: colors.accent, fg: colors.onAccent }
     : isToggle
-      ? { bg: colors.surface, fg: colors.text }
+      ? { bg: colors.surfaceSoft, fg: colors.text }
       : tones[tone];
 
   const content = (
     <View style={styles.row}>
-      {icon ? <Icon name={icon} size={size === "md" ? 15 : 13} color={palette.fg} /> : null}
-      <AppText variant={size === "md" ? "smallStrong" : "captionStrong"} color={palette.fg}>
+      {icon ? (
+        <Icon name={icon} size={size === "md" ? 14 : 12} color={scheme.fg} weight="semibold" />
+      ) : null}
+      <AppText
+        variant={size === "md" ? "smallStrong" : "captionStrong"}
+        color={scheme.fg}
+        numberOfLines={1}
+      >
         {label}
       </AppText>
     </View>
   );
 
-  const baseStyle = [
-    styles.base,
-    size === "md" && styles.medium,
-    { backgroundColor: palette.bg },
-    isToggle && !active && { borderColor: colors.border, borderWidth: 1 },
-    style,
-  ];
+  const box = [styles.base, size === "md" && styles.medium];
 
-  if (!isToggle) return <View style={baseStyle}>{content}</View>;
+  if (!isToggle) {
+    return <View style={[box, { backgroundColor: scheme.bg }, style]}>{content}</View>;
+  }
 
+  const useGlass = theme.glass && !active;
   return (
     <Pressable
       onPress={() => {
@@ -58,25 +64,33 @@ export function Chip({ label, icon, tone = "neutral", selected, onPress, size = 
       }}
       accessibilityRole="button"
       accessibilityState={{ selected: Boolean(selected) }}
-      style={({ pressed }) => [baseStyle, pressed && { opacity: 0.8 }]}
+      style={({ pressed }) => [styles.pressable, pressed && { opacity: 0.75 }, style]}
     >
-      {content}
+      {useGlass ? (
+        <Surface radius={radius.pill} interactive style={box}>
+          {content}
+        </Surface>
+      ) : (
+        <View style={[box, { backgroundColor: scheme.bg }]}>{content}</View>
+      )}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
+  pressable: { alignSelf: "flex-start", borderRadius: radius.pill },
   base: {
     borderRadius: radius.pill,
-    paddingHorizontal: spacing.sm + 2,
-    paddingVertical: spacing.xs,
+    borderCurve: "continuous",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     alignSelf: "flex-start",
+    justifyContent: "center",
   },
   medium: {
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
     minHeight: 36,
-    justifyContent: "center",
   },
-  row: { flexDirection: "row", alignItems: "center", gap: spacing.xs },
+  row: { flexDirection: "row", alignItems: "center", gap: 5 },
 });

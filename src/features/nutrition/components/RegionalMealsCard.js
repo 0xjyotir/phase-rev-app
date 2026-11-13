@@ -6,7 +6,7 @@
  * app reopens on the same cuisine.
  */
 import { useWindowDimensions, StyleSheet, View } from "react-native";
-import { AppText, Card, IconButton, SectionHeader } from "@/components/ui";
+import { AppText, Card, IconButton } from "@/components/ui";
 import { getRegionById, nutritionRegions } from "@/constants/nutrition-regions";
 import { haptics } from "@/lib/haptics";
 import { GUTTER, spacing } from "@/theme";
@@ -29,17 +29,12 @@ export function RegionalMealsCard({ selectedRegionId, onSelectRegion, onAddMeal 
 
   return (
     <Card style={styles.card}>
-      <SectionHeader
-        eyebrow={`${nutritionRegions.length} global regions`}
-        title="Regional meals"
-        subtitle="Ingredients you can actually find, macro-balanced"
-      />
-
       <RegionGlobe region={region} size={globeSize} />
 
       <View style={styles.banner}>
         <IconButton
           icon="chevron-left"
+          variant="soft"
           onPress={() => step(-1)}
           accessibilityLabel="Previous region"
         />
@@ -51,7 +46,12 @@ export function RegionalMealsCard({ selectedRegionId, onSelectRegion, onAddMeal 
             {region.cuisine} · {index + 1} / {nutritionRegions.length}
           </AppText>
         </View>
-        <IconButton icon="chevron-right" onPress={() => step(1)} accessibilityLabel="Next region" />
+        <IconButton
+          icon="chevron-right"
+          variant="soft"
+          onPress={() => step(1)}
+          accessibilityLabel="Next region"
+        />
       </View>
 
       <AppText variant="small" color="textMuted" align="center">

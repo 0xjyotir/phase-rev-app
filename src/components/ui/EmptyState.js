@@ -1,56 +1,50 @@
 /**
- * EmptyState — dashed placeholder card (web: `.phys-empty`).
+ * EmptyState — friendly placeholder ("Rest day", "No workouts yet").
  *
- *   <EmptyState icon="calendar" title="Rest day" message="Recovery is training too." action={<Button …/>} />
+ *   <EmptyState icon="moon" title="Rest day" message="Recovery is training too." action={<Button …/>} />
  */
 import { StyleSheet, View } from "react-native";
 import { useTheme } from "@/providers/ThemeProvider";
 import { radius, spacing } from "@/theme";
 import { AppText } from "./AppText";
 import { Icon } from "./Icon";
+import { Surface } from "./Surface";
 
-export function EmptyState({ icon = "inbox", title, message, action, style }) {
+export function EmptyState({ icon = "info", title, message, action, style }) {
   const { colors } = useTheme();
   return (
-    <View
-      style={[
-        styles.box,
-        { borderColor: colors.borderStrong, backgroundColor: colors.surface },
-        style,
-      ]}
-    >
+    <Surface style={[styles.box, style]}>
       <View style={[styles.iconWell, { backgroundColor: colors.accentSoft }]}>
-        <Icon name={icon} size={22} color="accent" />
+        <Icon name={icon} size={24} color="accent" />
       </View>
       <AppText variant="title" align="center">
         {title}
       </AppText>
       {message ? (
-        <AppText variant="small" color="textMuted" align="center">
+        <AppText variant="small" color="textMuted" align="center" style={styles.message}>
           {message}
         </AppText>
       ) : null}
       {action ? <View style={styles.action}>{action}</View> : null}
-    </View>
+    </Surface>
   );
 }
 
 const styles = StyleSheet.create({
   box: {
-    borderWidth: 1,
-    borderStyle: "dashed",
-    borderRadius: radius.xl,
-    padding: spacing.xxl,
+    paddingVertical: spacing.xxxl,
+    paddingHorizontal: spacing.xxl,
     alignItems: "center",
     gap: spacing.sm,
   },
   iconWell: {
-    width: 48,
-    height: 48,
+    width: 56,
+    height: 56,
     borderRadius: radius.pill,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: spacing.xs,
   },
-  action: { marginTop: spacing.sm, alignSelf: "stretch", alignItems: "center" },
+  message: { maxWidth: 300 },
+  action: { marginTop: spacing.md, alignSelf: "stretch", alignItems: "center" },
 });

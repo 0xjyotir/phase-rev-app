@@ -3,17 +3,23 @@
     "name": "Phase Rev",
     "slug": "phaserev",
     "scheme": "phaserev",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/brand/icon.png",
     "userInterfaceStyle": "automatic",
-    "backgroundColor": "#050505",
+    "backgroundColor": "#050607",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.phaserev.app"
+      "bundleIdentifier": "com.phaserev.app",
+      "buildNumber": "2",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "com.phaserev.app",
+      "versionCode": 2,
+      "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "backgroundColor": "#050505",
         "foregroundImage": "./assets/brand/android-icon-foreground.png",
@@ -39,7 +45,16 @@
         }
       ],
       "expo-image",
-      "expo-video"
+      "expo-video",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Phase Rev uses your photo library so you can add progress photos.",
+          "cameraPermission": "Phase Rev uses the camera so you can take progress photos.",
+          "microphonePermission": false
+        }
+      ],
+      "expo-asset"
     ]
   }
 }

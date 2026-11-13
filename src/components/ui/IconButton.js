@@ -1,37 +1,79 @@
 /**
- * IconButton — round, icon-only button (back arrows, favorites, steppers).
+ * IconButton — round, icon-only button (close, favorite, steppers, chevrons).
  *
- *   <IconButton icon="arrow-left" onPress={router.back} accessibilityLabel="Go back" />
- *   <IconButton icon="heart" variant="soft" active={isFavorite} />
+ *   <IconButton icon="x" onPress={close} accessibilityLabel="Close" />
+ *   <IconButton icon="heart" variant="ghost" active={isFavorite} />
+ *   <IconButton icon="chevron-left" variant="glass" />   // over photos/video
+ *
+ * Variants:
+ *   surface — glass circle on iOS 26+, soft fill elsewhere (default)
+ *   soft    — translucent fill, for use inside cards
+ *   ghost   — icon only
+ *   accent  — filled cyan
+ *   glass   — clear glass over media (dark fallback)
  */
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { haptics } from "@/lib/haptics";
 import { useTheme } from "@/providers/ThemeProvider";
 import { HIT_SIZE, radius } from "@/theme";
 import { Icon } from "./Icon";
+import { Surface } from "./Surface";
 
 export function IconButton({
   icon,
+  activeIcon,
   onPress,
   variant = "surface",
   active = false,
   size = HIT_SIZE,
-  iconSize = 20,
+  iconSize = 18,
   disabled = false,
   accessibilityLabel,
   style,
 }) {
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const { colors } = theme;
 
   const palette = {
-    surface: { bg: colors.surface, fg: colors.text, border: colors.border },
-    soft: { bg: colors.surfaceSoft, fg: colors.text, border: "transparent" },
-    ghost: { bg: "transparent", fg: colors.textMuted, border: "transparent" },
-    accent: { bg: colors.accent, fg: colors.onAccent, border: "transparent" },
-    glass: { bg: "rgba(5,5,5,0.45)", fg: "#FFFFFF", border: "rgba(255,255,255,0.18)" },
+    surface: { bg: colors.surfaceSoft, fg: colors.text, glass: "regular" },
+    soft: { bg: colors.surfaceSoft, fg: colors.text },
+    ghost: { bg: "transparent", fg: colors.textMuted },
+    accent: { bg: colors.accent, fg: colors.onAccent },
+    glass: { bg: "rgba(5,5,5,0.45)", fg: "#FFFFFF", glass: "clear" },
   }[variant];
 
   const fg = active ? colors.accent : palette.fg;
+  const shape = { width: size, height: size, borderRadius: size / 2 };
+  const glyph = (
+    <Icon
+      name={active && activeIcon ? activeIcon : icon}
+      size={iconSize}
+      color={active && variant === "ghost" ? colors.danger : fg}
+      weight="semibold"
+    />
+  );
+
+  const body =
+    theme.glass && palette.glass ? (
+      <Surface
+        radius={size / 2}
+        variant={palette.glass}
+        interactive={!disabled}
+        style={[shape, styles.center]}
+      >
+        {glyph}
+      </Surface>
+    ) : (
+      <View
+        style={[
+          shape,
+          styles.center,
+          { backgroundColor: active && variant !== "ghost" ? colors.accentSoft : palette.bg },
+        ]}
+      >
+        {glyph}
+      </View>
+    );
 
   return (
     <Pressable
@@ -45,30 +87,19 @@ export function IconButton({
       accessibilityLabel={accessibilityLabel ?? icon}
       accessibilityState={{ selected: active, disabled }}
       style={({ pressed }) => [
-        styles.base,
-        {
-          width: size,
-          height: size,
-          backgroundColor: active ? colors.accentSoft : palette.bg,
-          borderColor: active ? "transparent" : palette.border,
-        },
+        { borderRadius: radius.pill },
         pressed && styles.pressed,
         disabled && styles.disabled,
         style,
       ]}
     >
-      <Icon name={icon} size={iconSize} color={fg} />
+      {body}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  base: {
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  pressed: { opacity: 0.75 },
-  disabled: { opacity: 0.4 },
+  center: { alignItems: "center", justifyContent: "center" },
+  pressed: { opacity: 0.75, transform: [{ scale: 0.94 }] },
+  disabled: { opacity: 0.35 },
 });

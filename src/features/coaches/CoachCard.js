@@ -1,59 +1,44 @@
 /**
- * CoachCard — portrait card for the coach roster (web: CoachFlyerCard).
- * Photo with a dark gradient, name, role and highlight. Tap → /coaches/[id].
+ * CoachCard — portrait card for the roster and carousels (web: CoachFlyerCard).
+ * Photo, cinematic gradient, name, role and highlight. Tap → /coaches/[id].
+ *
+ *   <CoachCard coach={coach} />            // roster (4:5)
+ *   <CoachCard coach={coach} size="sm" />  // carousels (3:4, smaller type)
  */
-import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Pressable, StyleSheet, View } from "react-native";
+import { MediaCard } from "@/components/brand/MediaCard";
 import { AppText } from "@/components/ui";
-import { palette, radius, spacing } from "@/theme";
+import { palette, spacing } from "@/theme";
 
-export function CoachCard({ coach, style }) {
+export function CoachCard({ coach, size = "lg", style }) {
   const router = useRouter();
+  const small = size === "sm";
 
   return (
-    <Pressable
+    <MediaCard
+      image={coach.portrait}
+      aspectRatio={small ? 3 / 4 : 4 / 5}
+      padding={small ? spacing.lg : spacing.xl}
+      gap={spacing.xs}
       onPress={() => router.push(`/coaches/${coach.id}`)}
-      style={({ pressed }) => [styles.card, pressed && { opacity: 0.9 }, style]}
-      accessibilityRole="button"
       accessibilityLabel={`${coach.name}, ${coach.role}`}
+      style={style}
     >
-      <Image
-        source={coach.portrait}
-        style={StyleSheet.absoluteFill}
-        contentFit="cover"
-        contentPosition="top"
-        transition={200}
-      />
-      <LinearGradient
-        colors={["transparent", "rgba(5,5,5,0.55)", "rgba(5,5,5,0.95)"]}
-        locations={[0.35, 0.65, 1]}
-        style={StyleSheet.absoluteFill}
-      />
-      <View style={styles.text}>
-        <AppText variant="eyebrow" color={palette.cyan}>
-          {coach.pillar} · {coach.experience}
-        </AppText>
-        <AppText variant="display" color={palette.navText} style={styles.name} numberOfLines={2}>
-          {coach.name.toUpperCase()}
-        </AppText>
-        <AppText variant="smallMedium" color={palette.navMuted}>
-          {coach.role} · {coach.highlight}
-        </AppText>
-      </View>
-    </Pressable>
+      <AppText variant="eyebrow" color={palette.cyan} numberOfLines={1}>
+        {coach.pillar} · {coach.experience}
+      </AppText>
+      <AppText
+        variant="display"
+        color={palette.navText}
+        numberOfLines={2}
+        maxFontSizeMultiplier={1.15}
+        style={small ? { fontSize: 22, lineHeight: 25 } : { fontSize: 30, lineHeight: 33 }}
+      >
+        {coach.name.toUpperCase()}
+      </AppText>
+      <AppText variant={small ? "caption" : "smallMedium"} color={palette.navMuted} numberOfLines={2}>
+        {coach.role} · {coach.highlight}
+      </AppText>
+    </MediaCard>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    aspectRatio: 4 / 5,
-    borderRadius: radius.xl,
-    overflow: "hidden",
-    backgroundColor: palette.black,
-    justifyContent: "flex-end",
-  },
-  text: { padding: spacing.xl, gap: spacing.xs },
-  name: { fontSize: 28, lineHeight: 32 },
-});

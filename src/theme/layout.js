@@ -1,9 +1,14 @@
 /**
  * Spacing, radii and elevation — the "shape" of the UI.
  *
- * Radii come from rev-app.css:
- *   --rev-radius: 24px · --rev-radius-sm: 16px · --rev-radius-pill: 999px
+ * A 4-pt grid with generous section rhythm: cards breathe (20 pt padding),
+ * sections are separated by 28 pt, and the page gutter is 20 pt on iOS —
+ * the same margins Apple uses for inset-grouped lists on modern iPhones.
+ *
+ * Radii are "continuous" on iOS (see borderCurve in components): 26 pt cards
+ * sit concentric with the 55 pt screen corners of Face ID iPhones.
  */
+import { Platform } from "react-native";
 
 /** 4-point spacing scale. Use `spacing.md` etc. instead of magic numbers. */
 export const spacing = {
@@ -15,6 +20,7 @@ export const spacing = {
   lg: 16,
   xl: 20,
   xxl: 24,
+  section: 28,
   xxxl: 32,
   huge: 48,
 };
@@ -24,26 +30,30 @@ export const radius = {
   sm: 12,
   md: 16,
   lg: 20,
-  xl: 24,
+  xl: 26,
+  xxl: 32,
   pill: 999,
 };
 
 /** Horizontal page gutter used by <Screen>. */
-export const GUTTER = spacing.lg;
+export const GUTTER = Platform.OS === "ios" ? 20 : 16;
+
+/** Inner padding of a standard card. */
+export const CARD_PADDING = 20;
 
 /** Minimum touch target (Apple HIG / Material). */
 export const HIT_SIZE = 44;
 
 /**
- * Card elevation. Mirrors `--rev-shadow` (two soft layers) as closely as
- * React Native allows: iOS uses shadow*, Android uses elevation.
+ * Card elevation for opaque (non-glass) surfaces. Glass doesn't need a
+ * drop shadow — it reads depth from what's behind it.
  */
 export function makeShadow(isDark) {
   return {
-    shadowColor: "#101828",
-    shadowOpacity: isDark ? 0.3 : 0.06,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 6 },
+    shadowColor: "#0B1220",
+    shadowOpacity: isDark ? 0.32 : 0.07,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
     elevation: isDark ? 0 : 2,
   };
 }

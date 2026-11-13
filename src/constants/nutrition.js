@@ -197,10 +197,119 @@ export const weeklyCalorieTrend = [
 ];
 
 export const nutritionExpert = {
+  eyebrow: "Expert guidance",
+  title: "Backed by certified nutritionists",
+  subtitle:
+    "Every protocol is reviewed by practitioners who work with athletes and everyday performers — not generic diet templates.",
   name: "Dr. Rahul Nair",
   role: "Lead Nutritionist",
   credentials: ["PhD Nutrition", "ISSN-CISSN", "RD"],
   bio: "Clinical nutritionist crafting precision meal protocols for athletes and members at every level.",
   sessions: 1200,
   rating: 4.88,
+  stats: [
+    { value: "1,200+", label: "Consultations" },
+    { value: "4.88", label: "Member satisfaction" },
+    { value: "RD", label: "Certified team" },
+  ],
+  testimonial: {
+    quote:
+      "Thoughtful meal suggestions removed all the guesswork. I finally understand how to fuel properly.",
+    author: "Rohan K.",
+    role: "Performance Member",
+  },
+};
+
+/** "Built around you · Every gram counted · Expert-reviewed · Locally relevant" */
+export const nutritionValueProps = [
+  {
+    id: "personalized",
+    title: "Built around you",
+    description: "Plans adapt to your body metrics, training load, and regional eating patterns.",
+    icon: "target",
+  },
+  {
+    id: "tracked",
+    title: "Every gram counted",
+    description: "Live macro rings, hydration, and meal logging — no spreadsheets required.",
+    icon: "activity",
+  },
+  {
+    id: "expert",
+    title: "Expert-reviewed",
+    description: "Certified nutritionists refine your protocol and answer the hard questions.",
+    icon: "award",
+  },
+  {
+    id: "regional",
+    title: "Locally relevant",
+    description: "Meals shaped by where you live — ingredients you can actually find.",
+    icon: "globe",
+  },
+];
+
+/** "From assessment to daily fuel" — three steps. `action` is an in-app destination. */
+export const nutritionJourney = {
+  eyebrow: "How it works",
+  title: "From assessment to daily fuel",
+  subtitle: "Three steps. No guesswork. A nutrition system that grows with your training.",
+  steps: [
+    {
+      id: "assess",
+      step: "01",
+      title: "Understand your baseline",
+      description:
+        "Body metrics, goals, and activity level shape your calorie and macro targets from day one.",
+      cta: "Take the assessment",
+      action: "assessment",
+    },
+    {
+      id: "plan",
+      step: "02",
+      title: "Receive your meal plan",
+      description:
+        "Regional cuisine preferences, training-day adjustments, and prep-friendly recipes — all macro-balanced.",
+      cta: "Explore regions",
+      action: "fuel",
+    },
+    {
+      id: "track",
+      step: "03",
+      title: "Track and refine daily",
+      description:
+        "Log meals, monitor hydration, and sync with your coach. Your plan evolves as you progress.",
+      cta: "See the dashboard",
+      action: "fuel",
+    },
+  ],
+};
+
+/** "Nutrition included in every tier" */
+export const nutritionLeadCta = {
+  eyebrow: "Membership",
+  title: "Nutrition included in every tier",
+  subtitle:
+    "Start with guided meal plans on Essential. Unlock personalized macros and monthly consultations on Performance.",
+  highlight: {
+    tier: "Performance",
+    price: 99,
+    period: "month",
+    features: [
+      "Personalized macro targets",
+      "Regional meal libraries",
+      "Monthly nutrition consultation",
+      "Hydration & meal logging",
+    ],
+  },
+  primaryCta: "View all plans",
+};
+
+/** Regional meals section copy (web: RegionalMealsSection). */
+export const regionalMealsCopy = {
+  title: "Meals shaped by where you live",
+  subtitle:
+    "Select a region on the globe — recommendations adapt to local ingredients, flavours, and everyday eating habits.",
+  mealPlansTitle: "Curated for every part of your day",
+  mealPlansSubtitle:
+    "Breakfast through dinner — macro-balanced meals designed by nutritionists, ready in minutes.",
 };

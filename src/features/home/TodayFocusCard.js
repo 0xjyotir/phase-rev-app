@@ -30,7 +30,7 @@ export function TodayFocusCard({ lastSession, weekWorkouts }) {
   return (
     <Card active={Boolean(activeSession)} style={styles.card}>
       <View style={styles.headerRow}>
-        <Icon name="activity" size={16} color="accent" />
+        <Icon name="flame" size={15} color="accent" />
         <AppText variant="smallMedium" color="textMuted">
           {activeSession ? "In progress" : "Today's focus"}
         </AppText>
@@ -65,12 +65,7 @@ export function TodayFocusCard({ lastSession, weekWorkouts }) {
           <AppText variant="smallStrong" tabular>
             {weekWorkouts} of {WEEKLY_SESSION_TARGET} done
           </AppText>
-          <ProgressBar
-            value={weekWorkouts}
-            max={WEEKLY_SESSION_TARGET}
-            height={6}
-            track="surface"
-          />
+          <ProgressBar value={weekWorkouts} max={WEEKLY_SESSION_TARGET} height={6} />
         </Card>
       </View>
 

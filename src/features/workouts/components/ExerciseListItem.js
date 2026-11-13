@@ -4,7 +4,7 @@
  */
 import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, View } from "react-native";
-import { AppText, IconButton } from "@/components/ui";
+import { AppText, IconButton, Surface } from "@/components/ui";
 import { getExerciseMeta } from "@/features/workouts/lib/labels";
 import { useTheme } from "@/providers/ThemeProvider";
 import { useTrainingStore } from "@/stores/training-store";
@@ -21,36 +21,35 @@ export function ExerciseListItem({ exercise }) {
   return (
     <Pressable
       onPress={() => router.push(`/exercise/${exercise.id}`)}
-      style={({ pressed }) => [
-        styles.row,
-        { backgroundColor: colors.surface, borderColor: colors.border },
-        pressed && { opacity: 0.85 },
-      ]}
+      style={({ pressed }) => pressed && styles.pressed}
       accessibilityRole="button"
       accessibilityLabel={exercise.name}
     >
-      <View style={[styles.thumb, { backgroundColor: colors.surfaceSoft }]}>
-        <AppText variant="eyebrow" color="accent">
-          {exercise.muscleGroup.slice(0, 3)}
-        </AppText>
-      </View>
-      <View style={styles.text}>
-        <AppText variant="bodyStrong" numberOfLines={1}>
-          {exercise.name}
-        </AppText>
-        <AppText variant="caption" color="textMuted" numberOfLines={1}>
-          {getExerciseMeta(exercise)} · {TRACKING_LABEL[exercise.trackingMode]}
-        </AppText>
-      </View>
-      <IconButton
-        icon="heart"
-        variant="ghost"
-        active={isFavorite}
-        size={38}
-        iconSize={18}
-        onPress={() => toggleFavorite(exercise.id)}
-        accessibilityLabel={isFavorite ? "Remove from favorites" : "Add to favorites"}
-      />
+      <Surface radius={radius.lg} style={styles.row}>
+        <View style={[styles.thumb, { backgroundColor: colors.surfaceSoft }]}>
+          <AppText variant="eyebrow" color="accent">
+            {exercise.muscleGroup.slice(0, 3)}
+          </AppText>
+        </View>
+        <View style={styles.text}>
+          <AppText variant="bodyStrong" numberOfLines={1}>
+            {exercise.name}
+          </AppText>
+          <AppText variant="caption" color="textMuted" numberOfLines={1}>
+            {getExerciseMeta(exercise)} · {TRACKING_LABEL[exercise.trackingMode]}
+          </AppText>
+        </View>
+        <IconButton
+          icon="heart"
+          activeIcon="heart-fill"
+          variant="ghost"
+          active={isFavorite}
+          size={38}
+          iconSize={18}
+          onPress={() => toggleFavorite(exercise.id)}
+          accessibilityLabel={isFavorite ? "Remove from favorites" : "Add to favorites"}
+        />
+      </Surface>
     </Pressable>
   );
 }
@@ -61,13 +60,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: spacing.md,
     padding: spacing.md,
-    borderRadius: radius.lg,
-    borderWidth: 1,
   },
+  pressed: { opacity: 0.85, transform: [{ scale: 0.99 }] },
   thumb: {
     width: 48,
     height: 48,
-    borderRadius: radius.md,
+    borderRadius: radius.sm,
+    borderCurve: "continuous",
     alignItems: "center",
     justifyContent: "center",
   },

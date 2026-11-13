@@ -1,6 +1,12 @@
 /**
- * Dialog — confirm / info modal that works on iOS, Android AND web.
- * (React Native's Alert.alert does nothing on web, so we draw our own.)
+ * Dialog — confirm / info prompt.
+ *
+ *   iOS / Android → the system alert (UIAlertController / Material dialog), so
+ *                   confirmations look and behave exactly like the OS (Liquid
+ *                   Glass alerts on iOS 26).
+ *   web           → our own modal, because react-native-web has no Alert.
+ *
+ * Declarative API (unchanged for call sites):
  *
  *   <Dialog
  *     visible={confirmOpen}
@@ -11,16 +17,90 @@
  *     onCancel={() => setConfirmOpen(false)}
  *   />
  *
- * `destructive` paints the confirm button red (e.g. "Discard workout").
- * Pass `children` for custom content (e.g. a form) between message and buttons.
+ * `destructive` styles the confirm action red ("Discard workout").
+ * Passing `children` (custom content) always uses the drawn modal.
  */
-import { Modal, Pressable, StyleSheet, View } from "react-native";
+import { useEffect, useRef } from "react";
+import { Alert, Modal, Platform, Pressable, StyleSheet, View } from "react-native";
 import { useThemedStyles } from "@/providers/ThemeProvider";
 import { GUTTER, radius, spacing } from "@/theme";
 import { AppText } from "./AppText";
 import { Button } from "./Button";
+import { Surface } from "./Surface";
 
-export function Dialog({
+const ALERT_GAP_MS = 450;
+let lastAlertAt = 0;
+
+export function Dialog(props) {
+  const useSystemAlert = Platform.OS !== "web" && !props.children;
+  return useSystemAlert ? <SystemAlert {...props} /> : <DrawnDialog {...props} />;
+}
+
+function SystemAlert({
+  visible,
+  title,
+  message,
+  confirmLabel = "OK",
+  cancelLabel = "Cancel",
+  onConfirm,
+  onCancel,
+  destructive = false,
+  hideCancel = false,
+}) {
+  const shownRef = useRef(false);
+  // Keep the latest handlers without re-opening the alert on every render.
+  const handlers = useRef({ onConfirm, onCancel });
+  useEffect(() => {
+    handlers.current = { onConfirm, onCancel };
+  });
+
+  useEffect(() => {
+    if (!visible) {
+      shownRef.current = false;
+      return;
+    }
+    if (shownRef.current) return;
+    shownRef.current = true;
+
+    const buttons = [];
+    if (!hideCancel) {
+      buttons.push({ text: cancelLabel, style: "cancel", onPress: () => handlers.current.onCancel?.() });
+    }
+    buttons.push({
+      text: confirmLabel,
+      style: destructive ? "destructive" : "default",
+      onPress: () => handlers.current.onConfirm?.(),
+    });
+
+    const show = () => {
+      lastAlertAt = Date.now();
+      Alert.alert(title ?? "", message, buttons, {
+        cancelable: !hideCancel,
+        onDismiss: () => handlers.current.onCancel?.(),
+      });
+    };
+    // A dialog opened from another dialog's button waits for the first to finish
+    // its dismiss animation, so the system never drops the second alert.
+    const sinceLast = Date.now() - lastAlertAt;
+    if (sinceLast < ALERT_GAP_MS) {
+      let fired = false;
+      const timer = setTimeout(() => {
+        fired = true;
+        show();
+      }, ALERT_GAP_MS - sinceLast);
+      return () => {
+        clearTimeout(timer);
+        if (!fired) shownRef.current = false; // never shown — let the next run schedule it
+      };
+    }
+    show();
+    return undefined;
+  }, [visible, title, message, confirmLabel, cancelLabel, destructive, hideCancel]);
+
+  return null;
+}
+
+function DrawnDialog({
   visible,
   title,
   message,
@@ -36,7 +116,7 @@ export function Dialog({
 
   return (
     <Modal
-      visible={visible}
+      visible={Boolean(visible)}
       transparent
       animationType="fade"
       onRequestClose={onCancel}
@@ -44,30 +124,34 @@ export function Dialog({
     >
       <Pressable style={styles.backdrop} onPress={onCancel} accessibilityLabel="Close dialog">
         {/* Inner Pressable swallows taps so tapping the card doesn't close it. */}
-        <Pressable style={styles.card} onPress={() => {}}>
-          <AppText variant="h3">{title}</AppText>
-          {message ? (
-            <AppText variant="body" color="textMuted">
-              {message}
+        <Pressable onPress={() => {}} style={styles.wrap}>
+          <Surface style={styles.card} solid>
+            <AppText variant="h3" align="center">
+              {title}
             </AppText>
-          ) : null}
-          {children}
-          <View style={styles.actions}>
-            {!hideCancel ? (
+            {message ? (
+              <AppText variant="small" color="textMuted" align="center">
+                {message}
+              </AppText>
+            ) : null}
+            {children}
+            <View style={styles.actions}>
+              {!hideCancel ? (
+                <Button
+                  label={cancelLabel}
+                  variant="secondary"
+                  onPress={onCancel}
+                  style={styles.action}
+                />
+              ) : null}
               <Button
-                label={cancelLabel}
-                variant="secondary"
-                onPress={onCancel}
+                label={confirmLabel}
+                variant={destructive ? "danger" : "primary"}
+                onPress={onConfirm}
                 style={styles.action}
               />
-            ) : null}
-            <Button
-              label={confirmLabel}
-              variant={destructive ? "danger" : "primary"}
-              onPress={onConfirm}
-              style={styles.action}
-            />
-          </View>
+            </View>
+          </Surface>
         </Pressable>
       </Pressable>
     </Modal>
@@ -82,16 +166,12 @@ const createStyles = (theme) =>
       justifyContent: "center",
       padding: GUTTER,
     },
+    wrap: { width: "100%", maxWidth: 400, alignSelf: "center" },
     card: {
-      backgroundColor: theme.colors.surface,
-      borderRadius: radius.xl,
-      borderWidth: 1,
-      borderColor: theme.colors.border,
       padding: spacing.xxl,
       gap: spacing.md,
-      width: "100%",
-      maxWidth: 440,
-      alignSelf: "center",
+      borderRadius: radius.xl,
+      backgroundColor: theme.colors.backgroundElevated,
     },
     actions: { flexDirection: "row", gap: spacing.sm, marginTop: spacing.sm },
     action: { flex: 1, alignSelf: "stretch" },
