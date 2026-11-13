@@ -86,7 +86,8 @@ export const ecosystemDimensions = {
   eyebrow: "The ecosystem",
   headline: "FOUR DIMENSIONS.\nONE HUMAN.",
   centerLabel: "ATHLETE",
-  intro: "Tap each dimension to see how Phase Rev connects training, fuel, sport and mind around one person.",
+  intro:
+    "Tap each dimension to see how Phase Rev connects training, fuel, sport and mind around one person.",
   pillars: [
     {
       id: "physical",

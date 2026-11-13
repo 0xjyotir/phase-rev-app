@@ -94,13 +94,28 @@ export const guidedScripts = [
     steps: [
       { seconds: 30, text: "Sit tall. Let your hands rest. Close your eyes or soften your gaze." },
       { seconds: 60, text: "Notice the breath moving in and out. Don't change it — just watch." },
-      { seconds: 90, text: "Count each exhale, one to ten. When you reach ten, start again at one." },
+      {
+        seconds: 90,
+        text: "Count each exhale, one to ten. When you reach ten, start again at one.",
+      },
       { seconds: 120, text: "If you lose count, that's the practice. Notice, and return to one." },
-      { seconds: 120, text: "Let the counting fall away. Rest attention on the feeling of breathing." },
-      { seconds: 150, text: "When a thought arrives, label it gently — “thinking” — and come back." },
-      { seconds: 150, text: "Widen your attention to the whole body breathing, from feet to crown." },
+      {
+        seconds: 120,
+        text: "Let the counting fall away. Rest attention on the feeling of breathing.",
+      },
+      {
+        seconds: 150,
+        text: "When a thought arrives, label it gently — “thinking” — and come back.",
+      },
+      {
+        seconds: 150,
+        text: "Widen your attention to the whole body breathing, from feet to crown.",
+      },
       { seconds: 120, text: "Pick one intention for your next hour. Hold it for a few breaths." },
-      { seconds: 60, text: "Take a deeper breath in. Let it go slowly. Open your eyes when ready." },
+      {
+        seconds: 60,
+        text: "Take a deeper breath in. Let it go slowly. Open your eyes when ready.",
+      },
     ],
   },
   {
@@ -110,13 +125,28 @@ export const guidedScripts = [
     level: "All levels",
     summary: "Composure under pressure: arousal control, cue words, first action.",
     steps: [
-      { seconds: 30, text: "Stand or sit tall. Feel your feet on the ground. You are ready to prepare." },
-      { seconds: 60, text: "Breathe in for four, out for six. A longer exhale brings your heart rate down." },
+      {
+        seconds: 30,
+        text: "Stand or sit tall. Feel your feet on the ground. You are ready to prepare.",
+      },
+      {
+        seconds: 60,
+        text: "Breathe in for four, out for six. A longer exhale brings your heart rate down.",
+      },
       { seconds: 45, text: "Name what you can control today: effort, attitude, your next action." },
       { seconds: 45, text: "Let go of what you can't: the score, the crowd, the referee." },
-      { seconds: 45, text: "Choose a cue word for today — “sharp”, “calm”, “explode”. Say it in your head." },
-      { seconds: 45, text: "Picture your first touch, first ball, first serve. See it go exactly right." },
-      { seconds: 30, text: "If pressure rises mid-game: one long exhale, your cue word, the next action." },
+      {
+        seconds: 45,
+        text: "Choose a cue word for today — “sharp”, “calm”, “explode”. Say it in your head.",
+      },
+      {
+        seconds: 45,
+        text: "Picture your first touch, first ball, first serve. See it go exactly right.",
+      },
+      {
+        seconds: 30,
+        text: "If pressure rises mid-game: one long exhale, your cue word, the next action.",
+      },
     ],
   },
   {
@@ -127,12 +157,27 @@ export const guidedScripts = [
     summary: "Rehearse your performance in vivid, first-person detail.",
     steps: [
       { seconds: 45, text: "Close your eyes. Breathe slowly until your shoulders drop." },
-      { seconds: 60, text: "Picture the venue. The light, the surface under your feet, the sounds around you." },
-      { seconds: 60, text: "See it through your own eyes, not as a spectator. You are inside the moment." },
+      {
+        seconds: 60,
+        text: "Picture the venue. The light, the surface under your feet, the sounds around you.",
+      },
+      {
+        seconds: 60,
+        text: "See it through your own eyes, not as a spectator. You are inside the moment.",
+      },
       { seconds: 75, text: "Run your warm-up. Feel each movement — loose, quick, in control." },
-      { seconds: 90, text: "Play your best moments: a clean strike, a perfect line, a decisive sprint." },
-      { seconds: 60, text: "Now a setback — a miss, a mistake. Watch yourself reset: exhale, cue word, next play." },
-      { seconds: 60, text: "Finish strong. Feel the last minutes with full energy and calm focus." },
+      {
+        seconds: 90,
+        text: "Play your best moments: a clean strike, a perfect line, a decisive sprint.",
+      },
+      {
+        seconds: 60,
+        text: "Now a setback — a miss, a mistake. Watch yourself reset: exhale, cue word, next play.",
+      },
+      {
+        seconds: 60,
+        text: "Finish strong. Feel the last minutes with full energy and calm focus.",
+      },
       { seconds: 30, text: "Bring the feeling with you. Open your eyes when you're ready." },
     ],
   },
@@ -145,7 +190,10 @@ export const guidedScripts = [
     steps: [
       { seconds: 45, text: "Lie down or sit back. Let the day's noise fade with each exhale." },
       { seconds: 60, text: "Bring attention to your feet and calves. Let them feel heavy." },
-      { seconds: 60, text: "Move up to your hips and lower back. Release what they've been holding." },
+      {
+        seconds: 60,
+        text: "Move up to your hips and lower back. Release what they've been holding.",
+      },
       { seconds: 60, text: "Soften your stomach and chest. Let the breath move freely." },
       { seconds: 60, text: "Relax your hands, arms and shoulders. Unclench your jaw." },
       { seconds: 60, text: "Notice one thing that went well today. Let it be enough." },
@@ -215,7 +263,10 @@ export function getSessionHref(session) {
     case "meditation":
       return `/session/${session.scriptId}`;
     case "breathing":
-      return { pathname: "/breathing", params: { pattern: session.patternId, title: session.title } };
+      return {
+        pathname: "/breathing",
+        params: { pattern: session.patternId, title: session.title },
+      };
     case "journaling":
       return { pathname: "/journal/new", params: { set: session.promptSetId } };
     case "cbt":
@@ -336,7 +387,8 @@ export const wellbeingCheck = {
       min: 40,
       label: "Running low",
       tone: "champagne",
-      message: "Your reserves are dipping. Prioritise sleep, recovery days and a few minutes of calm.",
+      message:
+        "Your reserves are dipping. Prioritise sleep, recovery days and a few minutes of calm.",
     },
     {
       min: 0,

@@ -77,7 +77,9 @@ export default function ProfileScreen() {
           <AppText variant="small" color="textMuted">
             {user?.email}
           </AppText>
-          {tier ? <Chip label={`${tier.name} member`} tone="accent" style={styles.tierChip} /> : null}
+          {tier ? (
+            <Chip label={`${tier.name} member`} tone="accent" style={styles.tierChip} />
+          ) : null}
         </View>
       </Card>
 
@@ -89,7 +91,11 @@ export default function ProfileScreen() {
           iconTint="#C4A265"
           title="Membership"
           detail={tier ? `${tier.name}` : "Choose"}
-          subtitle={tier ? `$${tier.price}/${tier.period} · all four pillars` : "Every tier includes all four pillars"}
+          subtitle={
+            tier
+              ? `$${tier.price}/${tier.period} · all four pillars`
+              : "Every tier includes all four pillars"
+          }
           onPress={() => router.push("/membership")}
         />
         <ListRow
@@ -106,7 +112,10 @@ export default function ProfileScreen() {
             detail={String(requests.length)}
             subtitle={requests
               .slice(0, 2)
-              .map((request) => `${getCoachById(request.coachId)?.name ?? "Nutrition team"} · ${formatRelativeDay(request.createdAt)}`)
+              .map(
+                (request) =>
+                  `${getCoachById(request.coachId)?.name ?? "Nutrition team"} · ${formatRelativeDay(request.createdAt)}`,
+              )
               .join("  ·  ")}
           />
         ) : null}
@@ -117,7 +126,9 @@ export default function ProfileScreen() {
           icon="list"
           title="Routines"
           subtitle="Build and reuse training plans"
-          onPress={() => router.navigate({ pathname: "/train", params: { view: "library", sub: "routines" } })}
+          onPress={() =>
+            router.navigate({ pathname: "/train", params: { view: "library", sub: "routines" } })
+          }
         />
         <ListRow
           icon="book-open"
@@ -137,7 +148,11 @@ export default function ProfileScreen() {
 
       <ListSection header="Appearance" footer="Dark mode matches the Phase Rev website.">
         <View style={styles.segmentRow}>
-          <SegmentedControl options={APPEARANCE_OPTIONS} value={appearance} onChange={setAppearance} />
+          <SegmentedControl
+            options={APPEARANCE_OPTIONS}
+            value={appearance}
+            onChange={setAppearance}
+          />
         </View>
       </ListSection>
 
@@ -175,12 +190,7 @@ export default function ProfileScreen() {
           title="Sync"
           detail={isApiConfigured() ? "Connected" : "Demo mode"}
         />
-        <ListRow
-          icon="info"
-          iconTint="#8E8E93"
-          title="About"
-          subtitle={siteMeta.description}
-        />
+        <ListRow icon="info" iconTint="#8E8E93" title="About" subtitle={siteMeta.description} />
         <ListRow
           icon="refresh-ccw"
           iconTint="#FF9F0A"

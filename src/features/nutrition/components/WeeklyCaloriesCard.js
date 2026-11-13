@@ -24,7 +24,12 @@ export function WeeklyCaloriesCard({ nutrition }) {
   return (
     <Card style={styles.card}>
       <StatRow>
-        <StatTile label="Daily average" value={average ? formatNumber(average) : "—"} unit="kcal" tone="soft" />
+        <StatTile
+          label="Daily average"
+          value={average ? formatNumber(average) : "—"}
+          unit="kcal"
+          tone="soft"
+        />
         <StatTile label="Target" value={formatNumber(target)} unit="kcal" tone="soft" />
         <StatTile
           label="Score"

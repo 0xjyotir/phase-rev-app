@@ -24,7 +24,12 @@ const ANGLES = [
   { id: "Back", label: "Back" },
 ];
 
-const PICKER_OPTIONS = { mediaTypes: ["images"], allowsEditing: true, aspect: [3, 4], quality: 0.8 };
+const PICKER_OPTIONS = {
+  mediaTypes: ["images"],
+  allowsEditing: true,
+  aspect: [3, 4],
+  quality: 0.8,
+};
 
 export function ProgressPhotosCard() {
   const { colors, isDark } = useTheme();
@@ -43,7 +48,10 @@ export function ProgressPhotosCard() {
   const fromCamera = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert("Camera access needed", "Allow camera access in Settings to take progress photos.");
+      Alert.alert(
+        "Camera access needed",
+        "Allow camera access in Settings to take progress photos.",
+      );
       return;
     }
     save(await ImagePicker.launchCameraAsync(PICKER_OPTIONS));
@@ -94,7 +102,11 @@ export function ProgressPhotosCard() {
     <Card style={styles.card}>
       <SectionHeader title="Progress photos" subtitle="Same light, same angle, once a month" />
       <SegmentedControl options={ANGLES} value={angle} onChange={setAngle} size="sm" />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.row}
+      >
         <Pressable
           onPress={add}
           accessibilityRole="button"
@@ -120,7 +132,12 @@ export function ProgressPhotosCard() {
             style={styles.slotWrapper}
           >
             {photo.uri ? (
-              <Image source={{ uri: photo.uri }} style={styles.slot} contentFit="cover" transition={200} />
+              <Image
+                source={{ uri: photo.uri }}
+                style={styles.slot}
+                contentFit="cover"
+                transition={200}
+              />
             ) : (
               <View
                 style={[
@@ -147,7 +164,13 @@ export function ProgressPhotosCard() {
           Long-press a photo to delete it. Photos stay on this device.
         </AppText>
       ) : (
-        <Button label="Take your first photo" icon="camera" variant="soft" fullWidth onPress={add} />
+        <Button
+          label="Take your first photo"
+          icon="camera"
+          variant="soft"
+          fullWidth
+          onPress={add}
+        />
       )}
     </Card>
   );

@@ -78,7 +78,8 @@ export const membershipCopy = {
   subheadline:
     "Clear membership tiers for every stage of your journey — from your first assessment to long-term performance.",
   tiersTitle: "Choose your membership",
-  tiersSubtitle: "All tiers include every pillar. Upgrade for deeper coaching and personal guidance.",
+  tiersSubtitle:
+    "All tiers include every pillar. Upgrade for deeper coaching and personal guidance.",
   compareTitle: "Compare features",
   highlightLabel: "Most selected",
   trial: {

@@ -104,9 +104,24 @@ export const textVariants = {
   title: { ...face.semibold, fontSize: 17, lineHeight: 22, letterSpacing: IOS ? -0.43 : 0 },
 
   // Body
-  body: { ...face.regular, fontSize: IOS ? 17 : 16, lineHeight: IOS ? 22 : 23, letterSpacing: IOS ? -0.43 : 0 },
-  bodyMedium: { ...face.medium, fontSize: IOS ? 17 : 16, lineHeight: IOS ? 22 : 23, letterSpacing: IOS ? -0.43 : 0 },
-  bodyStrong: { ...face.semibold, fontSize: IOS ? 17 : 16, lineHeight: IOS ? 22 : 23, letterSpacing: IOS ? -0.43 : 0 },
+  body: {
+    ...face.regular,
+    fontSize: IOS ? 17 : 16,
+    lineHeight: IOS ? 22 : 23,
+    letterSpacing: IOS ? -0.43 : 0,
+  },
+  bodyMedium: {
+    ...face.medium,
+    fontSize: IOS ? 17 : 16,
+    lineHeight: IOS ? 22 : 23,
+    letterSpacing: IOS ? -0.43 : 0,
+  },
+  bodyStrong: {
+    ...face.semibold,
+    fontSize: IOS ? 17 : 16,
+    lineHeight: IOS ? 22 : 23,
+    letterSpacing: IOS ? -0.43 : 0,
+  },
   small: { ...face.regular, fontSize: 15, lineHeight: 20, letterSpacing: IOS ? -0.23 : 0 },
   smallMedium: { ...face.medium, fontSize: 15, lineHeight: 20, letterSpacing: IOS ? -0.23 : 0 },
   smallStrong: { ...face.semibold, fontSize: 15, lineHeight: 20, letterSpacing: IOS ? -0.23 : 0 },

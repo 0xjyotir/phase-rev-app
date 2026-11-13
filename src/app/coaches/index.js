@@ -9,7 +9,12 @@ import { useRef, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { BrandHeadline } from "@/components/brand/BrandHeadline";
 import { AppText, Button, Card, Chip, EmptyState, Icon, Screen } from "@/components/ui";
-import { coachFilters, coachPageCopy, getCoachesByCategory, testimonials } from "@/constants/coaches";
+import {
+  coachFilters,
+  coachPageCopy,
+  getCoachesByCategory,
+  testimonials,
+} from "@/constants/coaches";
 import { CoachCard } from "@/features/coaches/CoachCard";
 import { useMemberLink } from "@/hooks/useMemberLink";
 import { haptics } from "@/lib/haptics";
@@ -51,7 +56,17 @@ export default function CoachesScreen() {
           {hero.meta.map((item, index) => (
             <View
               key={item.label}
-              style={[styles.meta, index > 0 && { borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: colors.separator }]}
+              style={[
+                styles.meta,
+                index % 2 === 1 && {
+                  borderLeftWidth: StyleSheet.hairlineWidth,
+                  borderLeftColor: colors.separator,
+                },
+                index > 1 && {
+                  borderTopWidth: StyleSheet.hairlineWidth,
+                  borderTopColor: colors.separator,
+                },
+              ]}
             >
               <AppText variant="micro" color="textMuted">
                 {item.label.toUpperCase()}
@@ -132,7 +147,9 @@ export default function CoachesScreen() {
           icon="users"
           title="Coming soon"
           message={roster.empty}
-          action={<Button label="View all coaches" variant="secondary" onPress={() => setFilter("all")} />}
+          action={
+            <Button label="View all coaches" variant="secondary" onPress={() => setFilter("all")} />
+          }
         />
       )}
 
@@ -175,8 +192,8 @@ const styles = StyleSheet.create({
   gapSm: { gap: spacing.sm },
   gapMd: { gap: spacing.md },
   hero: { gap: spacing.md },
-  metaRow: { flexDirection: "row" },
-  meta: { flex: 1, gap: 3, paddingHorizontal: spacing.sm },
+  metaRow: { flexDirection: "row", flexWrap: "wrap" },
+  meta: { width: "50%", gap: 3, paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
   specialties: { flexDirection: "row", flexWrap: "wrap", gap: spacing.md },
   specialty: { width: "47.8%", flexGrow: 1 },
   specialtyCard: { gap: spacing.xs, flexGrow: 1 },

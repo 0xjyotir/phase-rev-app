@@ -19,6 +19,7 @@
 import { BottomTabBar, Tabs } from "expo-router/js-tabs";
 import { NativeTabs } from "expo-router/native-tabs";
 import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "@/components/ui";
 import { ActiveWorkoutPill } from "@/features/workouts/components/ActiveWorkoutPill";
 import { useActiveSession } from "@/features/workouts/hooks/useTraining";
@@ -35,7 +36,13 @@ const TABS = [
     md: "fitness_center",
     icon: "dumbbell",
   },
-  { name: "(fuel)", title: "Fuel", sf: ["fork.knife", "fork.knife"], md: "restaurant", icon: "fork" },
+  {
+    name: "(fuel)",
+    title: "Fuel",
+    sf: ["fork.knife", "fork.knife"],
+    md: "restaurant",
+    icon: "fork",
+  },
   {
     name: "(mind)",
     title: "Mind",
@@ -86,6 +93,10 @@ function WorkoutAccessory() {
 /** Android, iOS 18 and earlier, web: JavaScript tabs + floating resume pill. */
 function ClassicTabs() {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
+  // With no home indicator / gesture bar (3-button Android, web) the default
+  // 49pt bar crowds the labels against the screen edge — give it room.
+  const bottomPad = insets.bottom > 0 ? insets.bottom : 8;
 
   return (
     <Tabs
@@ -102,6 +113,9 @@ function ClassicTabs() {
         tabBarStyle: {
           backgroundColor: colors.tabBar,
           borderTopColor: colors.separator,
+          height: 56 + bottomPad,
+          paddingTop: 6,
+          paddingBottom: bottomPad,
         },
         tabBarLabelStyle: { fontFamily: fonts.semibold, fontSize: 11, fontWeight: "600" },
         sceneStyle: { backgroundColor: colors.background },

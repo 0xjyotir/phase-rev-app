@@ -86,7 +86,11 @@ export default function ReframeScreen() {
       }
     >
       <StepIndicator
-        steps={reframeSteps.map((item) => ({ id: item.id, title: item.title, description: item.hint }))}
+        steps={reframeSteps.map((item) => ({
+          id: item.id,
+          title: item.title,
+          description: item.hint,
+        }))}
         currentIndex={stepIndex}
       />
 

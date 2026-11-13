@@ -71,7 +71,10 @@ export function ActiveWorkoutPill({ variant = "floating", placement = "regular" 
   return (
     <Pressable
       onPress={open}
-      style={({ pressed }) => [styles.pill, pressed && { opacity: 0.9, transform: [{ scale: 0.98 }] }]}
+      style={({ pressed }) => [
+        styles.pill,
+        pressed && { opacity: 0.9, transform: [{ scale: 0.98 }] },
+      ]}
       accessibilityRole="button"
       accessibilityLabel="Resume workout"
     >

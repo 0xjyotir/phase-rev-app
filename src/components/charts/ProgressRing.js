@@ -18,6 +18,7 @@ export function ProgressRing({
   track = "surfaceStrong",
   value,
   label,
+  showValue = true,
   children,
 }) {
   const { colors } = useTheme();
@@ -52,13 +53,15 @@ export function ProgressRing({
             transform={`rotate(-90 ${size / 2} ${size / 2})`}
           />
         </Svg>
-        <View style={[StyleSheet.absoluteFill, styles.center]}>
-          {children ?? (
-            <AppText variant="smallStrong" tabular>
-              {value ?? `${Math.round(clamped)}%`}
-            </AppText>
-          )}
-        </View>
+        {children || showValue ? (
+          <View style={[StyleSheet.absoluteFill, styles.center]} pointerEvents="box-none">
+            {children ?? (
+              <AppText variant="smallStrong" tabular>
+                {value ?? `${Math.round(clamped)}%`}
+              </AppText>
+            )}
+          </View>
+        ) : null}
       </View>
       {label ? (
         <AppText variant="caption" color="textMuted">

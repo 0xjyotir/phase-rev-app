@@ -131,10 +131,30 @@ export const coachPageCopy = {
     body: "Phase Rev coaches work inside a full performance ecosystem — training, sport, nutrition and mental wellness connected to your actual goals, not generic templates.",
   },
   specialties: [
-    { number: "01", title: "Strength", description: "Build force, structure and resilience.", filter: "strength" },
-    { number: "02", title: "Athletic performance", description: "Train for sport with intent.", filter: "athletic" },
-    { number: "03", title: "Nutrition", description: "Fuel that supports the work.", filter: "nutrition" },
-    { number: "04", title: "Mental performance", description: "Clarity under pressure.", filter: "mental" },
+    {
+      number: "01",
+      title: "Strength",
+      description: "Build force, structure and resilience.",
+      filter: "strength",
+    },
+    {
+      number: "02",
+      title: "Athletic performance",
+      description: "Train for sport with intent.",
+      filter: "athletic",
+    },
+    {
+      number: "03",
+      title: "Nutrition",
+      description: "Fuel that supports the work.",
+      filter: "nutrition",
+    },
+    {
+      number: "04",
+      title: "Mental performance",
+      description: "Clarity under pressure.",
+      filter: "mental",
+    },
   ],
   roster: {
     eyebrow: "The roster",

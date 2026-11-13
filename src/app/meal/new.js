@@ -70,25 +70,60 @@ export default function LogMealScreen() {
           contentContainerStyle={styles.chips}
         >
           {mealPlans.map((meal) => (
-            <Chip key={meal.id} label={meal.title} size="md" selected={title === meal.title} onPress={() => fill(meal)} />
+            <Chip
+              key={meal.id}
+              label={meal.title}
+              size="md"
+              selected={title === meal.title}
+              onPress={() => fill(meal)}
+            />
           ))}
         </ScrollView>
       </View>
 
       <Card style={styles.gapLg}>
-        <TextField label="Meal" placeholder="e.g. Paneer wrap" value={title} onChangeText={setTitle} />
+        <TextField
+          label="Meal"
+          placeholder="e.g. Paneer wrap"
+          value={title}
+          onChangeText={setTitle}
+        />
         <TextField
           label="Calories"
-          placeholder={macroCalories ? `${macroCalories} (from macros)` : "kcal"}
+          placeholder={macroCalories ? `${macroCalories} from macros` : "0"}
           suffix="kcal"
           keyboardType="number-pad"
           value={calories}
           onChangeText={setCalories}
         />
         <View style={styles.row}>
-          <TextField style={styles.flex} label="Protein" suffix="g" keyboardType="decimal-pad" value={protein} onChangeText={setProtein} />
-          <TextField style={styles.flex} label="Carbs" suffix="g" keyboardType="decimal-pad" value={carbs} onChangeText={setCarbs} />
-          <TextField style={styles.flex} label="Fat" suffix="g" keyboardType="decimal-pad" value={fat} onChangeText={setFat} />
+          <TextField
+            style={styles.flex}
+            label="Protein"
+            placeholder="0"
+            suffix="g"
+            keyboardType="decimal-pad"
+            value={protein}
+            onChangeText={setProtein}
+          />
+          <TextField
+            style={styles.flex}
+            label="Carbs"
+            placeholder="0"
+            suffix="g"
+            keyboardType="decimal-pad"
+            value={carbs}
+            onChangeText={setCarbs}
+          />
+          <TextField
+            style={styles.flex}
+            label="Fat"
+            placeholder="0"
+            suffix="g"
+            keyboardType="decimal-pad"
+            value={fat}
+            onChangeText={setFat}
+          />
         </View>
       </Card>
 

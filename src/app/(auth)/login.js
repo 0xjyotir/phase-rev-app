@@ -22,7 +22,9 @@ export default function LoginScreen() {
           <Wordmark size="lg" />
           <AppText variant="h1">Welcome back</AppText>
           <AppText variant="body" color="textMuted">
-            {"Sign in to plan today’s session, log your sets and see your progress across every pillar."}
+            {
+              "Sign in to plan today’s session, log your sets and see your progress across every pillar."
+            }
           </AppText>
         </View>
 

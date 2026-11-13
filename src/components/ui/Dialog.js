@@ -64,7 +64,11 @@ function SystemAlert({
 
     const buttons = [];
     if (!hideCancel) {
-      buttons.push({ text: cancelLabel, style: "cancel", onPress: () => handlers.current.onCancel?.() });
+      buttons.push({
+        text: cancelLabel,
+        style: "cancel",
+        onPress: () => handlers.current.onCancel?.(),
+      });
     }
     buttons.push({
       text: confirmLabel,

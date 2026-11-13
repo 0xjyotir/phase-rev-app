@@ -9,7 +9,7 @@ import { profileHeaderAction } from "@/features/home/ProfileButton";
 
 export default function ExploreScreen() {
   return (
-    <Screen variant="tab" title="Explore" headerActions={[profileHeaderAction]}>
+    <Screen variant="tab" title="Explore" lazy headerActions={[profileHeaderAction]}>
       <ExploreFeed />
     </Screen>
   );

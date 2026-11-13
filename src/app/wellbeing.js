@@ -77,7 +77,8 @@ export default function WellbeingScreen() {
       {wellbeingCheck.statements.map((statement, index) => (
         <Card key={statement.id} style={styles.gapMd}>
           <AppText variant="eyebrow" color="textTertiary">
-            {String(index + 1).padStart(2, "0")} / {String(wellbeingCheck.statements.length).padStart(2, "0")}
+            {String(index + 1).padStart(2, "0")} /{" "}
+            {String(wellbeingCheck.statements.length).padStart(2, "0")}
           </AppText>
           <AppText variant="bodyStrong">{statement.text}</AppText>
           <View style={styles.scale} accessibilityRole="radiogroup">
@@ -119,14 +120,18 @@ export default function WellbeingScreen() {
       ))}
 
       <Button
-        label={result ? `See my score` : `Answer all ${wellbeingCheck.statements.length} to continue`}
+        label={
+          result ? `See my score` : `Answer all ${wellbeingCheck.statements.length} to continue`
+        }
         size="lg"
         fullWidth
         disabled={!result}
         onPress={save}
       />
       <AppText variant="caption" color="textMuted" align="center">
-        {"A reflection tool, not a diagnosis. If you’re struggling, talk to someone you trust or a health professional."}
+        {
+          "A reflection tool, not a diagnosis. If you’re struggling, talk to someone you trust or a health professional."
+        }
       </AppText>
     </Screen>
   );

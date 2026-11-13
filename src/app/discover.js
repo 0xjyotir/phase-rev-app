@@ -19,7 +19,9 @@ export default function DiscoverScreen() {
       title="Phase Rev"
       largeTitle
       headerActions={
-        isSignedIn ? undefined : [{ label: "Sign in", prominent: true, onPress: () => router.push("/login") }]
+        isSignedIn
+          ? undefined
+          : [{ label: "Sign in", prominent: true, onPress: () => router.push("/login") }]
       }
     >
       <ExploreFeed isGuest={!isSignedIn} />

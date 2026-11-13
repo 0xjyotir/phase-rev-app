@@ -43,5 +43,5 @@ export function HeroVideo({ source, children, style }) {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: palette.black },
+  root: { flex: 1, overflow: "hidden", backgroundColor: palette.black },
 });

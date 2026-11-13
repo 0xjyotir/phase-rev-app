@@ -39,7 +39,11 @@ export default function CoachRequestScreen() {
   const [note, setNote] = useState("");
 
   const who = coach ? coach.name : isNutrition ? nutritionExpert.name : "the Phase Rev team";
-  const firstName = coach ? coach.name.split(" ")[0] : isNutrition ? "the nutrition team" : "our team";
+  const firstName = coach
+    ? coach.name.split(" ")[0]
+    : isNutrition
+      ? "the nutrition team"
+      : "our team";
 
   const send = () => {
     actions.requestCoach({
@@ -69,7 +73,11 @@ export default function CoachRequestScreen() {
         <View style={styles.flex}>
           <AppText variant="title">{who}</AppText>
           <AppText variant="caption" color="textMuted">
-            {coach ? `${coach.role} · ${coach.availability}` : isNutrition ? `${nutritionExpert.role} · ${nutritionExpert.credentials.join(" · ")}` : "We'll match you with the right specialist"}
+            {coach
+              ? `${coach.role} · ${coach.availability}`
+              : isNutrition
+                ? `${nutritionExpert.role} · ${nutritionExpert.credentials.join(" · ")}`
+                : "We'll match you with the right specialist"}
           </AppText>
         </View>
       </Card>
@@ -78,11 +86,7 @@ export default function CoachRequestScreen() {
         <AppText variant="captionStrong" color="textMuted" style={styles.label}>
           FORMAT
         </AppText>
-        <OptionList
-          options={coachingFormats}
-          value={format}
-          onChange={setFormat}
-        />
+        <OptionList options={coachingFormats} value={format} onChange={setFormat} />
       </View>
 
       <ListSection header="Preferred time">
@@ -90,9 +94,17 @@ export default function CoachRequestScreen() {
           <ListRow
             key={item.id}
             icon={item.id === "morning" ? "sun" : item.id === "evening" ? "moon" : "clock"}
-            iconTint={item.id === "evening" ? "#5E5CE6" : item.id === "morning" ? "#FF9F0A" : undefined}
+            iconTint={
+              item.id === "evening" ? "#5E5CE6" : item.id === "morning" ? "#FF9F0A" : undefined
+            }
             title={item.label}
-            right={time === item.id ? <Icon name="check" size={16} color="accent" weight="bold" /> : <View />}
+            right={
+              time === item.id ? (
+                <Icon name="check" size={16} color="accent" weight="bold" />
+              ) : (
+                <View />
+              )
+            }
             onPress={() => setTime(item.id)}
           />
         ))}

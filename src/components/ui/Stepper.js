@@ -25,7 +25,10 @@ export function Stepper({ value, onChange, min = 0, max = 99, step = 1, format =
       hitSlop={6}
       accessibilityRole="button"
       accessibilityLabel={a11y}
-      style={({ pressed }) => [styles.button, (pressed || disabled) && { opacity: disabled ? 0.3 : 0.6 }]}
+      style={({ pressed }) => [
+        styles.button,
+        (pressed || disabled) && { opacity: disabled ? 0.3 : 0.6 },
+      ]}
     >
       <Icon name={icon} size={14} color="text" weight="bold" />
     </Pressable>

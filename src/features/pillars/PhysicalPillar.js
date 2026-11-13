@@ -5,7 +5,16 @@
  */
 import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import { AppText, Button, Card, Carousel, Chip, Divider, Icon, SegmentedControl } from "@/components/ui";
+import {
+  AppText,
+  Button,
+  Card,
+  Carousel,
+  Chip,
+  Divider,
+  Icon,
+  SegmentedControl,
+} from "@/components/ui";
 import { getCoachesByPillar } from "@/constants/coaches";
 import { exercises } from "@/constants/exercises";
 import {
@@ -149,7 +158,10 @@ export function PhysicalPillar() {
         </View>
         <View style={styles.gapSm}>
           {physicalTrackCopy.sessionPreview.rows.map((row) => (
-            <View key={row.name} style={[styles.previewRow, { backgroundColor: colors.surfaceSoft }]}>
+            <View
+              key={row.name}
+              style={[styles.previewRow, { backgroundColor: colors.surfaceSoft }]}
+            >
               <AppText variant="smallMedium" style={styles.flex} numberOfLines={1}>
                 {row.name}
               </AppText>
@@ -173,7 +185,11 @@ export function PhysicalPillar() {
         <Button label="Open workouts" icon="play" fullWidth onPress={() => go("/train")} />
       </Card>
 
-      <SectionIntro eyebrow={transformation.eyebrow} headline={["REAL", "TRANSFORMATION."]} body={transformation.subtitle} />
+      <SectionIntro
+        eyebrow={transformation.eyebrow}
+        headline={["REAL", "TRANSFORMATION."]}
+        body={transformation.subtitle}
+      />
       <Card style={styles.gapLg}>
         <View style={styles.phases}>
           {transformation.phases.map((phase, index) => (
@@ -223,7 +239,12 @@ const styles = StyleSheet.create({
   program: { flexDirection: "row", gap: spacing.md, padding: spacing.lg },
   programNumber: { paddingTop: 4, width: 22 },
   programMeta: { flexDirection: "row", gap: spacing.xs, marginTop: spacing.sm, flexWrap: "wrap" },
-  exerciseRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, paddingVertical: spacing.md },
+  exerciseRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.md,
+    paddingVertical: spacing.md,
+  },
   play: {
     width: 40,
     height: 40,

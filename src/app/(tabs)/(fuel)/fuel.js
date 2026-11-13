@@ -37,6 +37,7 @@ export default function FuelScreen() {
     <Screen
       variant="tab"
       title="Fuel"
+      lazy
       headerActions={[
         { label: "Log a meal", icon: "plus", onPress: () => router.push("/meal/new") },
       ]}

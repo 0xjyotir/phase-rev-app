@@ -23,7 +23,7 @@ export function MindToolsCard({ profile }) {
         title="Guided journal"
         subtitle={
           lastJournal
-            ? `${profile.journal.entries.length} entries · last ${formatRelativeDay(lastJournal.createdAt).toLowerCase()}`
+            ? `${profile.journal.entries.length} ${profile.journal.entries.length === 1 ? "entry" : "entries"} · last ${formatRelativeDay(lastJournal.createdAt).toLowerCase()}`
             : "Prompts that turn a few lines into insight"
         }
         onPress={() => router.push("/journal")}

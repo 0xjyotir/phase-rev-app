@@ -67,6 +67,7 @@ export default function TodayScreen() {
       <RecentActivityCard history={history} />
       <RecentWinsCard />
 
+      <SectionHeader size="lg" title="Phase Rev" subtitle="Your baseline, coaches and membership" />
       <QuickLinks />
     </Screen>
   );

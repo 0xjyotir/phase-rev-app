@@ -95,7 +95,12 @@ export default function RoutineBuilderScreen() {
       title="New routine"
       keyboardAware
       headerActions={[
-        { label: "Save", prominent: true, disabled: !canSave, onPress: () => save({ runToday: false }) },
+        {
+          label: "Save",
+          prominent: true,
+          disabled: !canSave,
+          onPress: () => save({ runToday: false }),
+        },
       ]}
       footer={
         <View style={styles.footer}>

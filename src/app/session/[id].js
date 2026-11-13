@@ -107,10 +107,7 @@ export default function GuidedSessionScreen() {
   };
 
   const jump = (direction) => {
-    const target = Math.min(
-      boundaries.length - 1,
-      Math.max(0, currentIndex + direction),
-    );
+    const target = Math.min(boundaries.length - 1, Math.max(0, currentIndex + direction));
     haptics.select();
     setElapsedBefore(boundaries[target].start);
     if (running) setStartedAt(Date.now());
@@ -119,7 +116,10 @@ export default function GuidedSessionScreen() {
   const close = () => {
     const minutes = Math.round(elapsed / 60);
     if (minutes >= 1) {
-      actions.logMindfulSession(minutes, script.type === "Meditation" ? "meditation" : "visualization");
+      actions.logMindfulSession(
+        minutes,
+        script.type === "Meditation" ? "meditation" : "visualization",
+      );
     }
     router.back();
   };
@@ -143,7 +143,7 @@ export default function GuidedSessionScreen() {
           <View style={styles.orb}>
             <BreathingCircle pattern={CALM} running={false} size={220} />
             <View style={StyleSheet.absoluteFill} pointerEvents="none">
-              <ProgressRing percent={percent} size={260} strokeWidth={4} />
+              <ProgressRing percent={percent} size={260} strokeWidth={4} showValue={false} />
             </View>
           </View>
         </View>
@@ -161,11 +161,15 @@ export default function GuidedSessionScreen() {
             </>
           ) : (
             <>
-              <AppText variant="eyebrow" color="accent" align="center">
-                {running || elapsed > 0
-                  ? `Step ${currentIndex + 1} of ${script.steps.length}`
-                  : script.summary}
-              </AppText>
+              {running || elapsed > 0 ? (
+                <AppText variant="eyebrow" color="accent" align="center">
+                  {`Step ${currentIndex + 1} of ${script.steps.length}`}
+                </AppText>
+              ) : (
+                <AppText variant="small" color="textMuted" align="center">
+                  {script.summary}
+                </AppText>
+              )}
               <AppText variant="h3" align="center" style={styles.promptText}>
                 {running || elapsed > 0
                   ? step.text

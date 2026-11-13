@@ -72,7 +72,9 @@ export function ProgressCards() {
         label="Workouts"
         value={String(stats.workouts.value)}
         unit="this week"
-        detail={change === 0 ? "Same as last week" : `${change > 0 ? "+" : ""}${change} vs last week`}
+        detail={
+          change === 0 ? "Same as last week" : `${change > 0 ? "+" : ""}${change} vs last week`
+        }
         trend={change > 0 ? "up" : change < 0 ? "down" : null}
         onPress={() => router.navigate({ pathname: "/train", params: { view: "progress" } })}
       />
@@ -111,7 +113,12 @@ function Tile({ icon, tint = "accent", label, value, unit, detail, trend, onPres
   const tintSoft = tint === "champagne" ? colors.champagneSoft : colors.accentSoft;
 
   return (
-    <Card padding="md" onPress={onPress} style={styles.tile} accessibilityLabel={`${label} ${value} ${unit}`}>
+    <Card
+      padding="md"
+      onPress={onPress}
+      style={styles.tile}
+      accessibilityLabel={`${label} ${value} ${unit}`}
+    >
       <View style={styles.tileTop}>
         <View style={[styles.iconWell, { backgroundColor: tintSoft }]}>
           <Icon name={icon} size={15} color={tintColor} weight="semibold" />
@@ -141,7 +148,7 @@ function Tile({ icon, tint = "accent", label, value, unit, detail, trend, onPres
         <AppText
           variant="caption"
           color={trend === "up" ? "success" : "textMuted"}
-          numberOfLines={1}
+          numberOfLines={2}
           style={styles.flex}
         >
           {detail}

@@ -13,7 +13,8 @@ export function scoreWellbeing(answers, statements = wellbeingCheck.statements) 
   if (values.some((value) => value == null)) return null;
   const max = statements.length * 5;
   const score = Math.round((values.reduce((sum, value) => sum + value, 0) / max) * 100);
-  const band = wellbeingCheck.bands.find((item) => score >= item.min) ?? wellbeingCheck.bands.at(-1);
+  const band =
+    wellbeingCheck.bands.find((item) => score >= item.min) ?? wellbeingCheck.bands.at(-1);
   return { score, band };
 }
 
@@ -21,7 +22,12 @@ export function scoreWellbeing(answers, statements = wellbeingCheck.statements) 
  * Mindful streak: consecutive days (ending today, or yesterday if today has
  * no activity yet) with a mood check-in, a journal entry or a mind session.
  */
-export function getMindStreak({ moodEntries = [], journalEntries = [], sessionLog = [], now = new Date() }) {
+export function getMindStreak({
+  moodEntries = [],
+  journalEntries = [],
+  sessionLog = [],
+  now = new Date(),
+}) {
   const active = new Set([
     ...moodEntries.map((entry) => entry.date),
     ...journalEntries.map((entry) => toDateKey(entry.createdAt)),

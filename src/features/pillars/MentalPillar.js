@@ -13,12 +13,48 @@ import { spacing } from "@/theme";
 import { FeatureTile, SectionIntro } from "./PillarParts";
 
 const PRACTICES = [
-  { id: "meditation", icon: "eye", title: "Meditation", description: "Guided focus and wind-down sessions.", href: "/session/deep-focus" },
-  { id: "breathing", icon: "wind", title: "Breathing", description: "Reset, box and wind-down patterns.", href: "/breathing" },
-  { id: "journal", icon: "book-open", title: "Guided journaling", description: "Prompts that turn a few lines into insight.", href: "/journal" },
-  { id: "mood", icon: "smile", title: "Mood tracking", description: "A five-second daily check-in.", href: "/mind" },
-  { id: "cbt", icon: "refresh-cw", title: "CBT activities", description: "Reframe one difficult thought.", href: "/reframe" },
-  { id: "wellbeing", icon: "activity", title: "Wellbeing check", description: "Five statements, scored over time.", href: "/wellbeing" },
+  {
+    id: "meditation",
+    icon: "eye",
+    title: "Meditation",
+    description: "Guided focus and wind-down sessions.",
+    href: "/session/deep-focus",
+  },
+  {
+    id: "breathing",
+    icon: "wind",
+    title: "Breathing",
+    description: "Reset, box and wind-down patterns.",
+    href: "/breathing",
+  },
+  {
+    id: "journal",
+    icon: "book-open",
+    title: "Guided journaling",
+    description: "Prompts that turn a few lines into insight.",
+    href: "/journal",
+  },
+  {
+    id: "mood",
+    icon: "smile",
+    title: "Mood tracking",
+    description: "A five-second daily check-in.",
+    href: "/mind",
+  },
+  {
+    id: "cbt",
+    icon: "refresh-cw",
+    title: "CBT activities",
+    description: "Reframe one difficult thought.",
+    href: "/reframe",
+  },
+  {
+    id: "wellbeing",
+    icon: "activity",
+    title: "Wellbeing check",
+    description: "Five statements, scored over time.",
+    href: "/wellbeing",
+  },
 ];
 
 export function MentalPillar({ onSessionsLayout }) {
@@ -73,7 +109,12 @@ export function MentalPillar({ onSessionsLayout }) {
           fullWidth
           onPress={() => go({ pathname: "/breathing", params: { pattern: "phase-rev" } })}
         />
-        <Button label="Log today's mood" variant="secondary" fullWidth onPress={() => go("/mind")} />
+        <Button
+          label="Log today's mood"
+          variant="secondary"
+          fullWidth
+          onPress={() => go("/mind")}
+        />
       </Card>
     </>
   );

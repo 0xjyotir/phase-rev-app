@@ -11,11 +11,7 @@
  * lands only this file (and profile-store) change — every screen stays as-is.
  */
 import { useMemo } from "react";
-import {
-  createDefaultProfile,
-  useProfileStore,
-  withProfileDefaults,
-} from "@/stores/profile-store";
+import { createDefaultProfile, useProfileStore, withProfileDefaults } from "@/stores/profile-store";
 import { useSessionStore } from "@/stores/session-store";
 
 const FALLBACK_PROFILE = createDefaultProfile();

@@ -101,7 +101,11 @@ function createDemoProfile(now = new Date()) {
     mind: {
       breathingSessions: 9,
       mindfulMinutes: 74,
-      log: [1, 2, 4].map((n) => ({ date: toDateKey(addDays(now, -n)), minutes: 5, kind: "breathing" })),
+      log: [1, 2, 4].map((n) => ({
+        date: toDateKey(addDays(now, -n)),
+        minutes: 5,
+        kind: "breathing",
+      })),
     },
     journal: {
       entries: [
@@ -110,7 +114,10 @@ function createDemoProfile(now = new Date()) {
           createdAt: daysAgo(1),
           title: "Evening reflection",
           answers: [
-            { prompt: "What went well today?", text: "Hit every rep on pull day. Deadlift felt fast." },
+            {
+              prompt: "What went well today?",
+              text: "Hit every rep on pull day. Deadlift felt fast.",
+            },
             {
               prompt: "What will you do differently tomorrow?",
               text: "Go to bed before 11 — mornings are better when I do.",
@@ -137,7 +144,11 @@ export function withProfileDefaults(profile) {
   return {
     ...defaults,
     ...profile,
-    nutrition: { ...defaults.nutrition, ...profile.nutrition, history: profile.nutrition?.history ?? [] },
+    nutrition: {
+      ...defaults.nutrition,
+      ...profile.nutrition,
+      history: profile.nutrition?.history ?? [],
+    },
     mind: { ...defaults.mind, ...profile.mind, log: profile.mind?.log ?? [] },
     journal: profile.journal ?? defaults.journal,
     reframes: profile.reframes ?? defaults.reframes,
@@ -190,7 +201,9 @@ export const useProfileStore = create(
       rolloverDay: (userId) => {
         const profile = get().profiles[userId];
         if (!profile || profile.nutrition?.date === toDateKey()) return;
-        set((state) => updateProfile(state, userId, (p) => ({ ...p, nutrition: today(p.nutrition) })));
+        set((state) =>
+          updateProfile(state, userId, (p) => ({ ...p, nutrition: today(p.nutrition) })),
+        );
       },
 
       // ── Assessment ────────────────────────────────────────────────────────

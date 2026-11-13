@@ -69,7 +69,11 @@ export default function AssessmentScreen() {
 
   const delta = Math.round((values.targetWeightKg - values.weightKg) * 10) / 10;
   const primaryLabel = isLast ? (isMember ? "Save to profile" : "Sign in to save") : "Continue";
-  const primaryAction = isLast ? (isMember ? save : () => router.push("/login")) : () => goTo(stepIndex + 1);
+  const primaryAction = isLast
+    ? isMember
+      ? save
+      : () => router.push("/login")
+    : () => goTo(stepIndex + 1);
 
   return (
     <Screen

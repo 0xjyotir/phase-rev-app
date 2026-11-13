@@ -40,8 +40,10 @@ export function Button({
   accessibilityHint,
 }) {
   const theme = useTheme();
-  const tone = getTone(variant, theme.colors);
   const isDisabled = disabled || loading;
+  // Disabled buttons get an opaque neutral fill instead of fading out, so a
+  // floating footer button never turns see-through over the list behind it.
+  const tone = disabled ? getDisabledTone(variant, theme.colors) : getTone(variant, theme.colors);
   const { outer, inner } = splitLayoutStyle(style);
   const height = HEIGHT[size] ?? HEIGHT.md;
 
@@ -117,12 +119,16 @@ export function Button({
         fullWidth && styles.fullWidth,
         outer,
         pressed && !isDisabled && styles.pressed,
-        isDisabled && styles.disabled,
       ]}
     >
       {surface}
     </Pressable>
   );
+}
+
+function getDisabledTone(variant, colors) {
+  if (variant === "ghost") return { bg: "transparent", fg: colors.textTertiary };
+  return { bg: colors.surface, fg: colors.textTertiary, border: colors.border, glass: "regular" };
 }
 
 /** Colors (and glass treatment) per variant. */
@@ -166,5 +172,4 @@ const styles = StyleSheet.create({
   fullWidth: { alignSelf: "stretch" },
   row: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
   pressed: { opacity: 0.88, transform: [{ scale: 0.97 }] },
-  disabled: { opacity: 0.4 },
 });

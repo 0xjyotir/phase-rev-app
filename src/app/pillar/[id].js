@@ -30,7 +30,11 @@ export default function PillarScreen() {
   if (!pillar) {
     return (
       <Screen title="Pillar">
-        <EmptyState icon="compass" title="Pillar not found" message="Try Explore for all four pillars." />
+        <EmptyState
+          icon="compass"
+          title="Pillar not found"
+          message="Try Explore for all four pillars."
+        />
       </Screen>
     );
   }

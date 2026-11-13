@@ -55,7 +55,9 @@ export function MealLogCard({ mealLog, onToggle, onRemove, onAdd }) {
                     : { borderColor: colors.borderStrong },
                 ]}
               >
-                {meal.logged ? <Icon name="check" size={13} color="onAccent" weight="bold" /> : null}
+                {meal.logged ? (
+                  <Icon name="check" size={13} color="onAccent" weight="bold" />
+                ) : null}
               </View>
               <View style={styles.text}>
                 <AppText variant="smallStrong" color={meal.logged ? "text" : "textMuted"}>

@@ -4,13 +4,17 @@
  *
  *   <MediaCard image={coach.portrait} height={420}>…content (bottom aligned)…</MediaCard>
  *   <MediaCard video={brandMedia.heroVideo} aspectRatio={4 / 5}>…</MediaCard>
+ *   <MediaCard image={hero} mediaHeight={300}>…</MediaCard>   // photo band on top,
+ *     fading into solid black; content starts on the fade so text never sits on a face
  *
  * Content sits at the bottom; buttons inside should use variant="brand" or
  * "outlineLight" (glass over media on iOS 26).
  */
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { useIsFocused } from "expo-router";
 import { useVideoPlayer, VideoView } from "expo-video";
+import { useEffect } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { haptics } from "@/lib/haptics";
 import { palette, radius, spacing } from "@/theme";
@@ -26,6 +30,7 @@ export function MediaCard({
   padding = spacing.xl,
   gap = spacing.md,
   gradient = "bottom",
+  mediaHeight,
   style,
   accessibilityLabel,
 }) {
@@ -51,22 +56,31 @@ export function MediaCard({
       colors: ["rgba(8,95,112,0.35)", "rgba(5,5,5,0.55)", "rgba(5,5,5,0.94)"],
       locations: [0, 0.45, 1],
     },
-  }[gradient];
+    band: {
+      colors: ["rgba(8,95,112,0.22)", "rgba(5,5,5,0.12)", "rgba(5,5,5,0.78)", palette.black],
+      locations: [0, 0.4, 0.78, 1],
+    },
+  }[mediaHeight ? "band" : gradient];
+
+  const mediaStyle = mediaHeight ? [styles.band, { height: mediaHeight }] : StyleSheet.absoluteFill;
+  const contentInset = mediaHeight
+    ? { paddingTop: Math.max(padding, mediaHeight - BAND_OVERLAP) }
+    : null;
 
   const content = (
     <>
-      {video ? <LoopingVideo source={video} /> : null}
+      {video ? <LoopingVideo source={video} style={mediaStyle} /> : null}
       {image ? (
         <Image
           source={image}
-          style={StyleSheet.absoluteFill}
+          style={mediaStyle}
           contentFit="cover"
           contentPosition={imagePosition}
           transition={250}
         />
       ) : null}
-      <LinearGradient pointerEvents="none" style={StyleSheet.absoluteFill} {...gradients} />
-      <View style={[styles.content, { padding, gap }]}>{children}</View>
+      <LinearGradient pointerEvents="none" style={mediaStyle} {...gradients} />
+      <View style={[styles.content, { padding, gap }, contentInset]}>{children}</View>
     </>
   );
 
@@ -93,16 +107,23 @@ export function MediaCard({
   );
 }
 
-function LoopingVideo({ source }) {
+/** Muted brand loop that only plays while its screen is visible (saves battery). */
+function LoopingVideo({ source, style }) {
+  const isFocused = useIsFocused();
   const player = useVideoPlayer(source, (instance) => {
     instance.loop = true;
     instance.muted = true;
-    instance.play();
   });
+
+  useEffect(() => {
+    if (isFocused) player.play();
+    else player.pause();
+  }, [isFocused, player]);
+
   return (
     <VideoView
       player={player}
-      style={StyleSheet.absoluteFill}
+      style={style}
       contentFit="cover"
       nativeControls={false}
       allowsPictureInPicture={false}
@@ -111,7 +132,11 @@ function LoopingVideo({ source }) {
   );
 }
 
+/** How far content rises into the bottom of the photo band (onto the dark fade). */
+const BAND_OVERLAP = 72;
+
 const styles = StyleSheet.create({
+  band: { position: "absolute", top: 0, left: 0, right: 0 },
   card: {
     borderRadius: radius.xl,
     borderCurve: "continuous",

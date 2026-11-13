@@ -34,38 +34,54 @@ This mirrors the website's rule: _pages import sections, sections import compone
 Expo Router turns files into screens. `_layout.js` files define navigators.
 
 ```
-_layout.js            Root Stack + auth gate (Stack.Protected), fonts, splash, providers
-(auth)/_layout.js     Dark-brand stack for guests
-(auth)/welcome.js     Hero video + "REWORK YOUR BODY…"
-(auth)/login.js       Email/password + demo account card
-(tabs)/_layout.js     Bottom tabs + "workout in progress" pill
-(tabs)/index.js       Home
-(tabs)/train.js       Today | Library | Progress   (?view=&sub= in the URL)
-(tabs)/fuel.js        Nutrition
-(tabs)/mind.js        Mental wellness
-(tabs)/profile.js     Account + settings
-workout/active.js     Live logging (full-screen modal, keeps screen awake)
-workout/complete.js   Session summary
-history/[id].js       A past workout
-exercise/[id].js      Exercise detail (form video, PR, e1RM, chart, cues)
-routine/new.js        Routine builder (modal)
-assessment.js         4-step baseline wizard (modal)
-breathing.js          Guided breathing player
-coaches/index.js      Coach roster
-coaches/[id].js       Coach profile
-membership.js         Tiers + comparison
-+not-found.js         404
+_layout.js              Root Stack: auth gate (Stack.Protected), fonts, splash, day rollover
+(auth)/welcome.js       Hero video + "REWORK YOUR BODY…" → Enter Rev / Explore Phase Rev
+(auth)/login.js         Email/password + demo account card
+(tabs)/_layout.js       iOS 26: NativeTabs (Liquid Glass, workout accessory)
+                        else:   JS tabs + floating "Resume workout" pill
+(tabs)/(home)/          Today         ┐ each group's _layout.js is a TabStack:
+(tabs)/(train)/train.js Train         │ its own native stack, large titles on iOS,
+(tabs)/(fuel)/fuel.js   Fuel          │ so pushes keep the tab bar visible
+(tabs)/(mind)/mind.js   Mind          │ (?view=&sub= in Train's URL)
+(tabs)/(explore)/       Explore       ┘
+profile.js              Account + settings (pushed from the avatar)
+discover.js             Guest version of Explore (public)
+ecosystem.js            Four pillars, one journey (public)
+pillar/[id].js          physical | athletic | nutrition | mental (public)
+coaches/index.js        Specialties, filters, roster (public)
+coaches/[id].js         Coach profile (public)
+coaches/request.js      Book a consultation (sheet, members)
+membership.js           Tiers + comparison + trial (public)
+assessment.js           4-step baseline (sheet, public — saving needs sign-in)
+workout/active.js       Live logging (full-screen, keeps screen awake)
+workout/complete.js     Session summary
+history/[id].js         A past workout
+exercise/[id].js        Exercise detail (form video, PR, e1RM, chart, cues)
+routine/new.js          Routine builder (sheet)
+breathing.js            Breathing player (full-screen)
+session/[id].js         Guided meditation / visualization player (full-screen)
+reaction.js             Reaction drill (full-screen)
+journal/index.js        Journal entries + prompt sets
+journal/new.js          New entry (sheet)
+reframe.js              5-step thought reframe (sheet)
+wellbeing.js            Wellbeing check (form sheet with detents)
+meal/new.js             Quick-add a meal (sheet)
++not-found.js           404
 ```
 
-**Auth gate.** `src/app/_layout.js` wraps routes in two `Stack.Protected` groups:
+**Auth gate.** `src/app/_layout.js` wraps routes in two `Stack.Protected` groups, and leaves
+the website's public pages outside both:
 
 ```js
 <Stack.Protected guard={!isSignedIn} redirectTo="/">       {/* (auth) */}
-<Stack.Protected guard={isSignedIn} redirectTo="/welcome"> {/* (tabs), workout/*, … */}
+<Stack.Protected guard={isSignedIn} redirectTo="/welcome"> {/* (tabs), workout/*, journal… */}
+{/* discover, ecosystem, pillar/[id], coaches, membership, assessment — anyone */}
 ```
 
 `isSignedIn` comes from `session-store`. Signing in or out flips it and Expo Router moves the
-user automatically — no screen calls `router.replace` after login.
+user automatically — no screen calls `router.replace` after login. Buttons on public pages
+use `useMemberLink()`: members go to the tool, guests go to sign-in first; links to a tab
+dismiss any modals and switch tab.
 
 **Splash.** The splash screen stays up until fonts are loaded **and** every persisted store
 has re-hydrated from AsyncStorage (`hooks/useStoresHydrated.js`), so a signed-in member never
@@ -76,44 +92,71 @@ sees a flash of the Welcome screen.
 | Store                  | Holds                                                                                   | Persist key            |
 | ---------------------- | --------------------------------------------------------------------------------------- | ---------------------- |
 | `session-store.js`     | `user`, `accessToken`                                                                   | `phaserev.session`     |
-| `profile-store.js`     | Per-user: assessment, nutrition (macros, water, meal log, region), mood entries, mind stats | `phaserev.profiles` |
-| `training-store.js`    | Routines, week plan, history, **active session**, rest timer, favourites, body log      | `phaserev.training`    |
-| `preferences-store.js` | Appearance (system/light/dark), haptics                                                 | `phaserev.preferences` |
+| `profile-store.js`     | Per-user: assessment, nutrition (macros, water, meal log, 30-day history, region), mood, mind log, journal, reframes, wellbeing checks, reaction results, coach requests | `phaserev.profiles` (v2) |
+| `training-store.js`    | Routines, week plan, history, **active session**, rest timer, favourites, body log, progress photos | `phaserev.training`    |
+| `preferences-store.js` | Appearance (system/light/dark), haptics, rest-timer step                                | `phaserev.preferences` |
 
-All use `persist` + AsyncStorage via `stores/storage.js`. These are the mobile versions of the
-website's `session-store.ts`, `user-data-store.ts` and `physical-training-store.ts`.
+All use `persist` + AsyncStorage via `stores/storage.js`. `profile-store` has `version: 2` and a
+`migrate` that fills new fields (`withProfileDefaults`) so 1.0 installs upgrade cleanly.
 
-> **Rule:** stores hold _source data_. Derived numbers (streaks, PRs, charts) are computed in
-> `features/workouts/lib/*` and memoised in hooks — never stored, so they can't drift.
+**Day rollover.** `useDayRollover()` (root layout, on launch and when the app returns to the
+foreground) calls `rolloverDay()`: yesterday's macros and water move into nutrition history and
+today starts at zero with the planned meals unlogged (`features/nutrition/lib/nutrition-day.js`).
+
+> **Rule:** stores hold _source data_. Derived numbers (streaks, PRs, scores, charts) are
+> computed in `features/*/lib/*` and memoised in hooks — never stored, so they can't drift.
 
 ### Hooks — `src/hooks/` and `features/*/hooks/`
 
 | Hook                          | Returns                                                              |
 | ----------------------------- | -------------------------------------------------------------------- |
 | `useMember()`                 | `user, firstName, isSignedIn, signIn(email, pw), signOut()`          |
-| `useProfile()`                | `{ profile, actions }` — actions already bound to the signed-in user |
+| `useProfile()`                | `{ profile, actions, isMember }` — actions bound to the signed-in user, profile filled with defaults |
 | `useTodayPlan()`              | Today's routine + planned session with previous/targets              |
 | `useWeekSchedule()`           | Mon→Sun with completed / today / missed / rest / upcoming            |
 | `useStreak()`                 | Current streak (rest days don't break it)                            |
 | `useActiveSession()`          | Live session + `{ completedSets, totalSets, volumeKg }`              |
 | `useStartWorkout()`           | One function for every "Start workout" button                        |
 | `useNow(ms, enabled)`         | Re-render tick for timers                                            |
+| `useMemberLink()`             | `go(href)` — guests → sign-in, tab routes → dismiss modals + switch tab |
+| `useDayRollover()`            | Rolls nutrition over to a new day (launch + foreground)              |
+| `useFirstFocus()`             | `true` once a tab has been focused — heavy tabs render lazily        |
+| `useReduceTransparency()`     | iOS accessibility setting; turns glass off                            |
 
 ### Theme — `src/theme/` + `providers/ThemeProvider.js`
 
 - `palette.js` — raw hex values copied from the website CSS.
-- `themes.js` — semantic tokens (`background`, `surface`, `text`, `accent`…) for light & dark.
-- `typography.js` — Outfit / Oswald / JetBrains Mono + text variants (`h1`, `eyebrow`, `timer`…).
-- `layout.js` — spacing scale, radii, shadow.
+- `themes.js` — semantic tokens (`background`, `surface`, `surfaceSoft`, `text`, `textMuted`,
+  `separator`, `accent`, `champagne`…) for light & dark, modelled on iOS system colours.
+- `typography.js` — per-platform faces (SF Pro / Rounded / Mono on iOS; Outfit / JetBrains Mono
+  elsewhere; Oswald everywhere for brand headlines) + variants (`largeTitle`, `h1`, `body`,
+  `eyebrow`, `metric`, `timer`…). iOS body text is 17 pt like UIKit.
+- `layout.js` — spacing scale, radii, `GUTTER` (20 on iOS, 16 on Android), `CARD_PADDING`.
 
 ```js
-const { colors } = useTheme();                 // read tokens
+const { colors, glass } = useTheme();          // tokens + "is Liquid Glass on?"
 const styles = useThemedStyles(createStyles);  // StyleSheet that updates with the theme
 <AppText variant="h2" color="textMuted" />     // never set fontFamily by hand
 ```
 
-The (auth) screens use `<ThemeProvider forceScheme="dark">` so welcome/login always look like
-the website, whatever the device setting.
+`theme.glass` is `LIQUID_GLASS && !reduceTransparency`. `AppearanceSync` pushes the in-app
+appearance to `Appearance.setColorScheme`, so native headers, tab bar, alerts and keyboards
+follow it. The (auth) screens use `<ThemeProvider forceScheme="dark">`.
+
+### The UI kit in one minute — `src/components/ui/`
+
+| Component        | Why it exists                                                                     |
+| ---------------- | --------------------------------------------------------------------------------- |
+| `Screen`         | Every screen. `variant="tab" | "detail" | "modal" | "bare"` sets the native header (large title, glass/blur, back button, `headerActions` → SF Symbol bar items or menus), safe areas, keyboard insets, top glow and a floating `footer`. |
+| `Surface`        | `GlassView` when `theme.glass`, otherwise a solid card with a hairline border. `Card`, `Button`, `Chip`, `IconButton`, `ListSection` all draw through it. |
+| `ListSection` / `ListRow` | iOS Settings-style inset grouped lists with coloured icon tiles.          |
+| `SegmentedControl` | `UISegmentedControl` on iOS, a capsule control elsewhere.                       |
+| `Dialog`         | Native `Alert` on iOS/Android (spaced so two never collide), drawn dialog on web. |
+| `Icon`           | SF Symbols on iOS, Feather elsewhere; names are mapped in `icon-map.json`.       |
+
+`lib/header-items.js` turns `headerActions` descriptors (`{ label, icon, onPress, prominent,
+menu }`) into react-native-screens header items on iOS; `HeaderActions` renders the same
+descriptors on Android/web.
 
 ---
 
@@ -127,6 +170,15 @@ HydrationCard "+250 ml"
   → useProfile().actions.addWater     (binds userId)
   → profile-store.addWater(userId, 0.25)
   → AsyncStorage (persist)            → every screen using useProfile() re-renders
+```
+
+**Booking a consultation (public page → member action)**
+
+```
+Coach profile "Train with Anikait" → router.push("/coaches/request?coachId=anikait")
+  → (guest? Stack.Protected sends them to /welcome → sign in)
+  → pick format + time + note → actions.requestCoach({...}) → profile.coaching.requests
+  → Alert "Request sent" → Profile → "Session requests" lists it
 ```
 
 **Picking a region on the globe**
@@ -194,14 +246,15 @@ All copy and catalog data came from the website's `src/constants/*.ts`:
 
 | App file               | From the website                                  |
 | ---------------------- | ------------------------------------------------- |
-| `brand.js`             | `navigation.ts` (siteMeta), `homepage.ts` (hero)  |
-| `pillars.js`           | `pillars.ts`                                      |
+| `brand.js`             | `navigation.ts` (siteMeta), `homepage.ts` (hero, method, one system, dimensions, community, stories, final CTA) |
+| `pillars.js`           | `pillars.ts` + each pillar page + `ecosystem` page |
 | `coaches.js`           | `coaches.ts` + `public/images/coaches/*`          |
 | `membership.js`        | `pricing.ts`                                      |
 | `assessment.js`        | `assessment.ts`                                   |
 | `nutrition.js`         | `dashboard.ts` (targets), `nutrition-page.ts`     |
 | `nutrition-regions.js` | `nutrition-regions.ts` + `nutrition-region-coverage.ts` |
-| `mental.js`            | mood tracker + `mentalSessions`                   |
+| `mental.js`            | mood tracker, `mentalSessions`, mental-wellness page (practices, breathing, scripts written for the app) |
+| `athletic` (in `pillars.js`) | athletic-performance page: sports, features, programs |
 | `exercises.js`         | `physical-data.ts` (same IDs) + extra common lifts |
 | `training-seed.js`     | `physical-data.ts` routines / plan / body data    |
 | `dashboard.js`         | `dashboard.ts` achievements                       |
@@ -223,18 +276,22 @@ user and will be stored in the database.
 | Imports              | `@/…` for `src/`, `@assets/…` for `assets/` (see `jsconfig.json`) |
 | Styles               | `StyleSheet.create` at the bottom; theme-dependent → `createStyles(theme)` + `useThemedStyles` |
 | Text                 | Always `<AppText variant=…>`                                   |
-| Icons                | Feather via `<Icon name=…>` (tab bar uses MaterialCommunityIcons) |
-| Confirmations        | `<Dialog>` (works on web too; `Alert.alert` doesn't)           |
+| Icons                | `<Icon name=…>` — SF Symbols on iOS, Feather elsewhere (`icon-map.json`) |
+| Confirmations        | `<Dialog>` (native alert on iOS/Android, drawn on web)         |
 | Haptics              | `haptics.tap() / success() / warning()` from `lib/haptics.js`  |
 | Formatting           | Prettier (`npm run format`), ESLint (`npm run lint`)           |
-| Tests                | `*.test.js` next to the file, Jest (`npm test`)                |
+| Tests                | `*.test.js` next to the file; screen smoke tests in `src/__tests__/` |
+| Platform checks      | Only via `lib/platform.js` (`IS_IOS`, `LIQUID_GLASS`) and `theme.glass` |
 
 ### Adding a new screen
 
-1. Create `src/app/my-screen.js` with `export default function MyScreen()`.
-2. Register it in `src/app/_layout.js` inside the members' `Stack.Protected` group.
-3. Build the UI from `features/<pillar>/components` + `components/ui`.
-4. Navigate with `const router = useRouter(); router.push("/my-screen")`.
+1. Create `src/app/my-screen.js` with `export default function MyScreen()` and wrap it in
+   `<Screen title="My screen">…</Screen>` (`variant="modal"` for sheets).
+2. Register it in `src/app/_layout.js` — inside the members' `Stack.Protected` group, or
+   outside both groups if guests may see it. Add `options={SHEET}` for a sheet.
+3. Build the UI from `features/<area>/components` + `components/ui`.
+4. Navigate with `router.push("/my-screen")`, or `useMemberLink()` from public pages.
+5. Add the route to `src/__tests__/screens.smoke.test.js`.
 
 ### Adding a new piece of member data
 
@@ -263,6 +320,11 @@ Endpoints to implement (same list as the website's `FRONTEND_BACKEND_INTEGRATION
 | `toggleMealLogged`, `addMealToLog`, `addWater` | `PATCH /users/me/nutrition` |
 | `setSelectedRegion`                  | `PATCH /users/me/nutrition/region` |
 | `setMood`                            | `POST /users/me/mood`            |
+| `addJournalEntry` / `deleteJournalEntry` | `POST/DELETE /users/me/journal` (new) |
+| `saveReframe`                        | `POST /users/me/reframes` (new)  |
+| `saveWellbeingCheck`                 | `POST /users/me/wellbeing` (new) |
+| `saveReactionResult`                 | `POST /users/me/athletic/reaction` (new) |
+| `requestCoach`                       | `POST /coaching/requests` (new)  |
 | `training-store.finishWorkout`       | `POST /users/me/workouts` (new)  |
 | `saveRoutine` / `deleteRoutine`      | `PUT/DELETE /users/me/routines/:id` (new) |
 
@@ -273,8 +335,9 @@ the store, then call the API, roll back on error). Screens don't change — only
 
 ## 8. Known gaps (deliberate, same as the web MVP)
 
-- No payments (membership buttons show a confirmation dialog).
-- Coach booking is a request dialog, not a calendar.
+- No payments (membership buttons show a request dialog, then a confirmation).
+- Coach booking is a request saved on the device, not a live calendar.
 - Form videos use the brand clip until coach-recorded videos exist.
-- Progress photos are placeholders (add `expo-image-picker` + storage API).
-- Weekly calorie trend and achievements are static sample data.
+- Progress photos are stored on the device only (`lib/photo-storage.js`); upload them once a
+  storage API exists.
+- Achievements are sample data; the weekly calorie trend is live from nutrition history.

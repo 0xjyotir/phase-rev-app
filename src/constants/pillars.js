@@ -267,7 +267,8 @@ export const physicalPrograms = [
     title: "Mobility Matrix",
     duration: "6 weeks",
     level: "All Levels",
-    description: "Functional movement flows targeting flexibility, stability, and injury prevention.",
+    description:
+      "Functional movement flows targeting flexibility, stability, and injury prevention.",
   },
   {
     id: "weight-loss",

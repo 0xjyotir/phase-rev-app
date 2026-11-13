@@ -26,7 +26,11 @@ export function getRecoveryScore({ history, moodId = null, now = Date.now() }) {
 
   const restCredit = Math.round(Math.min(1, hoursSince / 36) * 12);
   score += restCredit;
-  factors.push({ id: "rest", label: `${Math.round(hoursSince)} h since last session`, delta: restCredit });
+  factors.push({
+    id: "rest",
+    label: `${Math.round(hoursSince)} h since last session`,
+    delta: restCredit,
+  });
 
   const recent = earlier.slice(0, 6).filter((entry) => entry.volumeKg > 0);
   if (recent.length && last.volumeKg > 0) {
@@ -39,7 +43,9 @@ export function getRecoveryScore({ history, moodId = null, now = Date.now() }) {
     }
   }
 
-  const within48 = history.filter((entry) => now - new Date(entry.performedAt).getTime() < 48 * HOUR);
+  const within48 = history.filter(
+    (entry) => now - new Date(entry.performedAt).getTime() < 48 * HOUR,
+  );
   if (within48.length >= 2) {
     score -= 8;
     factors.push({ id: "density", label: "Two sessions in 48 h", delta: -8 });
@@ -51,6 +57,7 @@ export function getRecoveryScore({ history, moodId = null, now = Date.now() }) {
   }
 
   score = Math.max(0, Math.min(100, Math.round(score)));
-  const label = score >= 85 ? "Primed" : score >= 70 ? "Ready" : score >= 55 ? "Moderate" : "Take it easy";
+  const label =
+    score >= 85 ? "Primed" : score >= 70 ? "Ready" : score >= 55 ? "Moderate" : "Take it easy";
   return { score, label, factors };
 }

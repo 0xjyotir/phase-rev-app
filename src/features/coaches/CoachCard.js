@@ -36,7 +36,11 @@ export function CoachCard({ coach, size = "lg", style }) {
       >
         {coach.name.toUpperCase()}
       </AppText>
-      <AppText variant={small ? "caption" : "smallMedium"} color={palette.navMuted} numberOfLines={2}>
+      <AppText
+        variant={small ? "caption" : "smallMedium"}
+        color={palette.navMuted}
+        numberOfLines={2}
+      >
         {coach.role} · {coach.highlight}
       </AppText>
     </MediaCard>

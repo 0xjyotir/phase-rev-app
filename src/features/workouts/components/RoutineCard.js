@@ -6,6 +6,7 @@ import { StyleSheet, View } from "react-native";
 import { AppText, Button, Card, Chip, IconButton } from "@/components/ui";
 import { getExerciseById } from "@/constants/exercises";
 import { spacing } from "@/theme";
+import { pluralize } from "@/lib/format";
 
 export function RoutineCard({ routine, isToday, onStart, onSetToday, onDelete }) {
   return (
@@ -32,7 +33,7 @@ export function RoutineCard({ routine, isToday, onStart, onSetToday, onDelete })
       <View style={styles.chips}>
         <Chip label={routine.mode === "gym" ? "Gym" : "Calisthenics"} tone="accent" />
         <Chip label={`${routine.daysPerWeek}× / week`} />
-        <Chip label={`${routine.exercises.length} exercises`} />
+        <Chip label={pluralize("exercise", routine.exercises.length)} />
         {isToday ? <Chip label="Today" tone="success" /> : null}
       </View>
 

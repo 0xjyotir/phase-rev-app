@@ -43,12 +43,20 @@ export default function NewJournalEntryScreen() {
       variant="modal"
       title="New entry"
       keyboardAware
-      headerActions={[{ label: "Save", prominent: true, disabled: answers.length === 0, onPress: save }]}
+      headerActions={[
+        { label: "Save", prominent: true, disabled: answers.length === 0, onPress: save },
+      ]}
     >
       <View style={styles.sets}>
         <Chip label="Free" size="md" selected={setId === FREE} onPress={() => setSetId(FREE)} />
         {Object.entries(journalPromptSets).map(([id, set]) => (
-          <Chip key={id} label={set.title} size="md" selected={setId === id} onPress={() => setSetId(id)} />
+          <Chip
+            key={id}
+            label={set.title}
+            size="md"
+            selected={setId === id}
+            onPress={() => setSetId(id)}
+          />
         ))}
       </View>
 
@@ -63,7 +71,14 @@ export default function NewJournalEntryScreen() {
         />
       ))}
 
-      <Button label="Save entry" icon="check" size="lg" fullWidth disabled={!answers.length} onPress={save} />
+      <Button
+        label="Save entry"
+        icon="check"
+        size="lg"
+        fullWidth
+        disabled={!answers.length}
+        onPress={save}
+      />
       <AppText variant="caption" color="textMuted" align="center">
         Entries stay private on this device.
       </AppText>

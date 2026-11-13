@@ -15,7 +15,14 @@ import { palette } from "@/theme";
 
 const SIZES = { sm: [22, 26], md: [30, 34], lg: [38, 42] };
 
-export function BrandHeadline({ lines, size = "md", onMedia = false, accentLast = false, align = "left", style }) {
+export function BrandHeadline({
+  lines,
+  size = "md",
+  onMedia = false,
+  accentLast = false,
+  align = "left",
+  style,
+}) {
   const { colors, isDark } = useTheme();
   const [fontSize, lineHeight] = SIZES[size] ?? SIZES.md;
   const base = onMedia ? palette.navText : colors.text;

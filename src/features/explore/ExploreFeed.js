@@ -19,6 +19,7 @@ import {
   Chip,
   Icon,
   SectionHeader,
+  SegmentedControl,
 } from "@/components/ui";
 import {
   brandMedia,
@@ -60,7 +61,11 @@ export function ExploreFeed({ isGuest = false }) {
 
       <OneSystemCard />
 
-      <SectionHeader size="lg" eyebrow={ecosystemDimensions.eyebrow} title="Four dimensions. One human." />
+      <SectionHeader
+        size="lg"
+        eyebrow={ecosystemDimensions.eyebrow}
+        title="Four dimensions. One human."
+      />
       <DimensionsCard />
 
       <SectionHeader
@@ -248,6 +253,11 @@ function OneSystemCard() {
   );
 }
 
+const DIMENSION_OPTIONS = ecosystemDimensions.pillars.map((pillar) => ({
+  id: pillar.id,
+  label: pillar.label,
+}));
+
 export function DimensionsCard() {
   const router = useRouter();
   const [activeId, setActiveId] = useState(ecosystemDimensions.pillars[0].id);
@@ -257,6 +267,7 @@ export function DimensionsCard() {
 
   return (
     <View style={styles.gapMd}>
+      <SegmentedControl options={DIMENSION_OPTIONS} value={activeId} onChange={setActiveId} />
       <MediaCard
         image={active.image}
         aspectRatio={4 / 3}
@@ -282,17 +293,6 @@ export function DimensionsCard() {
           <Icon name="arrow-right" size={13} color={palette.cyan} weight="bold" />
         </View>
       </MediaCard>
-      <View style={styles.dimensionTabs}>
-        {ecosystemDimensions.pillars.map((pillar) => (
-          <Chip
-            key={pillar.id}
-            label={pillar.label}
-            size="md"
-            selected={pillar.id === activeId}
-            onPress={() => setActiveId(pillar.id)}
-          />
-        ))}
-      </View>
       <AppText variant="caption" color="textMuted" align="center">
         {ecosystemDimensions.intro}
       </AppText>
@@ -314,7 +314,10 @@ function MembershipTeaser() {
           }}
           style={({ pressed }) => [
             styles.tierRow,
-            index > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.separator },
+            index > 0 && {
+              borderTopWidth: StyleSheet.hairlineWidth,
+              borderTopColor: colors.separator,
+            },
             pressed && { backgroundColor: colors.surfaceStrong },
           ]}
           accessibilityRole="button"
@@ -323,7 +326,9 @@ function MembershipTeaser() {
           <View style={styles.flex}>
             <View style={styles.tierTitle}>
               <AppText variant="bodyStrong">{tier.name}</AppText>
-              {tier.highlighted ? <Chip label={membershipTeaser.highlightLabel} tone="accent" /> : null}
+              {tier.highlighted ? (
+                <Chip label={membershipTeaser.highlightLabel} tone="accent" />
+              ) : null}
             </View>
             <AppText variant="caption" color="textMuted" numberOfLines={2}>
               {tier.description}
@@ -346,7 +351,13 @@ function MembershipTeaser() {
 function CommunityCard() {
   const router = useRouter();
   return (
-    <MediaCard image={community.image} imagePosition="center" height={420} gradient="left" gap={spacing.md}>
+    <MediaCard
+      image={community.image}
+      imagePosition="center"
+      height={420}
+      gradient="left"
+      gap={spacing.md}
+    >
       <AppText variant="eyebrow" color={palette.cyan}>
         {community.eyebrow}
       </AppText>
@@ -386,9 +397,7 @@ function StoryCard({ story }) {
   return (
     <Card style={styles.story}>
       <Icon name="quote" size={22} color="accent" />
-      <AppText variant="h3">
-        “{story.quote}”
-      </AppText>
+      <AppText variant="h3">“{story.quote}”</AppText>
       <View style={styles.storyMeta}>
         <View style={styles.flex}>
           <AppText variant="smallStrong">— {story.author}</AppText>
@@ -436,8 +445,16 @@ const styles = StyleSheet.create({
   heroActions: { gap: spacing.sm, marginTop: spacing.xs },
   statsRow: { flexDirection: "row" },
   stat: { flex: 1, alignItems: "center", gap: 2, paddingHorizontal: 2 },
-  statDivider: { borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: "rgba(127,140,150,0.3)" },
-  wordRow: { flexDirection: "row", justifyContent: "space-between", flexWrap: "wrap", gap: spacing.sm },
+  statDivider: {
+    borderLeftWidth: StyleSheet.hairlineWidth,
+    borderLeftColor: "rgba(127,140,150,0.3)",
+  },
+  wordRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+    gap: spacing.sm,
+  },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: spacing.md },
   pillarTile: { width: "47.8%", flexGrow: 1, gap: spacing.sm, minHeight: 150 },
   pillarTop: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
@@ -457,7 +474,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  flowConnector: { position: "absolute", top: 20, right: -10, width: 20, height: StyleSheet.hairlineWidth * 2 },
+  flowConnector: {
+    position: "absolute",
+    top: 20,
+    right: -10,
+    width: 20,
+    height: StyleSheet.hairlineWidth * 2,
+  },
   athleteBadge: {
     alignSelf: "flex-start",
     paddingHorizontal: spacing.md,
@@ -468,7 +491,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   inlineLink: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: spacing.xs },
-  dimensionTabs: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, justifyContent: "center" },
   tierRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, padding: spacing.lg },
   tierTitle: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginBottom: 2 },
   price: { alignItems: "flex-end" },

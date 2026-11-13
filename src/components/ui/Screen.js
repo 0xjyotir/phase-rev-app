@@ -25,6 +25,7 @@ import { Stack, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { useFirstFocus } from "@/hooks/useFirstFocus";
 import { toIosHeaderItems } from "@/lib/header-items";
 import { IS_IOS, LIQUID_GLASS } from "@/lib/platform";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -58,12 +59,15 @@ export function Screen({
   glow,
   background,
   edges = ["top", "bottom"],
+  lazy = false,
   ...scrollProps
 }) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const theme = useTheme();
   const { colors, isDark } = theme;
+  const focusedOnce = useFirstFocus();
+  const showContent = !lazy || focusedOnce;
 
   const isTab = variant === "tab";
   const isBare = variant === "bare";
@@ -131,7 +135,7 @@ export function Screen({
     >
       {showGlow ? <AmbientBackground variant="top" /> : null}
       {inlineHeader}
-      {children}
+      {showContent ? children : null}
     </ScrollView>
   );
 
@@ -172,6 +176,16 @@ export function Screen({
   return (
     <View style={[styles.flex, { backgroundColor: pageColor }]} collapsable={false}>
       {body}
+      {inlineTitle ? (
+        // Android/web: content scrolls under a translucent status-bar scrim, not bare pixels.
+        <View
+          pointerEvents="none"
+          style={[
+            styles.scrim,
+            { height: insets.top, backgroundColor: hexAlpha(colors.background, 0.94) },
+          ]}
+        />
+      ) : null}
       <Stack.Screen options={stackOptions} />
     </View>
   );
@@ -264,6 +278,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   inlineTitles: { flex: 1, gap: spacing.xxs },
+  scrim: { position: "absolute", top: 0, left: 0, right: 0 },
   footer: {
     position: "absolute",
     left: 0,

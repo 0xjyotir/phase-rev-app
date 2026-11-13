@@ -44,7 +44,11 @@ export default function MembershipScreen() {
         </AppText>
       </View>
 
-      <SectionHeader size="lg" title={membershipCopy.tiersTitle} subtitle={membershipCopy.tiersSubtitle} />
+      <SectionHeader
+        size="lg"
+        title={membershipCopy.tiersTitle}
+        subtitle={membershipCopy.tiersSubtitle}
+      />
       {membershipTiers.map((tier) => (
         <TierCard
           key={tier.id}
@@ -55,7 +59,11 @@ export default function MembershipScreen() {
         />
       ))}
 
-      <SectionHeader size="lg" title={membershipCopy.compareTitle} subtitle="Every tier includes all four pillars" />
+      <SectionHeader
+        size="lg"
+        title={membershipCopy.compareTitle}
+        subtitle="Every tier includes all four pillars"
+      />
       <ComparisonTable />
 
       <Card style={styles.trial}>

@@ -37,6 +37,7 @@ export default function MindScreen() {
     <Screen
       variant="tab"
       title="Mind"
+      lazy
       headerActions={[
         { label: "Journal", icon: "book-open", onPress: () => router.push("/journal") },
       ]}
@@ -58,7 +59,13 @@ export default function MindScreen() {
 
       <Card>
         <StatRow>
-          <StatTile label="Streak" value={streak} unit={streak === 1 ? "day" : "days"} tone="soft" valueColor="accentStrong" />
+          <StatTile
+            label="Streak"
+            value={streak}
+            unit={streak === 1 ? "day" : "days"}
+            tone="soft"
+            valueColor="accentStrong"
+          />
           <StatTile label="Sessions" value={profile.mind.breathingSessions} tone="soft" />
           <StatTile label="Mindful" value={profile.mind.mindfulMinutes} unit="min" tone="soft" />
         </StatRow>
@@ -66,7 +73,11 @@ export default function MindScreen() {
 
       <MoodWeekCard entries={profile.mood.entries} />
 
-      <SectionHeader size="lg" title="Breathe" subtitle="A one-minute reset is enough to change a session" />
+      <SectionHeader
+        size="lg"
+        title="Breathe"
+        subtitle="A one-minute reset is enough to change a session"
+      />
       <BreathingPreviewCard />
 
       <SectionHeader
@@ -76,7 +87,11 @@ export default function MindScreen() {
       />
       <MindSessionsList />
 
-      <SectionHeader size="lg" title="Tools" subtitle="Reflect, reframe and check in with yourself" />
+      <SectionHeader
+        size="lg"
+        title="Tools"
+        subtitle="Reflect, reframe and check in with yourself"
+      />
       <MindToolsCard profile={profile} />
 
       <Card onPress={() => router.push("/pillar/mental")} style={styles.aboutRow}>

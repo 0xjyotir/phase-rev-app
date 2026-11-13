@@ -9,12 +9,14 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest",
+    "test:android": "jest --preset jest-expo/android \"src/__tests__/(screens|guest)\"",
     "lint": "expo lint",
     "format": "prettier --write \"src/**/*.js\" \"*.js\"",
     "format:check": "prettier --check \"src/**/*.js\" \"*.js\"",
     "doctor": "npx expo-doctor@latest",
     "export:web": "expo export --platform web",
-    "export:android": "expo export --platform android"
+    "export:android": "expo export --platform android",
+    "export:ios": "expo export --platform ios"
   },
   "dependencies": {
     "@expo-google-fonts/jetbrains-mono": "^0.4.1",
@@ -27,7 +29,6 @@
     "d3-geo": "^3.1.2",
     "expo": "~58.0.22",
     "expo-asset": "~58.0.19",
-    "expo-blur": "~58.0.5",
     "expo-constants": "~58.0.14",
     "expo-file-system": "~58.0.13",
     "expo-font": "~58.0.11",

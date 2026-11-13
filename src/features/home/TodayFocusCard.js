@@ -11,7 +11,7 @@ import { WEEKLY_SESSION_TARGET } from "@/constants/dashboard";
 import { useActiveSession, useTodayPlan } from "@/features/workouts/hooks/useTraining";
 import { useStartWorkout } from "@/features/workouts/hooks/useStartWorkout";
 import { formatRelativeDay } from "@/lib/dates";
-import { formatVolume } from "@/lib/format";
+import { formatVolume, pluralize } from "@/lib/format";
 import { spacing } from "@/theme";
 
 export function TodayFocusCard({ lastSession, weekWorkouts }) {
@@ -24,7 +24,7 @@ export function TodayFocusCard({ lastSession, weekWorkouts }) {
   const subtitle = activeSession
     ? `${progress.completedSets}/${progress.totalSets} sets logged`
     : plan
-      ? `${plan.estimatedMinutes} min · ${plan.exercises.length} exercises`
+      ? `${plan.estimatedMinutes} min · ${pluralize("exercise", plan.exercises.length)}`
       : "Recovery is part of the program.";
 
   return (

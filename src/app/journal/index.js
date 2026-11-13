@@ -4,7 +4,16 @@
  */
 import { useRouter } from "expo-router";
 import { Alert, Pressable, StyleSheet, View } from "react-native";
-import { AppText, Button, Card, EmptyState, Screen } from "@/components/ui";
+import {
+  AppText,
+  Button,
+  Card,
+  EmptyState,
+  ListRow,
+  ListSection,
+  Screen,
+  SectionHeader,
+} from "@/components/ui";
 import { journalPromptSets } from "@/constants/mental";
 import { useProfile } from "@/hooks/useProfile";
 import { formatLongDate, formatTimeOfDay } from "@/lib/dates";
@@ -28,26 +37,42 @@ export default function JournalScreen() {
     <Screen
       title="Journal"
       largeTitle
-      headerActions={[{ label: "New entry", icon: "edit", onPress: () => router.push("/journal/new") }]}
+      headerActions={[
+        { label: "New entry", icon: "edit", onPress: () => router.push("/journal/new") },
+      ]}
     >
-      <View style={styles.sets}>
+      <ListSection header="Start with a prompt">
+        <ListRow
+          icon="pen"
+          iconTint="#5E5CE6"
+          title="Free write"
+          subtitle="A blank page — a sentence is enough"
+          onPress={() => router.push("/journal/new")}
+        />
         {Object.entries(journalPromptSets).map(([id, set]) => (
-          <Button
+          <ListRow
             key={id}
-            label={set.title}
-            variant="secondary"
-            size="sm"
+            icon={PROMPT_SET_ICONS[id]?.icon ?? "book-open"}
+            iconTint={PROMPT_SET_ICONS[id]?.tint}
+            title={set.title}
+            subtitle={`${set.prompts.length} guided prompts`}
             onPress={() => router.push({ pathname: "/journal/new", params: { set: id } })}
           />
         ))}
-      </View>
+      </ListSection>
+
+      {entries.length > 0 ? (
+        <SectionHeader title="Entries" subtitle="Long-press an entry to delete it" />
+      ) : null}
 
       {entries.length === 0 ? (
         <EmptyState
           icon="book-open"
           title="Your journal is empty"
           message="A few honest lines a day turn into the clearest picture of how you train and live."
-          action={<Button label="Write your first entry" onPress={() => router.push("/journal/new")} />}
+          action={
+            <Button label="Write your first entry" onPress={() => router.push("/journal/new")} />
+          }
         />
       ) : (
         entries.map((entry) => (
@@ -85,9 +110,14 @@ export default function JournalScreen() {
   );
 }
 
+const PROMPT_SET_ICONS = {
+  daily: { icon: "sun", tint: "#E0A030" },
+  evening: { icon: "moon", tint: "#8B6CEF" },
+  training: { icon: "dumbbell", tint: "#2BA98A" },
+};
+
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  sets: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
   entry: { gap: spacing.md },
   entryTop: { flexDirection: "row", alignItems: "center", gap: spacing.md },
   answer: { gap: 4 },

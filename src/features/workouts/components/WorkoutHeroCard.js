@@ -6,6 +6,7 @@ import { StyleSheet, View } from "react-native";
 import { AppText, Button, Card, Chip } from "@/components/ui";
 import { formatLongDate } from "@/lib/dates";
 import { spacing } from "@/theme";
+import { pluralize } from "@/lib/format";
 
 export function WorkoutHeroCard({
   plan,
@@ -33,8 +34,8 @@ export function WorkoutHeroCard({
 
       <View style={styles.chips}>
         <Chip icon="clock" label={`${plan.estimatedMinutes} min`} size="md" />
-        <Chip icon="layers" label={`${plan.exercises.length} exercises`} size="md" />
-        <Chip icon="check-square" label={`${setCount} sets`} size="md" />
+        <Chip icon="layers" label={pluralize("exercise", plan.exercises.length)} size="md" />
+        <Chip icon="check-square" label={pluralize("set", setCount)} size="md" />
         {isOverride ? <Chip label="Changed today" tone="champagne" size="md" /> : null}
         {trainedToday ? <Chip label="Done today" tone="success" size="md" /> : null}
       </View>

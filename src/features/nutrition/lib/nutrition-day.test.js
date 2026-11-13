@@ -6,7 +6,16 @@ import {
 } from "./nutrition-day";
 
 const planned = [
-  { id: "1", meal: "Breakfast", time: "7:00 AM", calories: 400, protein: 30, carbs: 40, fat: 10, logged: true },
+  {
+    id: "1",
+    meal: "Breakfast",
+    time: "7:00 AM",
+    calories: 400,
+    protein: 30,
+    carbs: 40,
+    fat: 10,
+    logged: true,
+  },
 ];
 
 const day = (date, calories = 1800) => ({
@@ -39,7 +48,10 @@ describe("rolloverNutrition", () => {
   it("caps history at 30 days, newest first", () => {
     let nutrition = day("2026-10-01");
     for (let i = 2; i <= 40; i += 1) {
-      const key = i <= 31 ? `2026-10-${String(i).padStart(2, "0")}` : `2026-11-${String(i - 31).padStart(2, "0")}`;
+      const key =
+        i <= 31
+          ? `2026-10-${String(i).padStart(2, "0")}`
+          : `2026-11-${String(i - 31).padStart(2, "0")}`;
       nutrition = rolloverNutrition(nutrition, planned, key);
       nutrition = { ...nutrition, calories: { ...nutrition.calories, current: 2000 } };
     }
@@ -52,7 +64,21 @@ describe("weekly calories and score", () => {
   const now = new Date(2026, 10, 13, 12);
 
   it("returns 7 days ending today", () => {
-    const nutrition = { ...day("2026-11-13", 900), history: seedNutritionHistory([{ calories: 2100 }, { calories: 2000 }, { calories: 2200 }, { calories: 1900 }, { calories: 2300 }, { calories: 2150 }], 2200, now) };
+    const nutrition = {
+      ...day("2026-11-13", 900),
+      history: seedNutritionHistory(
+        [
+          { calories: 2100 },
+          { calories: 2000 },
+          { calories: 2200 },
+          { calories: 1900 },
+          { calories: 2300 },
+          { calories: 2150 },
+        ],
+        2200,
+        now,
+      ),
+    };
     const week = getWeekCalories(nutrition, now);
     expect(week).toHaveLength(7);
     expect(week[6]).toMatchObject({ isToday: true, value: 900 });

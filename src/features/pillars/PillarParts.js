@@ -11,7 +11,7 @@ import { palette, radius, spacing } from "@/theme";
 /** Photo hero with the pillar's eyebrow, Oswald headline, meta row and two CTAs. */
 export function PillarHero({ hero, image, onPrimary, onSecondary }) {
   return (
-    <MediaCard image={image} aspectRatio={4 / 5} gradient="full" gap={spacing.lg}>
+    <MediaCard image={image} mediaHeight={340} gap={spacing.lg}>
       <AppText variant="eyebrow" color={palette.cyan}>
         {hero.eyebrow}
       </AppText>
@@ -34,7 +34,12 @@ export function PillarHero({ hero, image, onPrimary, onSecondary }) {
       <View style={styles.actions}>
         <Button label={hero.primaryCta} variant="brand" fullWidth onPress={onPrimary} />
         {hero.secondaryCta ? (
-          <Button label={hero.secondaryCta} variant="outlineLight" fullWidth onPress={onSecondary} />
+          <Button
+            label={hero.secondaryCta}
+            variant="outlineLight"
+            fullWidth
+            onPress={onSecondary}
+          />
         ) : null}
       </View>
     </MediaCard>

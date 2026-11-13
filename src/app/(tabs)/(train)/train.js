@@ -58,6 +58,7 @@ export default function TrainScreen() {
     <Screen
       variant="tab"
       title="Train"
+      lazy
       scrollRef={scrollRef}
       headerActions={[
         {

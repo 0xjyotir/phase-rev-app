@@ -74,7 +74,11 @@ export default function ReactionScreen() {
       setTimes(next);
       if (next.length >= TRIALS_PER_ROUND) {
         const result = summarizeRound(next);
-        actions.saveReactionResult({ average: result.average, median: result.median, best: result.best });
+        actions.saveReactionResult({
+          average: result.average,
+          median: result.median,
+          best: result.best,
+        });
         haptics.success();
         setPhase("done");
       } else {
@@ -91,10 +95,18 @@ export default function ReactionScreen() {
   };
 
   const panel = {
-    idle: { bg: colors.surfaceSoft, title: "Tap to start", sub: "Wait for cyan, then tap as fast as you can." },
+    idle: {
+      bg: colors.surfaceSoft,
+      title: "Tap to start",
+      sub: "Wait for cyan, then tap as fast as you can.",
+    },
     waiting: { bg: palette.ink, title: "Wait…", sub: "Don't anticipate. React." },
     go: { bg: palette.cyan, title: "TAP!", sub: "" },
-    early: { bg: colors.dangerSoft, title: "False start", sub: "Too soon — tap to retry this trial." },
+    early: {
+      bg: colors.dangerSoft,
+      title: "False start",
+      sub: "Too soon — tap to retry this trial.",
+    },
     result: { bg: colors.accentSoft, title: `${lastTime} ms`, sub: "Tap for the next trial" },
   }[phase];
 
@@ -120,7 +132,9 @@ export default function ReactionScreen() {
             <AppText
               variant="display"
               align="center"
-              color={phase === "go" ? palette.cyanInk : phase === "waiting" ? palette.navText : "text"}
+              color={
+                phase === "go" ? palette.cyanInk : phase === "waiting" ? palette.navText : "text"
+              }
             >
               {panel.title}
             </AppText>
@@ -141,7 +155,14 @@ export default function ReactionScreen() {
               <Chip label={summary.rating.label} tone={summary.rating.tone} size="md" />
             </View>
             <StatRow>
-              <StatTile label="Average" value={summary.average} unit="ms" tone="soft" size="lg" valueColor="accentStrong" />
+              <StatTile
+                label="Average"
+                value={summary.average}
+                unit="ms"
+                tone="soft"
+                size="lg"
+                valueColor="accentStrong"
+              />
               <StatTile label="Best" value={summary.best} unit="ms" tone="soft" size="lg" />
             </StatRow>
             <AppText variant="caption" color="textMuted">
@@ -169,7 +190,10 @@ export default function ReactionScreen() {
               Average reaction time per round (lower is faster)
             </AppText>
             <BarChart
-              data={history.map((item, index) => ({ label: String(index + 1), value: item.average }))}
+              data={history.map((item, index) => ({
+                label: String(index + 1),
+                value: item.average,
+              }))}
               highlightIndex={history.length - 1}
               height={110}
             />

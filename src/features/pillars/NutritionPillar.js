@@ -37,7 +37,12 @@ export function NutritionPillar() {
     <>
       <View style={styles.grid}>
         {nutritionValueProps.map((item) => (
-          <FeatureTile key={item.id} icon={item.icon} title={item.title} description={item.description} />
+          <FeatureTile
+            key={item.id}
+            icon={item.icon}
+            title={item.title}
+            description={item.description}
+          />
         ))}
       </View>
 
@@ -139,7 +144,11 @@ export function NutritionPillar() {
             </View>
           ))}
         </Card>
-        <Button label={nutritionLeadCta.primaryCta} fullWidth onPress={() => go("/membership", true)} />
+        <Button
+          label={nutritionLeadCta.primaryCta}
+          fullWidth
+          onPress={() => go("/membership", true)}
+        />
       </Card>
     </>
   );

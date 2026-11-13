@@ -1,26 +1,33 @@
 /**
  * QuickLinks — shortcuts into the rest of the ecosystem (assessment, coaches,
- * membership). Horizontal tiles under the main Home cards.
+ * membership), as an inset-grouped list under the main Today cards.
  */
 import { useRouter } from "expo-router";
-import { StyleSheet, View } from "react-native";
-import { AppText, Card, Icon } from "@/components/ui";
-import { spacing } from "@/theme";
+import { ListRow, ListSection } from "@/components/ui";
 
 const LINKS = [
   {
     id: "assessment",
     icon: "clipboard",
+    tint: "#2F7FD8",
     title: "Assessment",
-    subtitle: "Your baseline",
+    subtitle: "Retake your baseline in two minutes",
     href: "/assessment",
   },
-  { id: "coaches", icon: "users", title: "Coaches", subtitle: "Book a session", href: "/coaches" },
+  {
+    id: "coaches",
+    icon: "users",
+    tint: "#2BA98A",
+    title: "Coaches",
+    subtitle: "Book a session with a specialist",
+    href: "/coaches",
+  },
   {
     id: "membership",
     icon: "award",
+    tint: "#C4A265",
     title: "Membership",
-    subtitle: "Your tier",
+    subtitle: "Compare tiers and what’s included",
     href: "/membership",
   },
 ];
@@ -28,23 +35,17 @@ const LINKS = [
 export function QuickLinks() {
   const router = useRouter();
   return (
-    <View style={styles.row}>
+    <ListSection>
       {LINKS.map((link) => (
-        <Card key={link.id} padding="md" style={styles.tile} onPress={() => router.push(link.href)}>
-          <Icon name={link.icon} size={22} color="accent" />
-          <AppText variant="smallStrong" numberOfLines={1}>
-            {link.title}
-          </AppText>
-          <AppText variant="caption" color="textMuted" numberOfLines={1}>
-            {link.subtitle}
-          </AppText>
-        </Card>
+        <ListRow
+          key={link.id}
+          icon={link.icon}
+          iconTint={link.tint}
+          title={link.title}
+          subtitle={link.subtitle}
+          onPress={() => router.push(link.href)}
+        />
       ))}
-    </View>
+    </ListSection>
   );
 }
-
-const styles = StyleSheet.create({
-  row: { flexDirection: "row", gap: spacing.sm },
-  tile: { flex: 1, gap: spacing.xs },
-});
