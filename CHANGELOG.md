@@ -54,5 +54,8 @@
 - New dependencies: `expo-glass-effect`, `expo-symbols`, `expo-image-picker`,
   `expo-file-system`, `expo-asset`, `@react-native-segmented-control/segmented-control`,
   `@expo-google-fonts/instrument-sans` (replaces Outfit).
+- Expo SDK 58 patch update (58.0.25) with matching module versions; scoped npm `overrides`
+  move dev tooling onto patched `glob`, `minimatch` and `node-forge` (audit: 33 → 9 low, all
+  from Jest's `deepmerge`, which has no fix yet); `allowScripts` approves Jest's file watchers.
 - Tests: unit tests for nutrition rollover, recovery, mind and reaction logic, plus smoke tests
   that render every route as a member, as a guest and with Liquid Glass on.

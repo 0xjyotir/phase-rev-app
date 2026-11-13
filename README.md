@@ -35,6 +35,20 @@ npm start            # then press i (iOS), a (Android) or scan the QR code with 
 npm run web          # optional: run it in the browser
 ```
 
+**About the `npm install` output.** The install should finish with only these left:
+
+- **9 low-severity advisories**, all from `deepmerge` inside Jest. No patched version exists
+  yet, and Jest only uses it to merge its own config while tests run. None of it ships in the app.
+- **Deprecation notices** for `eslint@9` (Expo's lint config doesn't support ESLint 10 yet) and
+  `whatwg-encoding` (inside Jest's jsdom). These are harmless.
+- **Never run `npm audit fix --force`.** It "fixes" things by downgrading Expo to SDK 52 and
+  breaks the app.
+
+The `overrides` in `package.json` move Jest's and Expo's tooling onto the patched `glob`,
+`minimatch` and `node-forge` releases. Remove each one once Jest and Expo ship the fixes
+themselves. `allowScripts` approves the two file-watcher packages Jest uses
+(`@parcel/watcher`, and `fsevents` on macOS) for npm's install-script check.
+
 **Demo account** (same as the website): `demo@phaserev.com` / `demo1234`
 — or tap **"Use demo account"** on the login screen. Not signed in? **Explore Phase Rev** on the
 welcome screen opens the public side of the app (pillars, coaches, membership, assessment).
