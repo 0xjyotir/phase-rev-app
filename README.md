@@ -1,201 +1,254 @@
-# Phase Rev — Mobile App (Expo · React Native · JavaScript)
+<div align="center">
 
-The app for **Phase Rev** — _Rework, rebuild, recharge._
-One connected system for **physical performance, athletic development, nutrition and mental wellness**.
+<img src="assets/brand/icon.png" width="104" height="104" alt="Phase Rev app icon" />
 
-This is the mobile version of the whole website at
-[`phaser2023/PHASEREV`](https://github.com/phaser2023/PHASEREV): the public story (ecosystem,
-four pillars, coaches, membership, assessment) **and** the member area (Rev). It uses the same
-brand, copy, colours, coach assets, demo account and data shapes, so the website and the app
-feel like one product.
+# Phase Rev
 
-![Phase Rev app screens](docs/screens.png)
+**Rework your body. Rebuild your performance. Recharge your life.**
 
-<sub>Android / web rendering. On iOS 26+ the tab bar, headers, cards and buttons are Liquid Glass.</sub>
+The mobile app for Phase Rev: one connected system for physical performance,<br />
+athletic development, nutrition and mental wellness, on iOS and Android.
 
-- **Expo SDK 58** · React Native 0.88 (New Architecture) · React 19.3 · **Expo Router**
-- **Plain JavaScript only** — no `.ts` / `.tsx`. Data shapes are JSDoc in
-  [`src/types/models.js`](src/types/models.js).
-- **Zustand + AsyncStorage** — everything survives restarts, even a workout in progress.
-- **iOS 26 Liquid Glass** on the native navigation bar, native tab bar and every control
-  (buttons, chips, icon buttons, steppers, search fields, floating docks), plus SF Symbols,
-  native segmented controls, sheets, alerts and action sheets. Android gets a clean
-  Material-leaning version of the same design.
-- **Instrument Sans** for all UI text (a calm editorial grotesk, free to ship), **Oswald** for
-  brand headlines and **JetBrains Mono** for eyebrows — the same on every platform.
-- Runs in **Expo Go** — every native module used ships with Expo Go.
+[![Expo SDK 58](https://img.shields.io/badge/Expo-SDK%2058-000020?logo=expo&logoColor=white)](https://docs.expo.dev)
+[![React Native 0.88](https://img.shields.io/badge/React%20Native-0.88-087EA4?logo=react&logoColor=white)](https://reactnative.dev)
+[![iOS 26 Liquid Glass](https://img.shields.io/badge/iOS%2026-Liquid%20Glass-00BCD4?logo=apple&logoColor=white)](#native-on-ios-26)
+[![Android](https://img.shields.io/badge/Android-Material-3DDC84?logo=android&logoColor=white)](#native-on-ios-26)
+[![JavaScript](https://img.shields.io/badge/JavaScript-no%20TypeScript-F7DF1E?logo=javascript&logoColor=black)](#conventions)
+
+<br />
+
+<img src="docs/screens.png" width="100%" alt="Phase Rev screens: Welcome, Today, Explore, live workout, Fuel, Mind, Athletic pillar and Train progress" />
+
+<sub>Android rendering shown. On iOS 26+ the navigation bar, tab bar and every control are Liquid Glass.</sub>
+
+</div>
 
 ---
 
-## Quick start
+**Contents:** [Highlights](#highlights) ·
+[What's inside](#whats-inside) ·
+[Native on iOS 26](#native-on-ios-26) ·
+[Getting started](#getting-started) ·
+[Architecture](#architecture) ·
+[Design system](#design-system) ·
+[Quality](#quality) ·
+[Backend](#connecting-a-backend) ·
+[Releasing](#building-for-the-stores) ·
+[Roadmap](#roadmap)
+
+## Highlights
+
+- **The whole Phase Rev website, in your pocket.** The story, the four pillars, the ecosystem,
+  coaches, membership and the assessment from
+  [`phaser2023/PHASEREV`](https://github.com/phaser2023/PHASEREV), rebuilt natively. Every call
+  to action opens a working tool instead of a sales page.
+- **A real training loop.** Plan → train → log → analyse → progress. Each set shows what you did
+  last time and what to aim for, with progressive-overload targets, rest timers that survive
+  backgrounding, PRs, streaks, volume and e1RM trends.
+- **Fuel that resets every day.** Macro rings, hydration, a meal log with quick add, 30-day
+  history, a live weekly chart and an interactive globe of 14 regional cuisines.
+- **A mind you can train.** Mood check-ins, breathing, guided sessions, a journal with prompts,
+  a 5-step thought reframe and a wellbeing check with trends.
+- **Built for athletes.** Sport programmes, visualisation and a reaction-time drill.
+- **Feels first-party on iOS 26.** The system Liquid Glass navigation and tab bars, glass
+  controls, SF Symbols, native sheets, menus, alerts and segmented controls.
+- **Works offline, out of the box.** Demo mode with a realistic member, and everything is
+  persisted on the device, even a workout in progress.
+
+## What's inside
+
+Five tabs, each with its own native stack and large title:
+
+| Tab         | What you can do                                                                                           |
+| ----------- | --------------------------------------------------------------------------------------------------------- |
+| **Today**   | Today's focus, start or resume a workout, at-a-glance tiles (workouts, nutrition score, mind streak, recovery), weekly rhythm, activity |
+| **Train**   | **Today** (the plan with last time vs aim for) · **Library** (exercises, favourites, routines, skills, sport programmes) · **Progress** (volume, e1RM, muscle balance, heatmap, PRs, history, body and progress photos) |
+| **Fuel**    | Macro rings, hydration, meal log, regional meals globe, meal plans, weekly calories, nutrition expert      |
+| **Mind**    | Mood check-in and week, streak and mindful minutes, breathing, guided sessions, journal, reframe, wellbeing |
+| **Explore** | The website's story: method, pillars, "one system", ecosystem, coaches, membership, community, stories |
+
+<details>
+<summary><b>Every other screen</b> (pillar pages, coaching, tools)</summary>
+
+| Screen                                  | Purpose                                                                     | On the website           |
+| --------------------------------------- | --------------------------------------------------------------------------- | ------------------------ |
+| Pillar pages ×4                         | Physical, Athletic, Nutrition, Mental: programmes, features, what's included | `/physical-performance` … |
+| Ecosystem                               | How the four pillars connect                                                | `/ecosystem`             |
+| Coaches + profile                       | Specialties, filters, real coach photos and flyers                          | `/coaches`               |
+| Book a consultation                     | Format, preferred time and a note, saved as a request                       | coach CTAs               |
+| Membership                              | Essential · Performance · Elite, comparison table, 7-day trial              | `/pricing`               |
+| Assessment                              | 4-step baseline (BMI, goal, activity) → recommended path                    | `#assessment`            |
+| Live workout · Session complete         | Log weight × reps × RIR or holds, rest timer, PR feedback, summary          | active mode              |
+| Breathing · Guided session · Reaction   | Full-screen players that keep the screen awake                              | mental / athletic pages  |
+| Journal · Thought reframe · Wellbeing   | Guided prompts, CBT-style thought record, 5-question check                  | mental wellness          |
+| Profile                                 | Baseline, membership and requests, appearance, haptics, rest step, reset demo | —                      |
+
+Not signed in? **Explore Phase Rev** on the welcome screen opens every public page. Member-only
+actions ask you to sign in first.
+
+</details>
+
+## Native on iOS 26
+
+| Piece            | iOS 26 and later                                                                                     | iOS 18 and earlier · Android · web                |
+| ---------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| Tab bar          | System tab bar (`NativeTabs`), minimises on scroll, live workout as the **bottom accessory**          | JS tab bar + floating "Resume workout" pill        |
+| Navigation bar   | System `UINavigationBar` with Liquid Glass, large titles, monochrome SF Symbol buttons, tinted primary actions | Blurred bar (iOS < 26) · Material header (Android) |
+| Controls         | Buttons, chips, icon buttons, steppers and search fields are `GlassView`, grouped with `GlassContainer` | Solid fills with hairline edges                    |
+| Content          | Solid grouped cards, as in Apple's Fitness and Health; floating docks are glass                       | Same                                              |
+| Sheets & dialogs | Page and form sheets with detents, `UIMenu`, alerts and action sheets                                 | Modal stack · native alerts · drawn dialog on web |
+| Accessibility    | Respects **Reduce Transparency**, Dynamic Type limits and VoiceOver labels                            | Same, where the platform supports it              |
+
+Every platform check lives in one place, [`src/lib/platform.js`](src/lib/platform.js)
+(`LIQUID_GLASS`), with `theme.glass` from the theme provider. Components never check the OS
+version themselves.
+
+## Getting started
+
+**You'll need** Node.js 22.13+ or 24 (what React Native 0.88 and Expo SDK 58 require). For iOS, Xcode 26 with an iOS 26
+simulator, which you need to see Liquid Glass. For Android, Android Studio or a device with
+Expo Go.
 
 ```bash
+git clone https://github.com/0xjyotir/phase-rev-app.git
+cd phase-rev-app
 npm install
-npm start            # then press i (iOS), a (Android) or scan the QR code with Expo Go
-npm run web          # optional: run it in the browser
+npm start
 ```
 
-**About the `npm install` output.** The install should finish with only these left:
+Then press **`i`** for the iOS simulator, **`Shift + I`** to choose which iPhone, **`a`** for
+Android, or scan the QR code with Expo Go.
 
-- **9 low-severity advisories**, all from `deepmerge` inside Jest. No patched version exists
-  yet, and Jest only uses it to merge its own config while tests run. None of it ships in the app.
-- **Deprecation notices** for `eslint@9` (Expo's lint config doesn't support ESLint 10 yet) and
-  `whatwg-encoding` (inside Jest's jsdom). These are harmless.
-- **Never run `npm audit fix --force`.** It "fixes" things by downgrading Expo to SDK 52 and
-  breaks the app.
+> **Demo account:** `demo@phaserev.com` / `demo1234`, or tap **Use demo account** on the login
+> screen. Profile → *Reset demo data* brings the sample history back at any time.
+
+| Script                   | What it does                                            |
+| ------------------------ | ------------------------------------------------------- |
+| `npm start`              | Expo dev server                                         |
+| `npm test`               | Unit tests + screen smoke tests (iOS preset)            |
+| `npm run test:android`   | Screen smoke tests with the Android preset              |
+| `npm run lint`           | ESLint (Expo rules, import and alias checks)            |
+| `npm run format`         | Prettier over `src/`                                    |
+| `npm run export:ios`     | Production Hermes bundle for iOS, no device needed      |
+| `npm run export:android` | Production Hermes bundle for Android                    |
+
+<details>
+<summary><b>About the <code>npm install</code> output</b></summary>
+
+A clean install ends with **9 low-severity advisories**. All of them come from `deepmerge` inside
+Jest, which has no patched release yet and only runs while tests run. Nothing from it ships in the
+app. You'll also see deprecation notices for `eslint@9` (Expo's lint config doesn't support
+ESLint 10 yet) and `whatwg-encoding` (inside Jest's jsdom). Both are harmless.
+
+**Never run `npm audit fix --force`.** It "fixes" the advisories by downgrading Expo to SDK 52,
+which breaks the app.
 
 The `overrides` in `package.json` move Jest's and Expo's tooling onto the patched `glob`,
-`minimatch` and `node-forge` releases. Remove each one once Jest and Expo ship the fixes
-themselves. `allowScripts` approves the two file-watcher packages Jest uses
-(`@parcel/watcher`, and `fsevents` on macOS) for npm's install-script check.
+`minimatch`, `test-exclude` and `node-forge` releases. Remove each one once upstream ships the
+fix. `allowScripts` approves Jest's file watchers (`@parcel/watcher`, and `fsevents` on macOS)
+for npm's install-script policy.
 
-**Demo account** (same as the website): `demo@phaserev.com` / `demo1234`
-— or tap **"Use demo account"** on the login screen. Not signed in? **Explore Phase Rev** on the
-welcome screen opens the public side of the app (pillars, coaches, membership, assessment).
+</details>
 
-> **Seeing Liquid Glass:** run on an **iOS 26+** simulator or device (Xcode 26). On iOS 18 and
-> earlier the app automatically falls back to blurred system headers and a solid tab bar.
+## Architecture
 
-| Script                   | What it does                                                     |
-| ------------------------ | ---------------------------------------------------------------- |
-| `npm start`              | Expo dev server                                                  |
-| `npm test`               | Unit tests + screen smoke tests (Jest, iOS preset)               |
-| `npm run test:android`   | The screen smoke tests again with the Android preset             |
-| `npm run lint`           | ESLint (Expo rules + import/alias checks)                        |
-| `npm run format`         | Prettier over `src/`                                             |
-| `npm run export:ios`     | Production bundle check (Hermes) without a device               |
-| `npm run export:android` | Same for Android                                                 |
-
----
-
-## How the app is organised
-
-Five tabs, each with its own native stack (large titles on iOS):
-
-| Tab         | What's in it                                                                                                    | Website equivalent                 |
-| ----------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| **Today**   | Today's focus, start/resume workout, at-a-glance tiles (workouts, nutrition score, mind streak, **recovery**), week rhythm, fuel, mood, activity, wins | `/rev/overview`                    |
-| **Train**   | **Today** (plan with last time vs aim for) · **Library** (exercises, favourites, routines, skills, sport programs) · **Progress** (volume, e1RM, muscle balance, heatmap, PRs, insights, history, body + progress photos) | `/rev/workouts`, `/physical-performance` |
-| **Fuel**    | Macro rings, hydration, meal log (tick to log, quick add, remove), **interactive regional globe** (14 regions), meal plans, live weekly calories, nutrition expert | `/rev-nutrition`                   |
-| **Mind**    | Mood check-in, streak & mindful minutes, mood week, breathing, guided sessions, journal, thought reframe, wellbeing check | `/mental-wellness`                 |
-| **Explore** | The website's story in the app: hero video, method, four pillars, "one system", ecosystem dimensions, coaches, membership, community, stories, final CTA | `/` homepage, `/ecosystem`         |
-
-Screens reachable from the tabs:
-
-| Screen                         | What the member can do                                                                     | Website equivalent              |
-| ------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------- |
-| **Pillar pages** (×4)          | Hero, programs/paths, features, included list, CTA — each links to the working tool in the app | `/physical-performance`, `/athletic-performance`, `/rev-nutrition`, `/mental-wellness` |
-| **Ecosystem**                  | Four pillars, how they connect, dimensions explorer                                        | `/ecosystem`                    |
-| **Coaches** + coach profile    | Specialties, filters, roster with real photos & flyers, approach, credentials              | `/coaches`                      |
-| **Book a consultation**        | Pick format (1:1 live / remote / group), preferred time, note → saved request              | coach / nutrition expert CTAs   |
-| **Membership**                 | Essential / Performance / Elite, comparison table, 7-day trial                             | `/pricing`                      |
-| **Assessment**                 | 4-step baseline (BMI, goal, activity) → recommended path, saved to profile                | homepage `#assessment`          |
-| **Active workout**             | Log weight · reps · RIR (or hold seconds), rest timer (±, pause, skip), PR feedback        | active mode                     |
-| **Session complete**           | Duration, sets, volume, PRs, streak → history                                              | SessionComplete                 |
-| **Breathing / guided sessions**| Reset breath, box breathing, wind-down; Deep Focus, Pre-game focus, Visualization, Evening wind-down | mental wellness sessions        |
-| **Reaction drill**             | 5-trial reaction test with history                                                         | athletic "reaction training"    |
-| **Journal**, **Thought reframe**, **Wellbeing check** | Guided prompt sets, 5-step CBT-style thought record, 5-question check with trend | mental wellness practices       |
-| **Profile**                    | Identity, baseline, membership & coaching requests, appearance, haptics, rest timer step, reset demo, sign out | —                               |
-
----
-
-## iOS 26 — what "native" means here
-
-| Piece                | iOS 26+                                                          | iOS 18 and earlier / Android / web           |
-| -------------------- | ---------------------------------------------------------------- | -------------------------------------------- |
-| Tab bar              | System tab bar (`NativeTabs`), minimises on scroll, live workout shown as the **tab bar accessory** (like Music's mini player) | JS tab bar + floating "Resume workout" pill |
-| Navigation bar       | The system `UINavigationBar` with Liquid Glass (no custom background, so UIKit draws the glass and scroll-edge effect), large titles, monochrome SF Symbol buttons in glass capsules, tinted prominent "Save"/"Sign in" | Blurred material bar with cyan buttons (iOS < 26) · Material header (Android) |
-| Buttons, chips, icon buttons, steppers, search fields | `GlassView` (regular / clear / tinted, interactive), grouped with `GlassContainer` so neighbours blend — off when *Reduce Transparency* is on | Solid fills with hairline borders            |
-| Content cards        | Solid grouped cards, as in Fitness and Health — Apple keeps Liquid Glass for the controls layer; floating docks (rest timer) are glass | Same solid cards                             |
-| Icons                | SF Symbols (`expo-symbols`), mapped in `components/ui/icon-map.json` | Feather                                      |
-| Segmented controls   | `UISegmentedControl`                                             | Capsule control                              |
-| Confirmations        | `UIAlertController` alerts + action sheets                       | Native alert (Android) · drawn dialog (web)  |
-| Modals               | Page sheets, form sheets with detents and grabber                | Modal stack                                  |
-| Type                 | Instrument Sans everywhere, including nav bar titles, large titles, bar buttons, tab bar labels and segmented controls (alerts stay SF, as Apple intends) | Instrument Sans, JetBrains Mono, Oswald      |
-
-All of this is decided in one place: `src/lib/platform.js` (`LIQUID_GLASS`) +
-`ThemeProvider` (`theme.glass`). Components never check the OS version themselves.
-
----
-
-## Folder guide (where to look)
-
-```
-phaserev-app/
-├── app.json                 Expo config (name, icons, splash, plugins, permissions)
-├── jsconfig.json            "@/…" → src/…  and  "@assets/…" → assets/…
-├── assets/                  Brand icons, coach portraits & flyers, pillar art, hero video
-├── docs/ARCHITECTURE.md     ← read this to understand how everything connects
-└── src/
-    ├── app/                 ROUTES ONLY — every file is a screen (Expo Router)
-    │   ├── (auth)/          welcome, login (guests)
-    │   ├── (tabs)/          (home) (train) (fuel) (mind) (explore) — one stack per tab
-    │   └── …                pillar/[id], ecosystem, coaches/*, membership, assessment,
-    │                        workout/*, session/[id], breathing, reaction, journal/*, …
-    ├── components/
-    │   ├── ui/              Screen, Surface (glass), Card, Button, ListSection/ListRow,
-    │   │                    SegmentedControl, Dialog, TextField, Carousel, Icon…
-    │   ├── charts/          LineChart, BarChart, ProgressRing, Heatmap (SVG, no chart lib)
-    │   ├── brand/           Wordmark, BrandHeadline, MediaCard, HeroVideo
-    │   └── navigation/      TabStack (per-tab native stack)
-    ├── features/            Domain code, one folder per area
-    │   ├── workouts/  nutrition/  mental/  athletic/  assessment/
-    │   ├── pillars/  explore/  coaches/  membership/
-    │   └── home/  auth/  profile/
-    ├── stores/              Zustand stores (session, profile, training, preferences)
-    ├── services/            The only code that talks HTTP (api-client, auth-service)
-    ├── hooks/               useMember, useProfile, useMemberLink, useDayRollover, …
-    ├── constants/           All copy + catalog + seed data (ported from the website)
-    ├── theme/               Palette → light/dark tokens, type scale, spacing
-    ├── providers/           ThemeProvider (useTheme), AppProviders
-    ├── lib/                 platform, dates, formatting, haptics, header items, photo storage
-    └── types/models.js      JSDoc data models
+```mermaid
+flowchart TD
+  A["<b>src/app</b><br/>screens · Expo Router"] --> B["<b>src/features</b><br/>domain UI + hooks per pillar"]
+  B --> C["<b>src/stores</b><br/>Zustand, persisted to AsyncStorage"]
+  B --> D["<b>features/*/lib</b><br/>pure logic, unit-tested"]
+  B --> E["<b>src/components</b><br/>UI kit: Screen, Surface, Card, Button, ListSection…"]
+  E --> F["<b>src/theme</b><br/>colour tokens, type, spacing"]
+  C --> G["<b>src/services</b><br/>API client: demo mode until EXPO_PUBLIC_API_URL"]
 ```
 
-**The one rule:** `app/` (screens) → `features/` (domain UI + logic) → `components/` (generic UI)
-→ `theme/`. Imports only ever point _down_ that list.
+**The one rule:** imports only point down that graph. Screens compose features, features read
+stores through hooks, and the UI kit knows nothing about workouts or meals. Derived numbers
+(streaks, PRs, scores, charts) are computed by pure functions and never stored, so they can't
+drift.
 
----
+```
+src/
+├── app/            routes only: (auth) · (tabs)/(home|train|fuel|mind|explore) · pillar/[id] · coaches/* · …
+├── components/     ui/ (Screen, Surface, GlassGroup…) · charts/ (SVG) · brand/ · navigation/
+├── features/       workouts · nutrition · mental · athletic · assessment · pillars · explore · coaches · …
+├── stores/         session · profile (v2, migrated) · training · preferences
+├── hooks/          useMember · useProfile · useMemberLink · useDayRollover · useFirstFocus …
+├── constants/      all copy, catalog and seed data, ported from the website
+├── theme/          palette → light/dark tokens · typography · layout
+├── lib/            platform · dates · format · haptics · header items · photo storage
+└── types/          JSDoc data models
+```
 
-## Brand system (from the website)
+For the full tour (routes, auth gate, stores, the workout loop, content sources) read
+**[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
 
-| Token            | Value                          | Where it comes from                     |
-| ---------------- | ------------------------------ | --------------------------------------- |
-| Brand black      | `#050505` (app canvas `#050607`) | `globals.css` `--bg-primary`          |
-| Deep teal        | `#085F70`                      | `globals.css` `--accent-primary`        |
-| Champagne        | `#C4A265`                      | `globals.css` `--accent-champagne`      |
-| Rev cyan (dark)  | `#00BCD4`                      | `rev-app.css` dark `--rev-accent`, "REV" in the wordmark |
-| Rev cyan (light) | `#0097B2`                      | `rev-app.css` `--rev-accent` (darkened for contrast) |
-| Fonts            | **Instrument Sans** (UI, numbers, timers), **Oswald** (wordmark, headlines), **JetBrains Mono** (eyebrows) | Oswald + JetBrains Mono from `layout.tsx`; Instrument Sans replaces the website's Outfit in the app |
-| Radius           | 26 cards · 16 tiles · pill buttons (continuous corners on iOS) | `rev-app.css` |
+## Design system
 
-See [`src/theme/palette.js`](src/theme/palette.js) and [`src/theme/themes.js`](src/theme/themes.js).
+| Token          | Value                                                       |
+| -------------- | ----------------------------------------------------------- |
+| Canvas         | `#050607` dark · `#EDF1F4` light                            |
+| Rev cyan       | `#00BCD4` dark · `#0097B2` light                            |
+| Deep teal      | `#085F70`                                                   |
+| Champagne      | `#C4A265`                                                   |
+| UI type        | **Instrument Sans**: text, numbers (tabular) and timers, also in native bars, tab labels and segmented controls |
+| Brand type     | **Oswald** for the wordmark and uppercase headlines · **JetBrains Mono** for eyebrows |
+| Shape          | 26 pt cards · 16 pt tiles · pill buttons · continuous corners on iOS |
+| Spacing        | 20 pt gutters on iOS, 16 pt on Android                      |
 
----
+Appearance follows the system or the in-app choice (System · Light · Dark), and native chrome
+follows it too. See [`src/theme`](src/theme).
 
-## Connecting a real backend
+## Quality
+
+- **Lint and format:** ESLint with Expo's rules plus import and alias checks; Prettier.
+- **Unit tests** for the logic that matters: progressive overload, analytics, streaks, nutrition
+  rollover, recovery score, mind and wellbeing scoring, reaction timing, typography and native
+  header mapping.
+- **Smoke tests** render every route as a member, as a guest, with Liquid Glass on, and with the
+  Android preset.
+- **Bundle checks:** `npm run export:ios` and `npm run export:android` build production Hermes
+  bundles without a device.
+
+## Connecting a backend
 
 The app runs in **demo mode** until you set an API URL:
 
 ```bash
-# .env  (see .env.example)
-EXPO_PUBLIC_API_URL=https://api.phaserev.com/v1
+cp .env.example .env
+# EXPO_PUBLIC_API_URL=https://api.phaserev.com/v1
 ```
 
-`services/auth-service.js` then calls `POST /auth/login` instead of checking the demo account,
-and `services/api-client.js` attaches the bearer token. The endpoints match the website's
-`FRONTEND_BACKEND_INTEGRATION.md`. Details in [docs/ARCHITECTURE.md → Backend](docs/ARCHITECTURE.md#7-connecting-the-backend).
-
----
+[`src/services`](src/services) is the only code that talks HTTP. `auth-service.js` switches
+from the demo account to `POST /auth/login`, and every store action already maps to an endpoint.
+The full list is in [docs/ARCHITECTURE.md § Backend](docs/ARCHITECTURE.md#7-connecting-the-backend).
 
 ## Building for the stores
 
 ```bash
-npx eas-cli@latest build --platform ios       # or android
+npx eas-cli@latest build --platform ios     # or android
 ```
 
-Bundle IDs are `com.phaserev.app` (change in `app.json`). `ios/` and `android/` are generated
-(Continuous Native Generation) — don't create them by hand. Build with **Xcode 26** so the iOS
-build picks up Liquid Glass.
+Bundle ID `com.phaserev.app` (change it in [`app.json`](app.json)). `ios/` and `android/` are
+generated (Continuous Native Generation), so don't create them by hand. Build with **Xcode 26** so
+the iOS app gets Liquid Glass.
 
-See [CHANGELOG.md](CHANGELOG.md) for what changed in 1.1.0.
+## Roadmap
+
+- [ ] Real accounts and sync: backend for auth, profile, workouts and nutrition
+- [ ] Payments for memberships (today the buttons show a request confirmation)
+- [ ] Live coach booking calendar (requests are saved on the device today)
+- [ ] Coach-recorded form videos for every exercise
+- [ ] Progress-photo upload and cloud backup
+
+## Conventions
+
+Plain **JavaScript** only (JSDoc for shapes) · Expo Router for navigation · `npx expo install`
+for native modules · imports via `@/…` · always `<AppText variant=…>`, never a raw `fontFamily`.
+Project rules for contributors and AI agents live in [AGENTS.md](AGENTS.md). Release notes are in
+**[CHANGELOG.md](CHANGELOG.md)**.
+
+<div align="center">
+<br />
+<sub><b>PHASE REV</b> · Rework, rebuild, recharge</sub>
+</div>
